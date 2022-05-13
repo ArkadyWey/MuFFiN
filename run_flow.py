@@ -15,7 +15,7 @@ begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
 
 
-def main(time_1, posi_1, conc_max_discs_1, perm_1, depo_1, dt, dx, conc_in, phi):
+def main(time_1, posi_1, conc_max_discs_1, perm_prep_1, depo_prep_1, dt, dx, conc_in, phi):
     """
     """
     # Get temp parameters 
@@ -28,8 +28,8 @@ def main(time_1, posi_1, conc_max_discs_1, perm_1, depo_1, dt, dx, conc_in, phi)
     conc_2 = numpy.zeros(shape=(num_positions,num_times)) 
     velo_1 = numpy.zeros(shape=(num_times))
     psi_2  = numpy.zeros(shape=(num_positions,num_times))
-    perm_solver_2 = numpy.zeros(shape=(num_positions,num_times))
-    depo_solver_2 = numpy.zeros(shape=(num_positions,num_times))
+    perm_2 = numpy.zeros(shape=(num_positions,num_times))
+    depo_2 = numpy.zeros(shape=(num_positions,num_times))
     dpdx_2 = numpy.zeros(shape=(num_positions,num_times))
     # conc_2[i_x,i_t] = concentraton at position[i_x] at time[i_t]
     # velo_1[i_t] = velocity at time[i_t]
@@ -72,34 +72,34 @@ def main(time_1, posi_1, conc_max_discs_1, perm_1, depo_1, dt, dx, conc_in, phi)
 
         # Get permeability and deposition at this time using current concentration just calculated
         # -----
-        perm_solver_1 = numpy.zeros(shape=num_positions)
-        depo_solver_1 = numpy.zeros(shape=num_positions)
+        perm_1 = numpy.zeros(shape=num_positions)
+        depo_1 = numpy.zeros(shape=num_positions)
         for i_x in range(num_positions):
 
             # Get permeability and deposition parameter at this time and all positions
             # -----
-            perm_solver, depo_solver = flow.get_permeability_and_deposition_at_time_and_position(conc_max_discs_1=conc_max_discs_1,
-                                                                                                 perm_1=perm_1,
-                                                                                                 depo_1=depo_1,
+            perm, depo = flow.get_permeability_and_deposition_at_time_and_position(conc_max_discs_1=conc_max_discs_1,
+                                                                                                 perm_prep_1=perm_prep_1,
+                                                                                                 depo_prep_1=depo_prep_1,
                                                                                                  conc_2=conc_2,
                                                                                                  i_x=i_x,
                                                                                                  i_t=i_t)
-            perm_solver_1[i_x] = perm_solver
-            depo_solver_1[i_x] = depo_solver
+            perm_1[i_x] = perm
+            depo_1[i_x] = depo
 
-        perm_solver_2[:,i_t] = perm_solver_1
-        depo_solver_2[:,i_t] = depo_solver_1
+        perm_2[:,i_t] = perm_1
+        depo_2[:,i_t] = depo_1
 
 
         # Get velocity at this time 
         # -----
-        velo = flow.get_velocity_at_time(perm_solver_1=perm_solver_1,posi_1=posi_1,dx=dx)
+        velo = flow.get_velocity_at_time(perm_1=perm_1,posi_1=posi_1,dx=dx)
         velo_1[i_t] = velo
 
 
         # Get pressure gradient at this time (using Darcy: dpdx[i_x] = - u/k[i_x])
         # -----
-        dpdx_1 = flow.get_pressure_gradient_at_time(perm_solver_1=perm_solver_1,
+        dpdx_1 = flow.get_pressure_gradient_at_time(perm_1=perm_1,
                                                     velo_1=velo_1,
                                                     i_t=i_t)
         dpdx_2[:,i_t] = dpdx_1
@@ -107,11 +107,11 @@ def main(time_1, posi_1, conc_max_discs_1, perm_1, depo_1, dt, dx, conc_in, phi)
 
         # Get reaction parameter at this time
         # -----
-        psi_1 = flow.get_reaction_parameter_at_time(depo_solver_1=depo_solver_1,
+        psi_1 = flow.get_reaction_parameter_at_time(depo_1=depo_1,
                                                     dpdx_1=dpdx_1)
         psi_2[:,i_t] = psi_1
 
-    return (conc_2, velo_1, psi_2, perm_solver_2, depo_solver_2, dpdx_2)
+    return (conc_2, velo_1, psi_2, perm_2, depo_2, dpdx_2)
 
 if __name__ == "__main__":
 
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     # ----------
     path_results_preprocess = os.path.join(".","results_preprocess")
     conc_max_discs_1 = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_discs_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-    perm_1           = numpy.load(file=os.path.join(path_results_preprocess,"perm_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-    depo_1           = numpy.load(file=os.path.join(path_results_preprocess,"depo_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+    perm_prep_1           = numpy.load(file=os.path.join(path_results_preprocess,"perm_prep_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+    depo_prep_1           = numpy.load(file=os.path.join(path_results_preprocess,"depo_prep_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
 
     # Parameters 
     # ----------
@@ -138,15 +138,15 @@ if __name__ == "__main__":
     phi = 0.50 # TODO: Define this properly
 
 
-    (conc_2, velo_1, psi_2, perm_solver_2, depo_solver_2, dpdx_2) = main(time_1=time_1, 
-                                                                         posi_1=posi_1, 
-                                                                         conc_max_discs_1=conc_max_discs_1, 
-                                                                         perm_1=perm_1, 
-                                                                         depo_1=depo_1, 
-                                                                         dt=dt, 
-                                                                         dx=dx, 
-                                                                         conc_in=conc_in, 
-                                                                         phi=phi)
+    (conc_2, velo_1, psi_2, perm_2, depo_2, dpdx_2) = main(time_1=time_1, 
+                                                           posi_1=posi_1, 
+                                                           conc_max_discs_1=conc_max_discs_1, 
+                                                           perm_prep_1=perm_prep_1, 
+                                                           depo_prep_1=depo_prep_1, 
+                                                           dt=dt, 
+                                                           dx=dx, 
+                                                           conc_in=conc_in, 
+                                                           phi=phi)
 
 
 
@@ -160,8 +160,8 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"conc_2.npy"), arr=conc_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"velo_1.npy"), arr=velo_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"psi_2.npy"), arr=psi_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"perm_solver_2.npy"), arr=perm_solver_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"depo_solver_2.npy"), arr=depo_solver_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"perm_2.npy"), arr=perm_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_2.npy"), arr=depo_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"dpdx_2.npy"), arr=dpdx_2, allow_pickle=True, fix_imports=True)
 
 

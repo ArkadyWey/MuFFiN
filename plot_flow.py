@@ -15,8 +15,8 @@ posi_1 = numpy.load(os.path.join(path_results, "posi_1.npy"))
 conc_2 = numpy.load(os.path.join(path_results, "conc_2.npy"))
 velo_1 = numpy.load(os.path.join(path_results, "velo_1.npy"))
 psi_2  = numpy.load(os.path.join(path_results, "psi_2.npy"))
-perm_solver_2 = numpy.load(os.path.join(path_results, "perm_solver_2.npy"))
-depo_solver_2 = numpy.load(os.path.join(path_results, "depo_solver_2.npy"))
+perm_2 = numpy.load(os.path.join(path_results, "perm_2.npy"))
+depo_2 = numpy.load(os.path.join(path_results, "depo_2.npy"))
 dpdx_2 = numpy.load(os.path.join(path_results, "dpdx_2.npy"))
 
 
@@ -76,32 +76,32 @@ plt.savefig(fname=os.path.join(path_results,"psi_2__v__posi_1.svg"), format="svg
 # -----
 fig, ax = plt.subplots(1,1)
 
-ax.plot(posi_1,perm_solver_2[:,start])
-ax.plot(posi_1,perm_solver_2[:,start+50])
-ax.plot(posi_1,perm_solver_2[:,second_quarter])
-ax.plot(posi_1,perm_solver_2[:,third_quarter])
-ax.plot(posi_1,perm_solver_2[:,end])
+ax.plot(posi_1,perm_2[:,start])
+ax.plot(posi_1,perm_2[:,start+50])
+ax.plot(posi_1,perm_2[:,second_quarter])
+ax.plot(posi_1,perm_2[:,third_quarter])
+ax.plot(posi_1,perm_2[:,end])
 
 ax.set_xlabel(r"$x$")
 ax.set_ylabel(r"$k$")
 
-plt.savefig(fname=os.path.join(path_results,"perm_solver_2__v__posi_1.svg"), format="svg")
+plt.savefig(fname=os.path.join(path_results,"perm_2__v__posi_1.svg"), format="svg")
 
 
 # Plot deposition parameter 
 # -----
 fig, ax = plt.subplots(1,1)
 
-ax.plot(posi_1, depo_solver_2[:,start])
-ax.plot(posi_1, depo_solver_2[:,start+50])
-ax.plot(posi_1, depo_solver_2[:,second_quarter])
-ax.plot(posi_1, depo_solver_2[:,third_quarter])
-ax.plot(posi_1, depo_solver_2[:,end])
+ax.plot(posi_1, depo_2[:,start])
+ax.plot(posi_1, depo_2[:,start+50])
+ax.plot(posi_1, depo_2[:,second_quarter])
+ax.plot(posi_1, depo_2[:,third_quarter])
+ax.plot(posi_1, depo_2[:,end])
 
 ax.set_xlabel(r"$x$")
 ax.set_ylabel(r"$j$")
 
-plt.savefig(fname=os.path.join(path_results,"depo_solver_2__v__posi_1.svg"), format="svg")
+plt.savefig(fname=os.path.join(path_results,"depo_2__v__posi_1.svg"), format="svg")
 
 
 # Plot pressure gradient 

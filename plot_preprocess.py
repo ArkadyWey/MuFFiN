@@ -10,18 +10,18 @@ path_results = os.path.join(".","results_preprocess")
 # Load variables
 # -----
 conc_max_discs_1 = numpy.load(os.path.join(path_results, "conc_max_discs_1.npy"))
-perm_1 = numpy.load(os.path.join(path_results, "perm_1.npy"))
-depo_1 = numpy.load(os.path.join(path_results, "depo_1.npy"))
+perm_prep_1 = numpy.load(os.path.join(path_results, "perm_prep_1.npy"))
+depo_prep_1 = numpy.load(os.path.join(path_results, "depo_prep_1.npy"))
 
 
 # Plot permeability and deposition parameter values on one axis 
 # -----
 fig, ax = plt.subplots(1,1)
 
-ax.plot(conc_max_discs_1, perm_1, label=r"$k$", color="red")
-ax.plot(conc_max_discs_1,depo_1, label=r"$j$", color="blue")
+ax.plot(conc_max_discs_1, perm_prep_1, label=r"$k$", color="red")
+ax.plot(conc_max_discs_1,depo_prep_1, label=r"$j$", color="blue")
 ax.set_xlabel("c")
 ax.legend()
-plt.savefig(fname=os.path.join(path_results,"perm_1__depo_1__v__conc_max_discs_1.svg"), format="svg")
+plt.savefig(fname=os.path.join(path_results,"perm_prep_1__depo_prep_1__v__conc_max_discs_1.svg"), format="svg")
 
 
