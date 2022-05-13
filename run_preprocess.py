@@ -8,6 +8,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 from scipy import interpolate
 from scipy import integrate
+import os
 
 
 import preprocess
@@ -139,70 +140,15 @@ if __name__ == "__main__":
 
     # Save results 
     # -----
-    numpy.save(file="./perm_1.npy", arr=perm_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file="./depo_1.npy", arr=depo_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file="./conc_max_discs_1.npy", arr=conc_max_discs_1, allow_pickle=True, fix_imports=True)
+    path_results = os.path.join(".","results_preprocess")
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
 
-    #print(conc_max_discs_1)
-    #print(perm_1)
-    #print(depo_1)
+    numpy.save(file=os.path.join(path_results,"perm_1.npy"), arr=perm_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_1.npy"), arr=depo_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"conc_max_discs_1.npy"), arr=conc_max_discs_1, allow_pickle=True, fix_imports=True)
 
 
-    plt.plot(conc_max_discs_1,perm_1, label=r"$k$", color="red")
-    plt.plot(conc_max_discs_1,depo_1, label=r"$j$", color="blue")
-    plt.xlabel("c")
-    plt.legend()
-    plt.show()
+
 
         
-
-
-
-
-#perm_1 = 0.5*         # perm_1[k] = permeability at conc_max_discs_1[k]
-
-
-
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,1,0,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,3,1,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,3,2,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,0,1,2])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,2,3,2])
-#plt.legend()
-#plt.show()
-#
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,0,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,1,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,2,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,1,2])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,3,2])
-#plt.legend()
-#plt.show()
-#
-#plt.plot(conc_max_discs_1,csol_2[:,0],label=r"$W_0$")
-#plt.plot(conc_max_discs_1,csol_2[:,1],label=r"$W_1$")
-#plt.plot(conc_max_discs_1,csol_2[:,2],label=r"$W_2$")
-#plt.plot(conc_max_discs_1,csol_2[:,3],label=r"$W_3$")
-#plt.legend()
-#plt.show()
-#
-#plt.plot(conc_max_discs_1,csol_2[:,0]-csol_2[:,1],label=r"$W_0-W_1$")
-#plt.plot(conc_max_discs_1,csol_2[:,2]-csol_2[:,3],label=r"$W_2-W_3$")
-#plt.plot(conc_max_discs_1,csol_2[:,2]-csol_2[:,0],label=r"$W_2-W_0$")
-#plt.plot(conc_max_discs_1,csol_2[:,1]-csol_2[:,3],label=r"$W_1-W_3$")
-#plt.legend()
-#plt.show()

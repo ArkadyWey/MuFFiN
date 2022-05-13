@@ -6,6 +6,7 @@ from scipy import sparse
 import datetime
 import matplotlib
 from matplotlib import pyplot as plt
+import os 
 
 import flow
 
@@ -18,9 +19,10 @@ print(datetime.datetime.now())
 
 # Preprocess
 # ----------
-conc_max_discs_1 = numpy.load(file="./conc_max_discs_1.npy", mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-perm_1       = numpy.load(file="./perm_1.npy", mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-depo_1       = numpy.load(file="./depo_1.npy", mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+path_results_preprocess = os.path.join(".","results_preprocess")
+conc_max_discs_1 = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_discs_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+perm_1           = numpy.load(file=os.path.join(path_results_preprocess,"perm_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+depo_1           = numpy.load(file=os.path.join(path_results_preprocess,"depo_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
 
 # Parameters 
 # ----------
@@ -126,42 +128,19 @@ for i_t in range(num_times):
     psi_2[:,i_t] = psi_1
 
 
+    # Save results 
+    # ----- 
+    path_results = os.path.join(".","results_flow")
 
-
-
-start          = 0
-first_quarter  = int(1*(num_times-1)/4)
-second_quarter = int(2*(num_times-1)/4)
-third_quarter  = int(3*(num_times-1)/4)
-end            = -1
-
-plt.plot(posi_1,conc_2[:,start])
-plt.plot(posi_1,conc_2[:,first_quarter])
-plt.plot(posi_1,conc_2[:,second_quarter])
-plt.plot(posi_1,conc_2[:,third_quarter])
-plt.plot(posi_1,conc_2[:,end])
-
-plt.xlabel("x")
-plt.ylabel("c")
-
-plt.show()
-
-plt.plot(posi_1,perm_solver_2[:,start])
-plt.plot(posi_1,perm_solver_2[:,start+50])
-plt.plot(posi_1,perm_solver_2[:,second_quarter])
-plt.plot(posi_1,perm_solver_2[:,third_quarter])
-plt.plot(posi_1,perm_solver_2[:,end])
-
-plt.xlabel("x")
-plt.ylabel("k")
-
-#plt.plot(posi_1,conc_2[:,3])
-plt.show()
-
-plt.plot(time_1,velo_1)
-plt.xlabel(r"$t$")
-plt.ylabel(r"$u$")
-plt.show()
+    numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
+    numpy.save(file=os.path.join(path_results,"posi_1.npy"), arr=posi_1, allow_pickle=True, fix_imports=True)
+    
+    numpy.save(file=os.path.join(path_results,"conc_2.npy"), arr=conc_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"velo_1.npy"), arr=velo_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"psi_2.npy"), arr=psi_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"perm_solver_2.npy"), arr=perm_solver_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_solver_2.npy"), arr=depo_solver_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"dpdx_2.npy"), arr=dpdx_2, allow_pickle=True, fix_imports=True)
 
 
 print(datetime.datetime.now() - begin_time)
