@@ -12,16 +12,48 @@ def main(conc_max_disc_1,
                                                                             cond_init_4=cond_init_4, 
                                                                             adhe_init_4=adhe_init_4, 
                                                                             alpha=alpha)
+    #print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,0,0]))
+    #print("adhe_tabl_5[0,:,:,0,0]: \n{}".format(adhe_tabl_5[0,:,:,0,0]))
+    
+    
+
     lhs_3, rhs_4 = preprocess_2D.get_cell_problem(cond_tabl_5=cond_tabl_5, 
                                                   refs_2=refs_2, 
                                                   leng_1=leng_1)
-    print(rhs_4[0,:,:,0])
-    print(lhs_3[0,:,:])
+    
+    #print("rhs_4[0,:,:,0]: \n{}".format(rhs_4[0,:,:,0]))
+    #print("lhs_3[0,:,:]: \n{}".format(lhs_3[0,:,:]))
+    
+    
     
     csol_3 = preprocess_2D.get_cell_solution(lhs_3=lhs_3, 
                                              rhs_4=rhs_4)
-    print(csol_3[0,:,0])
+    #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
 
+
+
+    delt_5 = preprocess_2D.get_delta(csol_3=csol_3, 
+                                     refs_2=refs_2, 
+                                     leng_1=leng_1)
+    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[0,:,:,0,0]))
+
+
+
+    heav_5 = preprocess_2D.get_heaviside(delt_5=delt_5)
+    #print("heav_5[0,:,:,0,0]: \n{}".format(heav_5[0,:,:,0,0]))
+
+
+    perm_3, depo_2 = preprocess_2D.get_permeability_and_deposition(refs_2=refs_2,
+                                                                   cond_tabl_5=cond_tabl_5,
+                                                                   adhe_tabl_5=adhe_tabl_5,
+                                                                   delt_5=delt_5,
+                                                                   heav_5=heav_5,
+                                                                   leng_1=leng_1,
+                                                                   v=v, 
+                                                                   cond_init_4=cond_init_4)
+    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    
 if __name__ == "__main__":
 
     # Parameters 

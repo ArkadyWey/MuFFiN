@@ -227,3 +227,109 @@ def get_cell_solution(lhs_3: numpy.ndarray, rhs_4: numpy.ndarray):
     return csol_3
 
 
+
+def get_delta(csol_3: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray):
+    """
+    """
+
+    # Get params
+    # -----
+    num_concs = len(csol_3[:,0,0])
+    num_nodes = len(csol_3[0,:,0])
+    num_refs  = len(refs_2[:,0])
+    num_dims  = len(csol_3[0,0,:])
+
+
+    # Make array to be filled
+    # -----
+    delt_5 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims))
+    
+    
+    # Fill using definition of delta
+    # -----
+    for k in range(num_concs):
+        for i in range(num_nodes):
+            for j in range(num_nodes):
+                for r in range(num_refs):
+                    for m in range(num_dims):
+                        delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m])
+
+    return delt_5
+
+
+
+def get_heaviside(delt_5: numpy.ndarray):
+    """
+    """
+    
+    heav_5 = (-delt_5>0).astype(int)
+    # Use delta to make heaviside
+    # NB! H_ij^r = heav(delt_ij^r*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), 
+    # since dpdx<0 when flow from left to right.
+
+    return heav_5
+
+
+
+def get_permeability_and_deposition(refs_2: numpy.ndarray, 
+                                    cond_tabl_5: numpy.ndarray,
+                                    adhe_tabl_5: numpy.ndarray,
+                                    delt_5: numpy.ndarray,
+                                    heav_5: numpy.ndarray, 
+                                    leng_1: numpy.ndarray, 
+                                    v: float, 
+                                    cond_init_4: numpy.ndarray):
+    """
+    """ 
+    # Define params
+    # -----
+    num_concs = len(cond_tabl_5[:,0,0,0,0])
+    num_nodes = len(cond_tabl_5[0,:,0,0,0])
+    num_refs  = len(cond_tabl_5[0,0,0,:,0])
+    num_dims  = len(cond_tabl_5[0,0,0,0,:])
+
+
+    # Make array to fill with permeability and deposition-parameter integrands
+    # -----
+    perm_inte_7 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims,num_dims,num_dims))
+    # perm_inte_7[k,i,j,r,m,a,n]
+    depo_inte_6 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims,num_dims))
+    # depo_inte_6[k,i,j,r,m,a]
+
+
+    # Get integrand of permeability and integrand of deposition parameter
+    # ------
+    for k in range(num_concs):
+        for r in range(num_refs):
+            for m in range(num_dims):
+                for a in range(num_dims):
+                    depo_inte_6[k,:,:,r,m,a] = cond_init_4[:,:,r,a]*(-delt_5[k,:,:,r,m])*adhe_tabl_5[k,:,:,r,a]*(numpy.ones_like(heav_5[k,:,:,r,a])-heav_5[k,:,:,r,a])
+                    for n in range(num_dims):
+                        perm_inte_7[k,:,:,r,m,a,n] = refs_2[r,m]*cond_tabl_5[k,:,:,r,a]*(-delt_5[k,:,:,r,n])
+    
+
+
+    # Get permeability and deposition without prefactors
+    # -----
+    perm_6 = numpy.sum(a=perm_inte_7, axis=5) # sum over a
+    perm_5 = numpy.sum(a=perm_6, axis=3) # sum over r
+    perm_4 = numpy.sum(a=perm_5, axis=2) # sum over j
+    perm_3 = numpy.sum(a=perm_4, axis=1) # sum over i
+    # perm_3[k,m,n]    
+
+    depo_5 = numpy.sum(a=depo_inte_6, axis=5) # sum over a
+    depo_4 = numpy.sum(a=depo_5, axis=3) # sum over r
+    depo_3 = numpy.sum(a=depo_4, axis=2) # sum over j
+    depo_2 = numpy.sum(a=depo_3, axis=1) # sum over i
+    # depo_2[k,m]
+
+    # Multiply permeability and deposition-parameter by prefactors
+    # -----
+    for m in range(num_dims):
+        for n in range(num_dims):
+            perm_3[:,m,n] = (leng_1[m]/2*numpy.prod(leng_1))*perm_3[:,m,n]
+
+    depo_2 = (1/v)*depo_2
+
+
+    return (perm_3, depo_2)
