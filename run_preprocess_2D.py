@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # -----
     max_ref_dist = 1
     num_dims     = 2
-    num_concs    = 5
+    num_concs    = 1001
     num_nodes    = 4
 
     alpha        = 1.0
