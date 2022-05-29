@@ -127,6 +127,7 @@ def get_cell_problem(cond_tabl_5: numpy.ndarray, refs_2: numpy.ndarray, leng_1:n
         refs_2[r,m] = reference-distance references[r] in direction directions[m]. 
         For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem)
     - leng_1: numpy.ndarray
+        leng_1[m] = length of filter in direction directions[m].
     
     Returns
     -------
@@ -230,6 +231,26 @@ def get_cell_solution(lhs_3: numpy.ndarray, rhs_4: numpy.ndarray):
 
 def get_delta(csol_3: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray):
     """
+    Given the cell problem solution, the references, and the lengths, 
+    return the parameter delta.
+
+    Parameters
+    ----------
+    - csol_3: numpy.ndarray
+        The solution of the cell problem, W in notes. csol_3[k,i,m] = element nodes[i] of the solution of 
+        the cell problem at concentration max-concentrations[k] in direction dimensions[m].
+    - refs_2: numpy.ndarray
+        refs_2[r,m] = reference-distance references[r] in direction directions[m]. 
+        For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem)    
+    - leng_1: numpy.ndarray
+        leng_1[m] = length of filter in direction directions[m].
+    
+    Returns 
+    -------
+    - delt_5: numpy.ndarray
+        The parameter delta between nodes i and j with refernce references[r] in direction directions[m]
+        at concentration max-concentrations[k], 
+        so that delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m]), by defn.
     """
 
     # Get params
@@ -260,6 +281,23 @@ def get_delta(csol_3: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray
 
 def get_heaviside(delt_5: numpy.ndarray):
     """
+    Given delta parameter, indicate whether it is greater 
+    or smaller than zero in the m direction.
+
+    Parameters 
+    ----------
+    - delt_5: numpy.ndarray
+        The parameter delta between nodes i and j with refernce references[r] in direction directions[m]
+        at concentration max-concentrations[k], 
+        so that delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m]), by defn.
+
+    Returns 
+    -------
+    - heav_5: numpy.ndarray
+        The parameter heaviside, which indicates whether there is flow from i to j, 
+        so that heav_5 = indictaion of flow from i to j with 
+        reference references[r] in direction directions[m] at concentration max-concentrations[k].
+
     """
     
     heav_5 = (-delt_5>0).astype(int)
@@ -280,7 +318,48 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                                     v: float, 
                                     cond_init_4: numpy.ndarray):
     """
+    Given the working parameters, return the permeability as a spatial matrix, and
+    the deposition parameter as a spatial vector. That is, return information about these two 
+    parameters in each direction.
+
+    Parameters 
+    ----------
+    - refs_2: numpy.ndarray
+        refs_2[r,m] = reference-distance references[r] in direction directions[m]. 
+        For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem.
+    - cond_tabl_5: numpy.ndarray
+        cond_tabl_5[k,i,j,r,m] = conductance from i to j, where j is at reference references[r] 
+        in direction directions[m] relative to i, at concentration max-concentrations[k].
+    - adhe_tabl_5: numpy.ndarray    
+        adhe_tabl_5[k,i,j,r,m] = adhesivity from i to j, where j is at reference references[r] 
+        in direction directions[m] relative to i, at concentration max-concentrations[k].
+    - delt_5: numpy.ndarray
+        The parameter delta between nodes i and j with refernce references[r] in direction directions[m]
+        at concentration max-concentrations[k], 
+        so that delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m]), by defn.
+    - heav_5: numpy.ndarray
+        The parameter heaviside, which indicates whether there is flow from i to j, 
+        so that heav_5 = indictaion of flow from i to j with 
+        reference references[r] in direction directions[m] at concentration max-concentrations[k].
+    - leng_1: numpy.ndarray
+        leng_1[m] = length of filter in direction directions[m].
+    - v: float 
+        Parameter.
+    - cond_init_4: numpy.ndarray
+        The initial conductance, so that cond_init_4[i,j,r,m] = initial conductance on edge ijrn.
+        NB! TODO: This shouldn't be in function, really it is conductance at time, but have a problem 
+        when edge blocks since that goes to zero, so no adhesivity is recorded. Fix this.
+
+    Returns 
+    -------- 
+    - perm_3: numpy.ndarray
+        The permeability. perm_3[k,m,n] = the directional directions[mn] element of the permeability 
+        at concentration max-concentrations[k].
+    - depo_2: numpy.ndarray
+        The deposition parameter. depo_2[k,m] = the direction directions[m] element of the deposition 
+        parameter at concentration max-concentrations[k].
     """ 
+    
     # Define params
     # -----
     num_concs = len(cond_tabl_5[:,0,0,0,0])
