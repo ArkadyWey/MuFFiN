@@ -59,7 +59,7 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
     # -----
     # Use delt_4 to form heavisude which is H(delta)
     heav_4 = preprocess_1D.get_heaviside(delt_4=delt_4)
-    #print("heav_4[k,:,:,l]: \n", heav_4[0,:,:,-1])
+    #print("heav_4[k,:,:,l]: \n", heav_4[0,:,:,0])
 
 
 
@@ -72,8 +72,8 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
                                                                  heav_4=heav_4, 
                                                                  cond_init_3=cond_init_3, 
                                                                  v=v)
-    #print("perm_prep_1[k]: \n{}".format(perm_prep_1[3]))
-    #print("depo_prep_1[k]: \n{}".format(depo_prep_1[3]))
+    print("perm_prep_1[:]: \n{}".format(perm_prep_1[:]))
+    print("depo_prep_1[:]: \n{}".format(depo_prep_1[:]))
     return (perm_prep_1,depo_prep_1)
 
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     #print("refs_1: \n {}".format(refs_1))
     
     num_refs  = len(refs_1)
-    num_concs = 1001
+    num_concs = 5
     num_nodes = 4
     length    = 1.0
     alpha     = 1.0

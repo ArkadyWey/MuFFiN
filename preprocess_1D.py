@@ -250,7 +250,7 @@ def get_heaviside(delt_4):
         max_conc_discs_1[k].
     """
     # Use delta to make heaviside
-    # NB! H_ijr = heav(delt_ijr*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), since dpdx<0 when flow from left to right.         
+    # NB! H_ij^r = heav(delt_ij^r*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), since dpdx<0 when flow from left to right.         
     heav_4 = (-delt_4>0).astype(int)
 
     return heav_4
