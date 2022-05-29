@@ -1,11 +1,15 @@
 import numpy
+import os
 
 import preprocess_2D
 
 def main(conc_max_disc_1,
          cond_init_4,
          adhe_init_4,
-         alpha):
+         alpha,
+         refs_2,
+         leng_1,
+         v):
     """
     """
     cond_tabl_5, adhe_tabl_5 = preprocess_2D.get_conductance_and_adhesivity(conc_max_disc_1=conc_max_disc_1, 
@@ -51,8 +55,10 @@ def main(conc_max_disc_1,
                                                                    leng_1=leng_1,
                                                                    v=v, 
                                                                    cond_init_4=cond_init_4)
-    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+
+    return (perm_3, depo_2)
     
 if __name__ == "__main__":
 
@@ -85,11 +91,8 @@ if __name__ == "__main__":
     cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_dims)) 
     adhe_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_dims)) 
 
-    # grid of four nodes
-    
-
-
-
+    # Grid of four nodes
+    #--------------------
     #           2         3 
     #           |         |
     #         (1.0)     (1.0)
@@ -130,10 +133,23 @@ if __name__ == "__main__":
     #cond_init_4[1,3,1,1] = 1.0
     #cond_init_4[3,1,-1,1] = 1.0
 
-    main(conc_max_disc_1=conc_max_disc_1,
-         cond_init_4=cond_init_4,
-         adhe_init_4=adhe_init_4,
-         alpha=alpha)
+    perm_prep_3, depo_prep_2 = main(conc_max_disc_1=conc_max_disc_1,
+                                    cond_init_4=cond_init_4,
+                                    adhe_init_4=adhe_init_4,
+                                    alpha=alpha,
+                                    refs_2=refs_2,
+                                    leng_1=leng_1,
+                                    v=v)
 
 
+
+    # Save results 
+    # -----
+    path_results = os.path.join(".","results_preprocess_2D")
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
+
+    numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),     arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),     arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
 
