@@ -237,9 +237,9 @@ def get_cell_solution(lhs_3: numpy.ndarray, rhs_4: numpy.ndarray):
         a_2 = lhs_3[k,:,:]
         for m in range(num_dims):
             b_1 = numpy.sum(a=rhs_4[k,:,:,m], axis=1) # sum over j
-            #csol_3[k,:,m] = linalg.lsqr(A=a_2,b=b_1)[0]
-            sol = optimize.lsq_linear(A=a_2,b=b_1)
-            csol_3[k,:,m] = sol.x
+            csol_3[k,:,m] = linalg.lsqr(A=a_2,b=b_1)[0]
+            #sol = optimize.lsq_linear(A=a_2,b=b_1)
+            #csol_3[k,:,m] = sol.x
 
     return csol_3
 
@@ -382,7 +382,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
     num_concs = len(cond_tabl_5[:,0,0,0,0])
     num_nodes = len(cond_tabl_5[0,:,0,0,0])
     num_refs  = len(cond_tabl_5[0,0,0,:,0])
-    num_dims  = len(cond_tabl_5[0,0,0,0,:])
+    num_dims  = len(leng_1[:])
 
 
     # Make array to fill with permeability and deposition-parameter integrands
@@ -400,7 +400,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
             for k in range(num_concs):
                 for r0 in range(num_refs):
                     for r1 in range(num_refs):
-                        
+
                         # Define r^m and r^n for clarity
                         # -----
                         if m==0: 
@@ -419,7 +419,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                         
                         # Get depo and perm
                         # -----
-                        depo_inte_6[k,:,:,r0,r1,m] = cond_init_4[:,:,r0,r1]*(-delt_5[k,:,:,rm,m])*adhe_tabl_5[k,:,:,r0,r1]*(numpy.ones_like(heav_5[k,:,:,r0,r1])-heav_5[k,:,:,r0,r1])
+                        depo_inte_6[k,:,:,r0,r1,m] = cond_init_4[:,:,r0,r1]*(-delt_5[k,:,:,rm,m])*adhe_tabl_5[k,:,:,r0,r1]*( numpy.ones_like(heav_5[k,:,:,rm,m]) - heav_5[k,:,:,rm,m] )
                     
                         perm_inte_7[k,:,:,r0,r1,m,n] = refs_2[rm,m]*cond_tabl_5[k,:,:,r0,r1]*(-delt_5[k,:,:,rn,n])
 
