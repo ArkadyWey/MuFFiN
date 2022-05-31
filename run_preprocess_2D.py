@@ -32,14 +32,14 @@ def main(conc_max_disc_1,
     
     csol_3 = preprocess_2D.get_cell_solution(lhs_3=lhs_3, 
                                              rhs_4=rhs_4)
-    print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
+    #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
 
 
 
     delt_5 = preprocess_2D.get_delta(csol_3=csol_3, 
                                      refs_2=refs_2, 
                                      leng_1=leng_1)
-    print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[0,:,:,-1,1]))
+    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[0,:,:,-1,1]))
 
 
 
@@ -55,7 +55,7 @@ def main(conc_max_disc_1,
                                                                    leng_1=leng_1,
                                                                    v=v, 
                                                                    cond_init_4=cond_init_4)
-    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
     #return (perm_3, depo_2)
@@ -96,8 +96,8 @@ if __name__ == "__main__":
     cond_init_4[0,0,1,0] = 1.0 #1.72461
     cond_init_4[0,0,-1,0] = 1.0 #1.72461
 
-    cond_init_4[0,0,1,1] = 1.0 #1.72461
-    cond_init_4[0,0,-1,1] = 1.0 #1.72461
+    cond_init_4[0,0,0,1] = 1.0 #1.72461
+    cond_init_4[0,0,0,-1] = 1.0 #1.72461
     
     # Grid of four nodes
     #--------------------
@@ -161,4 +161,3 @@ if __name__ == "__main__":
     #numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),     arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
     #numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),     arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
     #numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
-

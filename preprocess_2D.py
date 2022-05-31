@@ -23,6 +23,7 @@ def get_reference(max_ref_dist:int, num_dims:int):
     - refs_2: numpy.ndarray
         refs_2[r,m] = reference-distance references[r] in direction directions[m]. 
         For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem)
+        In notatioal form, this is r^m, which has two degrees of freedom: r and m. 
 
     """
     # Get refs_1
@@ -47,7 +48,7 @@ def get_conductance_and_adhesivity(conc_max_disc_1: numpy.ndarray,
                                    adhe_init_4: numpy.ndarray, 
                                    alpha: float):
     """
-    Given the maximum concentrations, the intial conductances and adhesivites, and 
+    Given the maximum concentrations, the initial conductances and adhesivites, and 
     the threshold above which an edge blocks, return the conductance and adhesivity 
     that results from each concentration. 
 
@@ -56,22 +57,22 @@ def get_conductance_and_adhesivity(conc_max_disc_1: numpy.ndarray,
     - conc_max_disc_1: numpy.ndarray
         List of max concentration, so that conc_max_disc_1[k] = max-concentrations[k].
     - cond_init_4: numpy.ndarray
-        cond_init_4[i,j,r,m] = initial conductance from i to j, where j is at reference references[r] 
+        cond_init_4[i,j,r0,r1] = initial conductance from i to j, where j is at reference references[r0,r1] 
         in direction directions[m] relative to i.
     - adhe_init_4: numpy.ndarray  
-        adhe_init_4[i,j,r,m] = initial adhesivity from i to j, where j is at reference references[r] 
+        adhe_init_4[i,j,r0,r1] = initial adhesivity from i to j, where j is at reference references[r0,r1] 
         in direction directions[m] relative to i.
     - alpha: float
-        alpha = threshold value, fraction aboce which the edge blocks.
+        alpha = threshold value, fraction above which the edge blocks.
 
     Returns
     -------
     - cond_tabl_5: numpy.ndarray
-        cond_tabl_5[k,i,j,r,m] = conductance from i to j, where j is at reference references[r] 
-        in direction directions[m] relative to i, at concentration max-concentrations[k].
+        cond_tabl_5[k,i,j,r0,r1] = conductance from i to j, where j is at reference references[r0,r1] 
+        relative to i, at concentration max-concentrations[k].
     - adhe_tabl_5: numpy.ndarray    
-        adhe_tabl_5[k,i,j,r,m] = adhesivity from i to j, where j is at reference references[r] 
-        in direction directions[m] relative to i, at concentration max-concentrations[k].
+        adhe_tabl_5[k,i,j,r0,r1] = adhesivity from i to j, where j is at reference references[r0,r1] 
+        relative to i, at concentration max-concentrations[k].
     
 
     """
@@ -80,16 +81,15 @@ def get_conductance_and_adhesivity(conc_max_disc_1: numpy.ndarray,
     num_concs = len(conc_max_disc_1)
     num_nodes = len(cond_init_4[0,:,0,0])
     num_refs  = len(cond_init_4[0,0,:,0])
-    num_dims  = len(cond_init_4[0,0,0,:])
 
 
     # Resize for multiplication
     # -----
     cond_tabl_5 = numpy.repeat(a=cond_init_4[numpy.newaxis,:,:,:,:], repeats=num_concs, axis=0) # create conductance table to be filled
-    # cond_tabl_5[k,i,j,r,m] = G_ij^rm at c[k]
+    # cond_tabl_5[k,i,j,r0,r1] = G_ij^r0r1 at c[k]
     
     adhe_tabl_5 = numpy.repeat(a=adhe_init_4[numpy.newaxis,:,:,:,:], repeats=num_concs, axis=0) # create adhesivity table to be filled
-    # adhe_tabl_5[k,i,j,r,m] = A_ij^rm at c[k]
+    # adhe_tabl_5[k,i,j,r0,r1] = A_ij^r0r1 at c[k]
 
 
     # Set conductance and adhesivity in tables for each possible concentration value
@@ -98,18 +98,19 @@ def get_conductance_and_adhesivity(conc_max_disc_1: numpy.ndarray,
         conc_disc = conc_max_disc_1[k] # discrete concentration
         for i in range(num_nodes):
             for j in range(num_nodes):
-                for r in range(num_refs):
-                    for m in range(num_dims):            
-                        cond = cond_tabl_5[k,i,j,r,m]
+                for r0 in range(num_refs):
+                    for r1 in range(num_refs):            
+                        cond = cond_tabl_5[k,i,j,r0,r1]
                         if cond != 0: # we don't need to worry about G_ij==0
                             if conc_disc < alpha*cond or numpy.allclose(a=conc_disc,b=alpha*cond,rtol=1e-5,atol=1e-8):
                                 pass
                             elif conc_disc > alpha*cond:
                                 #pass
-                                cond_tabl_5[k,i,j,r,m] = 0
-                                adhe_tabl_5[k,i,j,r,m] = 1
+                                cond_tabl_5[k,i,j,r0,r1] = 0
+                                adhe_tabl_5[k,i,j,r0,r1] = 1
                             else: 
                                 raise Exception
+    
     return (cond_tabl_5, adhe_tabl_5)
 
 
@@ -123,11 +124,12 @@ def get_cell_problem(cond_tabl_5: numpy.ndarray, refs_2: numpy.ndarray, leng_1:n
     Parameters
     ----------
     - cond_tabl_5: numpy.ndarray
-        cond_tabl_5[k,i,j,r,m] = conductance from i to j, where j is at reference references[r] 
-        in direction directions[m] relative to i, at concentration max-concentrations[k].
+        cond_tabl_5[k,i,j,r0,r1] = conductance from i to j, where j is at reference references[r0,r1] 
+        relative to i, at concentration max-concentrations[k].
     - refs_2: numpy.ndarray
         refs_2[r,m] = reference-distance references[r] in direction directions[m]. 
         For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem)
+        In notatioal form, this is r^m, which has two degrees of freedom: r and m. 
     - leng_1: numpy.ndarray
         leng_1[m] = length of filter in direction directions[m].
     
@@ -147,36 +149,48 @@ def get_cell_problem(cond_tabl_5: numpy.ndarray, refs_2: numpy.ndarray, leng_1:n
     num_concs = len(cond_tabl_5[:,0,0,0,0])
     num_nodes = len(cond_tabl_5[0,:,0,0,0])
     num_refs  = len(cond_tabl_5[0,0,0,:,0])
-    num_dims  = len(cond_tabl_5[0,0,0,0,:])
+    num_dims  = len(leng_1[:])
 
 
     # Define integrands to fill
     # -----
-    rhs_inte_6 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims,num_dims))
-    # rhs_inte_6[k,i,j,r,m,a], where a is dimension that'll be summed over.
-    lhs_inte_5 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims))
-    # lhs_inte_5[k,i,j,r,m], and will sum over dimension m.
+    rhs_inte_6 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_refs,num_dims))
+    # rhs_inte_6[k,i,j,r0,r1,m].
+    lhs_inte_5 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_refs))
+    # lhs_inte_5[k,i,j,r0,r1].
 
 
     # Build lhs and rhs
     # ------
     for k in range(num_concs):
-        for r in range(num_refs):
-            for m in range(num_dims):
+        for r0 in range(num_refs):
+            for r1 in range(num_refs):
+                    
                 # Get lhs integrand
                 # -----
-                lhs_inte_5[k,:,:,r,m] = cond_tabl_5[k,:,:,r,m] - numpy.diag(numpy.sum(a=cond_tabl_5[k,:,:,r,m], axis=1))
+                lhs_inte_5[k,:,:,r0,r1] = cond_tabl_5[k,:,:,r0,r1] - numpy.diag(numpy.sum(a=cond_tabl_5[k,:,:,r0,r1], axis=1))
+                
+
                 # Get rhs integrand
-                # -----
-                for a in range(num_dims):
-                    rhs_inte_6[k,:,:,r,m,a] = cond_tabl_5[k,:,:,r,a]*refs_2[r,m]*leng_1[m]
+                # -----                     
+                for m in range(num_dims):
+
+                    if m==0: 
+                        r=r0
+                    elif m==1:
+                        r=r1
+                    else: 
+                        raise Exception("m != 0,1. This is impossible, since the problem is 2D.")
+                
+                    rhs_inte_6[k,:,:,r0,r1,m] = cond_tabl_5[k,:,:,r0,r1]*refs_2[r,m]*leng_1[m]
+            
     
-    # Sum over references and dimensions
+    # Sum over references
     # -----
-    rhs_4 = -numpy.sum(a=numpy.sum(a=rhs_inte_6, axis=5), axis=3) # sum over a then r
+    rhs_4 = -numpy.sum(a=numpy.sum(a=rhs_inte_6, axis=4), axis=3) # sum over r1 then r0
     # NB: rhs of cell problem has minus sign by definition.
 
-    lhs_3 =  numpy.sum(a=numpy.sum(a=lhs_inte_5, axis=4), axis=3) # sum over m then r
+    lhs_3 =  numpy.sum(a=numpy.sum(a=lhs_inte_5, axis=4), axis=3) # sum over r1 then r0
 
     return (lhs_3, rhs_4)
 
@@ -250,9 +264,10 @@ def get_delta(csol_3: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray
     Returns 
     -------
     - delt_5: numpy.ndarray
-        The parameter delta between nodes i and j with refernce references[r] in direction directions[m]
-        at concentration max-concentrations[k], 
+        The parameter delta between nodes i and j with reference references[r] in direction directions[m]
+        at concentration max-concentrations[k]. 
         so that delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m]), by defn.
+        Note that references[r,m] is numerical equivalent to r^m in the notation.
     """
 
     # Get params
@@ -372,35 +387,55 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
 
     # Make array to fill with permeability and deposition-parameter integrands
     # -----
-    perm_inte_7 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims,num_dims,num_dims))
-    # perm_inte_7[k,i,j,r,m,a,n]
-    depo_inte_6 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_dims,num_dims))
-    # depo_inte_6[k,i,j,r,m,a]
+    perm_inte_7 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_refs,num_dims,num_dims))
+    # perm_inte_7[k,:,:,r0,r1,m,n]
+    depo_inte_6 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs,num_refs,num_dims))
+    # depo_inte_6[k,:,:,r0,r1,m]
 
 
     # Get integrand of permeability and integrand of deposition parameter
     # ------
-    for k in range(num_concs):
-        for r in range(num_refs):
-            for m in range(num_dims):
-                for a in range(num_dims):
-                    depo_inte_6[k,:,:,r,m,a] = cond_init_4[:,:,r,a]*(-delt_5[k,:,:,r,m])*adhe_tabl_5[k,:,:,r,a]*(numpy.ones_like(heav_5[k,:,:,r,a])-heav_5[k,:,:,r,a])
-                    for n in range(num_dims):
-                        perm_inte_7[k,:,:,r,m,a,n] = refs_2[r,m]*cond_tabl_5[k,:,:,r,a]*(-delt_5[k,:,:,r,n])
+    for m in range(num_dims):
+        for n in range(num_dims):
+            for k in range(num_concs):
+                for r0 in range(num_refs):
+                    for r1 in range(num_refs):
+                        
+                        # Define r^m and r^n for clarity
+                        # -----
+                        if m==0: 
+                            rm=r0
+                        elif m==1:
+                            rm=r1
+                        else: 
+                            raise Exception("m != 0,1. This is impossible, since the problem is 2D.")
+
+                        if n==0: 
+                            rn=r0
+                        elif n==1:
+                            rn=r1
+                        else: 
+                            raise Exception("n != 0,1. This is impossible, since the problem is 2D.")
+                        
+                        # Get depo and perm
+                        # -----
+                        depo_inte_6[k,:,:,r0,r1,m] = cond_init_4[:,:,r0,r1]*(-delt_5[k,:,:,rm,m])*adhe_tabl_5[k,:,:,r0,r1]*(numpy.ones_like(heav_5[k,:,:,r0,r1])-heav_5[k,:,:,r0,r1])
+                    
+                        perm_inte_7[k,:,:,r0,r1,m,n] = refs_2[rm,m]*cond_tabl_5[k,:,:,r0,r1]*(-delt_5[k,:,:,rn,n])
 
     
 
 
     # Get permeability and deposition without prefactors
     # -----
-    perm_6 = numpy.sum(a=perm_inte_7, axis=5) # sum over a
-    perm_5 = numpy.sum(a=perm_6, axis=3) # sum over r
+    perm_6 = numpy.sum(a=perm_inte_7, axis=4) # sum over r1
+    perm_5 = numpy.sum(a=perm_6, axis=3) # sum over r0
     perm_4 = numpy.sum(a=perm_5, axis=2) # sum over j
     perm_3 = numpy.sum(a=perm_4, axis=1) # sum over i
     # perm_3[k,m,n]    
 
-    depo_5 = numpy.sum(a=depo_inte_6, axis=5) # sum over a
-    depo_4 = numpy.sum(a=depo_5, axis=3) # sum over r
+    depo_5 = numpy.sum(a=depo_inte_6, axis=4) # sum over r1
+    depo_4 = numpy.sum(a=depo_5, axis=3) # sum over r0
     depo_3 = numpy.sum(a=depo_4, axis=2) # sum over j
     depo_2 = numpy.sum(a=depo_3, axis=1) # sum over i
     # depo_2[k,m]
