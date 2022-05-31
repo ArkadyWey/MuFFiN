@@ -250,7 +250,7 @@ def get_heaviside(delt_4):
         max_conc_discs_1[k].
     """
     # Use delta to make heaviside
-    # NB! H_ijr = heav(delt_ijr*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), since dpdx<0 when flow from left to right.         
+    # NB! H_ij^r = heav(delt_ij^r*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), since dpdx<0 when flow from left to right.         
     heav_4 = (-delt_4>0).astype(int)
 
     return heav_4
@@ -286,10 +286,10 @@ def get_permeability_and_deposition(cond_tabl_4, adhe_tabl_4, refs_1, delt_4, he
     
     Returns
     -------
-    - perm_1: numpy.ndarray
-        Set of permeabilities, so that perm_1[k] = permeability with concentration of max_conc_discs_1[k].
-    - depo_1: numpy.ndarray
-        Set of deposition parameters, so that depo_1[k] = depositions parameter with concentration of max_conc_discs_1[k].
+    - perm_prep_1: numpy.ndarray
+        Set of permeabilities, so that perm_prep_1[k] = permeability with concentration of max_conc_discs_1[k].
+    - depo_prep_1: numpy.ndarray
+        Set of deposition parameters, so that depo_prep_1[k] = depositions parameter with concentration of max_conc_discs_1[k].
 
     """
     # Define params 
@@ -330,7 +330,7 @@ def get_permeability_and_deposition(cond_tabl_4, adhe_tabl_4, refs_1, delt_4, he
             perm_2[k,l] = numpy.sum(a=numpy.sum(a=perm_inte_2,axis=0),axis=0) # sum over i then j
             depo_2[k,l] = numpy.sum(a=numpy.sum(a=depo_inte_2,axis=0),axis=0) # sum over i then j
     
-    perm_1 = 0.5*numpy.sum(a=perm_2,axis=1) # sum over r,   perm_1[k] is the permeability at concentration c[k]
-    depo_1 = (1/v)*numpy.sum(a=depo_2,axis=1) # sum over r, depo_1[k] is the deposition paramaeter at concentration c[k]
+    perm_prep_1 = 0.5*numpy.sum(a=perm_2,axis=1) # sum over r,   perm_prep_1[k] is the permeability at concentration c[k]
+    depo_prep_1 = (1/v)*numpy.sum(a=depo_2,axis=1) # sum over r, depo_prep_1[k] is the deposition paramaeter at concentration c[k]
 
-    return perm_1, depo_1
+    return perm_prep_1, depo_prep_1

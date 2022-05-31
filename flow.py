@@ -33,7 +33,7 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
 
 
 
-def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_1,depo_1,conc_2,i_x,i_t):
+def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_prep_1,depo_prep_1,conc_2,i_x,i_t):
     """
     Given a discrete list of concentrations, and the lists of corresponding permeability 
     and deposition-parameter values, return the permeability and deposition parameter 
@@ -43,9 +43,9 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_1
     ----------
     - conc_max_discs_1: numpy.ndarray 
         1-dimensional list of concentration values.
-    - perm_1: numpy.ndarray
+    - perm_prep_1: numpy.ndarray
         1-dimensional list of permeability values corresponding to the concentration values.
-    - depo_1: numpy.ndarray 
+    - depo_prep_1: numpy.ndarray 
         1-dimensional list of deposition-parameter values corresponding to the concentration values.
     - conc_1: float
         1-dimensional list of concentrations, such that conc[i_x] = concentration at position[i_x].
@@ -67,8 +67,8 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_1
     # conc_max_1[i_x] = the max concentration that position[i_x] has seen up to time[i_t].
     conc_max = conc_max_1[i_x]
 
-    perm = get_new_interpolated_point(table_x=conc_max_discs_1,table_y=perm_1,new_x_value=conc_max)
-    depo = get_new_interpolated_point(table_x=conc_max_discs_1,table_y=depo_1,new_x_value=conc_max)
+    perm = get_new_interpolated_point(table_x=conc_max_discs_1,table_y=perm_prep_1,new_x_value=conc_max)
+    depo = get_new_interpolated_point(table_x=conc_max_discs_1,table_y=depo_prep_1,new_x_value=conc_max)
 
     #conc = conc_2[i_x,i_t]
     #print("conc: \n{}".format(conc))
@@ -77,14 +77,14 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_1
     return (perm, depo)
 
 
-def get_velocity_at_time(perm_solver_1,posi_1,dx):
+def get_velocity_at_time(perm_1,posi_1,dx):
     """
     Given a list of positions and the permeabilities corresponding to these 
     positions, and a spatial step, return the velocity.
 
     Parameters
     ----------
-    - perm_solver_1: numpy.ndarray 
+    - perm_1: numpy.ndarray 
         1-dimensional list of true permeabilities at the corresponsing positions.
     - posi_1: numpy.ndarray 
         1-dimensional list of positions at which the permeabilities have been calculated.
@@ -96,8 +96,8 @@ def get_velocity_at_time(perm_solver_1,posi_1,dx):
     - velo: float 
         The Darcy velocity corresponding to the given permeabilities.
     """
-    num_1 = numpy.ones(shape=perm_solver_1.shape)
-    den_1 = perm_solver_1
+    num_1 = numpy.ones(shape=perm_1.shape)
+    den_1 = perm_1
     integrand_1 = num_1/den_1
     
     integral = integrate.simps(y=integrand_1,x=posi_1,dx=dx,even="avg")
@@ -106,7 +106,7 @@ def get_velocity_at_time(perm_solver_1,posi_1,dx):
     return velo
 
 
-def get_pressure_gradient_at_time(perm_solver_1,velo_1,i_t):
+def get_pressure_gradient_at_time(perm_1,velo_1,i_t):
     """
     Given the velocity at and the true permeabilities at a set of positions, 
     return the pressure gradient at the same set of positions, 
@@ -114,12 +114,12 @@ def get_pressure_gradient_at_time(perm_solver_1,velo_1,i_t):
 
     Parameters
     ------------
-    - perm_solver_1: numpy.ndarray
+    - perm_1: numpy.ndarray
         1-dimensional list of true permeabilities correspnding to a set of positions, 
-        so that perm_solver_1[i_x] = permeability at position[i_x].
+        so that perm_1[i_x] = permeability at position[i_x].
     - velo_1: float
         The velocity as a function of time, so that velo_1[i_t] = velocity at time[i_t].
-        Note that velo_1[i_t] is the velocity corresponding to the set of permeabilities perm_solver_1
+        Note that velo_1[i_t] is the velocity corresponding to the set of permeabilities perm_1
         above.
     
     Returns
@@ -129,10 +129,10 @@ def get_pressure_gradient_at_time(perm_solver_1,velo_1,i_t):
         is the pressure gradient at position[i_x].
     """
     velo = velo_1[i_t]
-    dpdx_1 = - velo*numpy.ones(shape=perm_solver_1.shape)/perm_solver_1
+    dpdx_1 = - velo*numpy.ones(shape=perm_1.shape)/perm_1
     return dpdx_1
 
-def get_reaction_parameter_at_time(depo_solver_1,dpdx_1):
+def get_reaction_parameter_at_time(depo_1,dpdx_1):
     """
     Given the deposition parameter at a set of positions, 
     and the pressure gradient at the same set of positions, 
@@ -140,9 +140,9 @@ def get_reaction_parameter_at_time(depo_solver_1,dpdx_1):
 
     Parameters 
     ----------
-    - depo_solver_1: numpy.ndarray
+    - depo_1: numpy.ndarray
         The deposition parameter at a set of positions, so that 
-        depo_solver_1[i_x] = the deposition parameter at position[i_x].
+        depo_1[i_x] = the deposition parameter at position[i_x].
     - dpdx_1: numpy.ndarray
         The pressure gradient as a function of position, so that dpdx_1[i_x]
         is the pressure gradient at position[i_x].
@@ -153,7 +153,7 @@ def get_reaction_parameter_at_time(depo_solver_1,dpdx_1):
         The reaction parameter at a set of positions, 
         so that psi_1[i_x] = reaction parameter psi at position[i_x] = j[i_x]*dpdx[i_x].
     """
-    psi_1 = depo_solver_1*dpdx_1
+    psi_1 = depo_1*dpdx_1
     return psi_1
 
 

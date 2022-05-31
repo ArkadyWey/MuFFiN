@@ -13,11 +13,11 @@ def interp(table_x,table_y,new_point):
     tck = interpolate.splrep(x=table_x,y=table_y,k=3)
     return interpolate.splev(x=new_point, tck=tck)
 
-def get_velo(perm_1,posi_1,dx):
+def get_velo(perm_prep_1,posi_1,dx):
     """
     """
-    num_1 = numpy.ones(shape=perm_1.shape)
-    den_1 = perm_1
+    num_1 = numpy.ones(shape=perm_prep_1.shape)
+    den_1 = perm_prep_1
     integrand_1 = num_1/den_1
     
     integral = integrate.simps(y=integrand_1,x=posi_1,dx=dx,even="avg")
@@ -200,9 +200,9 @@ depo_inte_4 = cond_init_4*delt_4*adhe_tabl_4*(numpy.ones_like(heav_4)-heav_4) # 
 #print("perm_inte_4[k,:,:,l]: \n{}".format(perm_inte_4[0,:,:,0]))
 
 perm_2 = numpy.zeros(shape=(num_concs,num_refs)) # perm_2[k,l] is the r[l] element of the permeability at concentration c[k]
-perm_1 = numpy.zeros(shape=(num_concs)) # perm_1[k] is the permeability at concentration c[k]
+perm_prep_1 = numpy.zeros(shape=(num_concs)) # perm_prep_1[k] is the permeability at concentration c[k]
 depo_2 = numpy.zeros(shape=(num_concs,num_refs)) # perm_2[k,l] is the r[l] element of the permeability at concentration c[k]
-depo_1 = numpy.zeros(shape=(num_concs)) # perm_1[k] is the permeability at concentration c[k]
+depo_prep_1 = numpy.zeros(shape=(num_concs)) # perm_prep_1[k] is the permeability at concentration c[k]
 for k in range(num_concs):
     for l in range(num_refs):
         ref = refs_1[l]
@@ -212,16 +212,16 @@ for k in range(num_concs):
         #print("perm_inte_2:\n",perm_inte_2)
         perm_2[k,l] = ref*numpy.sum(a=numpy.sum(a=perm_inte_2,axis=0),axis=0) # sum over i then j
         depo_2[k,l] = numpy.sum(a=numpy.sum(a=depo_inte_2,axis=0),axis=0) # sum over i then j
-perm_1[:] = -0.5*numpy.sum(a=perm_2,axis=1) # sum over r 
-depo_1[:] = -(1/v)*numpy.sum(a=depo_2,axis=1) # sum over r 
+perm_prep_1[:] = -0.5*numpy.sum(a=perm_2,axis=1) # sum over r 
+depo_prep_1[:] = -(1/v)*numpy.sum(a=depo_2,axis=1) # sum over r 
 
-#print("perm_1[k]: \n{}".format(perm_1[3]))
-#print("depo_1[k]: \n{}".format(depo_1[3]))
+#print("perm_prep_1[k]: \n{}".format(perm_prep_1[3]))
+#print("depo_prep_1[k]: \n{}".format(depo_prep_1[3]))
 
 
         
 
-#perm_1 = 0.5*         # perm_1[k] = permeability at conc_max_discs_1[k]
+#perm_prep_1 = 0.5*         # perm_prep_1[k] = permeability at conc_max_discs_1[k]
 
 
 
@@ -315,29 +315,29 @@ for i_t in range(num_times-1):
     # 1. Get k, j
     conc_1 = conc_2[:,i_t-1] 
 
-    perm_solver_1 = numpy.zeros(shape=num_positions)
-    depo_solver_1 = numpy.zeros(shape=num_positions)
+    perm_1 = numpy.zeros(shape=num_positions)
+    depo_1 = numpy.zeros(shape=num_positions)
     for i_x in range(num_positions):
         # get previous concentration
         conc = conc_1[i_x]
         # use spline to get k, j
-        perm = interp(table_x=conc_max_discs_1,table_y=perm_1,new_point=conc)
-        depo = interp(table_x=conc_max_discs_1,table_y=depo_1,new_point=conc)
+        perm = interp(table_x=conc_max_discs_1,table_y=perm_prep_1,new_point=conc)
+        depo = interp(table_x=conc_max_discs_1,table_y=depo_prep_1,new_point=conc)
         
         # 2. Stick all together. i.e. fill the functions of x
-        perm_solver_1[i_x] = perm
-        depo_solver_1[i_x] = depo
+        perm_1[i_x] = perm
+        depo_1[i_x] = depo
 
     # 3. Use previous perm to get current u
-    velo = get_velo(perm_1=perm_solver_1,posi_1=posi_1,dx=dx)
+    velo = get_velo(perm_prep_1=perm_1,posi_1=posi_1,dx=dx)
     velo_1[i_t] = velo
     #print(velo)
 
     # 4. Use darcy: dpdx[i_x] = - u/k[i_x]
-    dpdx_1 = - velo*numpy.ones(shape=perm_solver_1.shape)/perm_solver_1
+    dpdx_1 = - velo*numpy.ones(shape=perm_1.shape)/perm_1
 
     # 5. Get psi[i_x] = j[i_x]*dpdx[i_x]
-    psi_1 = depo_solver_1*dpdx_1
+    psi_1 = depo_1*dpdx_1
 
     # 6. Build solver to get value of c at t[i_t]
     conc_new_1 = numpy.zeros(shape=num_positions)
@@ -391,14 +391,14 @@ print(datetime.datetime.now() - begin_time)
 #        # Fill A,G,W,k
 #        # TODO Get best conc_dh
 #        # Use best conc_dh to give required matrices
-#        # output is perm_1, which has perm entry for each position so indexed by i_x
+#        # output is perm_prep_1, which has perm entry for each position so indexed by i_x
 #        # TODO Find the k that corresponds to the current c
 #    k = 1 # this is a placeholder for the real k
 #
 #    # Calculate velocity (not function of space so outside space loop)
-#    velo = 1/(numpy.sum(a=1/perm_1,axis=0)*dx)    
+#    velo = 1/(numpy.sum(a=1/perm_prep_1,axis=0)*dx)    
 #    # Calculate dp/dx
-#    dpdx_1 = -velo/perm_1 # dpdx_1[i_x] is pressure gradient at point i_x 
+#    dpdx_1 = -velo/perm_prep_1 # dpdx_1[i_x] is pressure gradient at point i_x 
 #    
 #    # Calculate node pressure
 #    pres_2 = numpy.zeros(shape=(num_positions,num_nodes)) # pres_2[i_x,i] is the pressure of the ith node at position indexed by i_x
