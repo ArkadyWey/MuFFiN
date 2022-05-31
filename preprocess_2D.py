@@ -1,6 +1,8 @@
 import numpy
 import scipy.sparse.linalg as linalg
 
+import scipy.optimize as optimize
+
 
 
 def get_reference(max_ref_dist:int, num_dims:int):
@@ -164,7 +166,6 @@ def get_cell_problem(cond_tabl_5: numpy.ndarray, refs_2: numpy.ndarray, leng_1:n
                 # Get lhs integrand
                 # -----
                 lhs_inte_5[k,:,:,r,m] = cond_tabl_5[k,:,:,r,m] - numpy.diag(numpy.sum(a=cond_tabl_5[k,:,:,r,m], axis=1))
-
                 # Get rhs integrand
                 # -----
                 for a in range(num_dims):
@@ -222,8 +223,9 @@ def get_cell_solution(lhs_3: numpy.ndarray, rhs_4: numpy.ndarray):
         a_2 = lhs_3[k,:,:]
         for m in range(num_dims):
             b_1 = numpy.sum(a=rhs_4[k,:,:,m], axis=1) # sum over j
-            csol_3[k,:,m] = linalg.lsqr(A=a_2,b=b_1)[0]
-
+            #csol_3[k,:,m] = linalg.lsqr(A=a_2,b=b_1)[0]
+            sol = optimize.lsq_linear(A=a_2,b=b_1)
+            csol_3[k,:,m] = sol.x
 
     return csol_3
 
@@ -359,7 +361,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
         The deposition parameter. depo_2[k,m] = the direction directions[m] element of the deposition 
         parameter at concentration max-concentrations[k].
     """ 
-    
+
     # Define params
     # -----
     num_concs = len(cond_tabl_5[:,0,0,0,0])
@@ -385,6 +387,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                     depo_inte_6[k,:,:,r,m,a] = cond_init_4[:,:,r,a]*(-delt_5[k,:,:,r,m])*adhe_tabl_5[k,:,:,r,a]*(numpy.ones_like(heav_5[k,:,:,r,a])-heav_5[k,:,:,r,a])
                     for n in range(num_dims):
                         perm_inte_7[k,:,:,r,m,a,n] = refs_2[r,m]*cond_tabl_5[k,:,:,r,a]*(-delt_5[k,:,:,r,n])
+
     
 
 
@@ -406,7 +409,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
     # -----
     for m in range(num_dims):
         for n in range(num_dims):
-            perm_3[:,m,n] = (leng_1[m]/2*numpy.prod(leng_1))*perm_3[:,m,n]
+            perm_3[:,m,n] = 0.5*(leng_1[m]/numpy.prod(leng_1))*perm_3[:,m,n]
 
     depo_2 = (1/v)*depo_2
 
