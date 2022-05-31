@@ -55,10 +55,10 @@ def main(conc_max_disc_1,
                                                                    leng_1=leng_1,
                                                                    v=v, 
                                                                    cond_init_4=cond_init_4)
-    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
-    #return (perm_3, depo_2)
+    return (perm_3, depo_2)
     
 if __name__ == "__main__":
 
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     # -----
     max_ref_dist = 1
     num_dims     = 2
-    num_concs    = 1001
-    num_nodes    = 1#4
+    num_concs    = 11
+    num_nodes    = 4
 
     alpha        = 1.0
     v            = 1.0#2.0 # Sum of volumes of nodes in cell
@@ -88,16 +88,16 @@ if __name__ == "__main__":
     # Conductance and adhesivity 
     # -----
     num_refs = len(refs_2[:,0])
-    cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_dims)) 
-    adhe_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_dims)) 
+    cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs)) 
+    adhe_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs)) 
 
     # Grid of one node
     # ----------------
-    cond_init_4[0,0,1,0] = 1.0 #1.72461
-    cond_init_4[0,0,-1,0] = 1.0 #1.72461
-
-    cond_init_4[0,0,0,1] = 1.0 #1.72461
-    cond_init_4[0,0,0,-1] = 1.0 #1.72461
+    #cond_init_4[0,0,1,0] = 1.0 #1.72461
+    #cond_init_4[0,0,-1,0] = 1.0 #1.72461
+#
+    #cond_init_4[0,0,0,1] = 1.0 #1.72461
+    #cond_init_4[0,0,0,-1] = 1.0 #1.72461
     
     # Grid of four nodes
     #--------------------
@@ -116,33 +116,32 @@ if __name__ == "__main__":
     #           0         1
 
     # Internal edges
-    #cond_init_4[0,1,0,0] = 0.8 #1.0
-    #cond_init_4[1,0,0,0] = 0.8 #1.0
-    #
-    #cond_init_4[1,3,0,1] = 0.2 #1.0
-    #cond_init_4[3,1,0,1] = 0.2 #1.0
-    #
-    #cond_init_4[2,3,0,0] = 0.4 #1.0
-    #cond_init_4[3,2,0,0] = 0.4 #1.0
-    #
-    #cond_init_4[0,2,0,1] = 0.6 #1.0
-    #cond_init_4[2,0,0,1] = 0.6 #1.0
-    #
+    cond_init_4[0,1,0,0] = 0.8 #1.0
+    cond_init_4[1,0,0,0] = 0.8 #1.0
+    
+    cond_init_4[1,3,0,0] = 0.2 #1.0
+    cond_init_4[3,1,0,0] = 0.2 #1.0
+    
+    cond_init_4[2,3,0,0] = 0.4 #1.0
+    cond_init_4[3,2,0,0] = 0.4 #1.0
+    
+    cond_init_4[0,2,0,0] = 0.6 #1.0
+    cond_init_4[2,0,0,0] = 0.6 #1.0
+    
     ## External edges
-    #cond_init_4[1,0,1,0] = 1.0 #1.0
-    #cond_init_4[0,1,-1,0] = 1.0 #1.0
+    cond_init_4[1,0,1,0] = 1.0 #1.0
+    cond_init_4[0,1,-1,0] = 1.0 #1.0
+    
+    cond_init_4[3,2,1,0] = 1.0 #1.0
+    cond_init_4[2,3,-1,0] = 1.0 #1.0
     #
-    #cond_init_4[3,2,1,0] = 1.0 #1.0
-    #cond_init_4[2,3,-1,0] = 1.0 #1.0
+    #cond_init_4[0,2,0,1]  = 1.0
+    #cond_init_4[2,0,0,-1] = 1.0
+    #
+    #cond_init_4[1,3,0,1] = 1.0
+    #cond_init_4[3,1,0,-1] = 1.0
 
-    #cond_init_4[0,2,1,1]  = 1.0
-    #cond_init_4[2,0,-1,1] = 1.0
-
-    #cond_init_4[1,3,1,1] = 1.0
-    #cond_init_4[3,1,-1,1] = 1.0
-
-    #perm_prep_3, depo_prep_2 = 
-    main(conc_max_disc_1=conc_max_disc_1,
+    perm_prep_3, depo_prep_2 = main(conc_max_disc_1=conc_max_disc_1,
                                     cond_init_4=cond_init_4,
                                     adhe_init_4=adhe_init_4,
                                     alpha=alpha,
@@ -158,6 +157,6 @@ if __name__ == "__main__":
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
-    #numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),     arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
-    #numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),     arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
-    #numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),     arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),     arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)

@@ -73,7 +73,7 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
                                                                  cond_init_3=cond_init_3, 
                                                                  v=v)
     #print("perm_prep_1[:]: \n{}".format(perm_prep_1[:]))
-    #print("depo_prep_1[:]: \n{}".format(depo_prep_1[:]))
+    print("depo_prep_1[:]: \n{}".format(depo_prep_1[:]))
     return (perm_prep_1,depo_prep_1)
 
 
@@ -88,11 +88,11 @@ if __name__ == "__main__":
     #print("refs_1: \n {}".format(refs_1))
     
     num_refs  = len(refs_1)
-    num_concs = 1001
+    num_concs = 11
     num_nodes = 4
     length    = 1.0
     alpha     = 1.0
-    v         = 2.0 # Sum of volumes of nodes in cell
+    v         = 1.0 #2.0 # Sum of volumes of nodes in cell
     phi       = 0.5 # TODO: Define this properly
     
     # Concentrations to tabulate 
