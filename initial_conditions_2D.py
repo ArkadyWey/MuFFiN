@@ -96,13 +96,15 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
     
     if num_nodes == 1:
 
+        edge_hori = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
+        edge_vert = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
         # Grid of one node
         # ----------------
-        cond_init_4[0,0,+1,0] = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
-        cond_init_4[0,0,-1,0] = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
+        cond_init_4[0,0,+1,0] = edge_hori
+        cond_init_4[0,0,-1,0] = edge_hori
 
-        cond_init_4[0,0,0,+1] = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
-        cond_init_4[0,0,0,-1] = numpy.random.lognormal(mean=mean, sigma=sd, size=None)
+        cond_init_4[0,0,0,+1] = edge_vert
+        cond_init_4[0,0,0,-1] = edge_vert
     
     elif num_nodes == 4: 
         pass
