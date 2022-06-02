@@ -1,17 +1,21 @@
 import numpy
 import os
+import datetime
 
+import configure
 import preprocess_2D
 
-def main(conc_max_disc_1,
-         cond_init_4,
-         adhe_init_4,
-         alpha,
-         refs_2,
-         leng_1,
-         v):
+
+
+def main(configure: configure):
     """
     """
+
+    # Get parameters needed to find perm and depo
+    # -----
+    conc_max_disc_1, cond_init_4, adhe_init_4, alpha, refs_2, leng_1, v = configure.main(configure.Parameters())
+
+
     cond_tabl_5, adhe_tabl_5 = preprocess_2D.get_conductance_and_adhesivity(conc_max_disc_1=conc_max_disc_1, 
                                                                             cond_init_4=cond_init_4, 
                                                                             adhe_init_4=adhe_init_4, 
@@ -56,100 +60,21 @@ def main(conc_max_disc_1,
                                                                    v=v, 
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
-    return (perm_3, depo_2)
+    return (perm_3, depo_2, conc_max_disc_1)
     
 if __name__ == "__main__":
 
-    # Parameters 
+
+    begin_time = datetime.datetime.now()
+
+    # Get permeability and deposition parameter
     # -----
-    max_ref_dist = 1
-    num_dims     = 2
-    num_concs    = 11
-    num_nodes    = 4
+    perm_prep_3, depo_prep_2, conc_max_disc_1 = main(configure=configure)
 
-    alpha        = 1.0
-    v            = 1.0#2.0 # Sum of volumes of nodes in cell
-    #phi          = 0.5 # TODO: Define this properly
-    l1           = 1.0
-    l2           = 1.0
-    
-    leng_1     = numpy.array([l1,l2])
-    conc_max_disc_1 = numpy.linspace(0,1,num_concs)
-
-
-    # Cell references
-    # -----
-    refs_2 = preprocess_2D.get_reference(max_ref_dist=max_ref_dist,
-                                         num_dims=num_dims)
-
-
-    # Conductance and adhesivity 
-    # -----
-    num_refs = len(refs_2[:,0])
-    cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs)) 
-    adhe_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs)) 
-
-    # Grid of one node
-    # ----------------
-    #cond_init_4[0,0,1,0] = 1.0 #1.72461
-    #cond_init_4[0,0,-1,0] = 1.0 #1.72461
-#
-    #cond_init_4[0,0,0,1] = 1.0 #1.72461
-    #cond_init_4[0,0,0,-1] = 1.0 #1.72461
-    
-    # Grid of four nodes
-    #--------------------
-    #           2         3 
-    #           |         |
-    #         (1.0)     (1.0)
-    #           |         |
-    # 1--(1.0)--0--(0.8)--1--(1.0)--0
-    #           |         |
-    #         (0.6)     (0.2)
-    #           |         |
-    # 3--(1.0)--2--(0.4)--3--(1.0)--2
-    #           |         |
-    #         (1.0)     (1.0)
-    #           |         |
-    #           0         1
-
-    # Internal edges
-    cond_init_4[0,1,0,0] = 0.8 #1.0
-    cond_init_4[1,0,0,0] = 0.8 #1.0
-    
-    cond_init_4[1,3,0,0] = 0.2 #1.0
-    cond_init_4[3,1,0,0] = 0.2 #1.0
-    
-    cond_init_4[2,3,0,0] = 0.4 #1.0
-    cond_init_4[3,2,0,0] = 0.4 #1.0
-    
-    cond_init_4[0,2,0,0] = 0.6 #1.0
-    cond_init_4[2,0,0,0] = 0.6 #1.0
-    
-    ## External edges
-    cond_init_4[1,0,1,0] = 1.0 #1.0
-    cond_init_4[0,1,-1,0] = 1.0 #1.0
-    
-    cond_init_4[3,2,1,0] = 1.0 #1.0
-    cond_init_4[2,3,-1,0] = 1.0 #1.0
-    #
-    #cond_init_4[0,2,0,1]  = 1.0
-    #cond_init_4[2,0,0,-1] = 1.0
-    #
-    #cond_init_4[1,3,0,1] = 1.0
-    #cond_init_4[3,1,0,-1] = 1.0
-
-    perm_prep_3, depo_prep_2 = main(conc_max_disc_1=conc_max_disc_1,
-                                    cond_init_4=cond_init_4,
-                                    adhe_init_4=adhe_init_4,
-                                    alpha=alpha,
-                                    refs_2=refs_2,
-                                    leng_1=leng_1,
-                                    v=v)
-
-
+    end_time = datetime.datetime.now()
+    print("sim_time:\n {}".format(end_time-begin_time))
 
     # Save results 
     # -----
