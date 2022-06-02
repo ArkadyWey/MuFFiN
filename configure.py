@@ -1,76 +1,66 @@
 from inspect import Parameter
 import numpy
+import json
 
 import preprocess_2D
 import initial_conditions_2D
 
 
-class Parameters():
+class Configure():
     """
     """ 
-    def __init__(self):
+    def __init__(self, num_nodes: int):
         """
         """      
-        self.max_ref_dist = 1
-        self.num_dims     = 2
-        self.num_concs    = 11
-        self.num_nodes    = 1
 
-        self.alpha        = 1.0
-        self.v            = 1.0#2.0 # Sum of volumes of nodes in cell
-        #self.phi          = 0.5 # TODO: Define this properly
-
-        self.l1           = 1.0
-        self.l2           = 1.0
-
-        self.mean = 0.5 
-        self.sd = 0.3
-
-
-
-
-
-def main(Parameters):
-
-    # Parameters 
-    # -----
-    max_ref_dist = Parameters.max_ref_dist
-    num_dims     = Parameters.num_dims
-    num_concs    = Parameters.num_concs
-    num_nodes    = Parameters.num_nodes
-    alpha        = Parameters.alpha
-    v            = Parameters.v
-    #phi         = Parameters.phi 
-    l1           = Parameters.l1
-    l2           = Parameters.l2
-    mean         = Parameters.mean 
-    sd           = Parameters.sd
+        # Get class parameters 
+        # -----
+        self.num_nodes    = num_nodes
+        
+        
+        # Get input parameters from parameters dictionary or class parameters
+        # -----
+        file = open("parameters.json", "r")
+        parameters = json.load(file)
+        
+        self.max_ref_dist = parameters["max_ref_dist"]
+        self.num_dims     = parameters["num_dims"]
+        self.num_concs    = parameters["num_concs"]
+        self.alpha        = parameters["alpha"]
+        self.v            = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
+        self.phi          = parameters["phi"]  # TODO: Define this properly
+        self.l1           = parameters["l1"]
+        self.l2           = parameters["l2"]
+        self.mean         = parameters["mean"] 
+        self.sd           = parameters["sd"]
 
 
-    # Secondary configure 
-    # -----
-    leng_1          = numpy.array([l1,l2])
-    conc_max_disc_1 = numpy.linspace(0,1,num_concs)
-    refs_2 = preprocess_2D.get_reference(max_ref_dist=max_ref_dist,
-                                         num_dims=num_dims)
+        # Do secondary configuration 
+        # -----
+        self.leng_1          = numpy.array([self.l1, self.l2])
+        self.conc_max_disc_1 = numpy.linspace(0, 1, self.num_concs)
+        self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
+                                                           num_dims=self.num_dims)
 
 
 
-    # Initial conditions: conductance and adhesivity 
-    # -----
-    num_refs = len(refs_2[:,0])
+        # Get initial conditions: conductance and adhesivity 
+        # -----
+        self.num_refs = len(self.refs_2[:,0])
 
-    adhe_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs)) 
+        self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
 
-    #cond_init_4 = initial_conditions_2D.grid_prescribed(num_nodes=num_nodes, num_refs=num_refs)
-    cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=num_nodes, 
-                                                        num_refs=num_refs, 
-                                                        mean=mean,
-                                                        sd=sd)
+        self.cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
+                                                                 num_refs=self.num_refs, 
+                                                                 mean=self.mean,
+                                                                 sd=self.sd)
 
 
-    return (conc_max_disc_1, cond_init_4, adhe_init_4, alpha, refs_2, leng_1, v)
+    
 
 if __name__ == "__main__":
 
-    conc_max_disc_1, cond_init_4, adhe_init_4, alpha, refs_2, leng_1, v = main(Parameters=Parameters())
+    num_nodes = 1
+
+
+    conf = Configure(num_nodes=num_nodes)
