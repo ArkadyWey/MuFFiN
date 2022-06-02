@@ -1,8 +1,11 @@
 import numpy
 import os
+import datetime
 
 import run_preprocess_2D
 import configure
+
+begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
@@ -30,7 +33,8 @@ for t in range(num_tests):
 
         perm_effe_2[t,r] = perm_effe
 
-
+end_time = datetime.datetime.now()
+print("sim_time:\n {}".format(end_time-begin_time))
 
 # Save results 
 # -----
