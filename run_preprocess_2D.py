@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 1
+    num_nodes = 4
     
     # Get permeability and deposition parameter
     # -----
