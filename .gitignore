@@ -3,3 +3,4 @@ __pycache__
 .pytest_cache
 /results*
 password.txt
+scrap2.py
