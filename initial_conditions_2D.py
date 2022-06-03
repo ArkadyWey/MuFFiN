@@ -1,5 +1,5 @@
 import numpy
-
+import networkx
 
 def grid_prescribed(num_nodes: int, num_refs: int):
     """
@@ -93,57 +93,66 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
     cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs))
     num_unique_edges = int(2*num_nodes)
     samples = numpy.random.lognormal(mean=mean, sigma=sd, size=num_unique_edges)
+    num_nodes_row = int(numpy.sqrt(num_nodes))
 
-    if num_nodes == 1:     
-               
-        # External edges
-        # ------
-        cond_init_4[0,0,+1,0] = samples[0]
-        cond_init_4[0,0,-1,0] = samples[0]
-
-        cond_init_4[0,0,0,+1] = samples[1]
-        cond_init_4[0,0,0,-1] = samples[1]
-
-        
-    
-
-    elif num_nodes == 4: 
-        
-        # External edges
-        # ------
-        
-        # Horizontal 
-        cond_init_4[0,1,-1,0] = samples[0]
-        cond_init_4[1,0,+1,0] = samples[0]
-        
-        cond_init_4[2,3,-1,0] = samples[1]
-        cond_init_4[3,2,+1,0] = samples[1]
-
-        # Vertical
-        cond_init_4[0,2,0,+1] = samples[2]
-        cond_init_4[2,0,0,-1] = samples[2]
-        
-        cond_init_4[1,3,0,+1] = samples[3]
-        cond_init_4[3,1,0,-1] = samples[3]
+    # Internal edges
+    # ------
+    # Make grid graph for internal edges
+    G = networkx.grid_graph(dim=[num_nodes_row,num_nodes_row],periodic=False)
 
 
-        # Internal edges
-        # ------
+    # Add random sample to graph edges as weight
+    # -----
+    num_internal_edges = 2*num_nodes_row*(num_nodes_row-1)
+    samples_internal = samples[0:num_internal_edges]
+    k = 0
+    for i,j in G.edges():
+        G[i][j]['weight'] = samples_internal[k]
+        k=k+1
 
-        # Horizontal
-        cond_init_4[0,1,0,0] = samples[4]
-        cond_init_4[1,0,0,0] = samples[4]
 
-        cond_init_4[2,3,0,0] = samples[5]
-        cond_init_4[3,2,0,0] = samples[5]
+    # Get the adjacency matrix of internal graph
+    # ------
+    A = networkx.adjacency_matrix(G)
 
-        # Vertical 
-        cond_init_4[0,2,0,0] = samples[6]
-        cond_init_4[2,0,0,0] = samples[6]
 
-        cond_init_4[1,3,0,0] = samples[7]
-        cond_init_4[3,1,0,0] = samples[7]
-        
-        print(cond_init_4[:,:,0,0])
+    # Send adjacency matrix of internal graph to conductance tensor
+    # -----
+    cond_init_4[:,:,0,0] = A.toarray()
+
+
+    # External edges
+    # --------------
+    # Define node indexes
+    # -----
+    nodes = numpy.linspace(0,num_nodes_row**2-1,num_nodes_row**2)
+
+    # Get nodes on outside of internal graph
+    # ------
+    left_nodes = nodes[0::num_nodes_row]
+    right_nodes = nodes[num_nodes_row-1::num_nodes_row]
+    top_nodes = nodes[0:num_nodes_row]
+    bottom_nodes = nodes[num_nodes-num_nodes_row::]
+
+    # Get external horizontal and vertical edge samples from main set of samples
+    # ------
+    samples_external_hori = samples[2*num_nodes_row*(num_nodes_row-1):2*num_nodes_row*(num_nodes_row-1)+num_nodes_row]
+    samples_external_vert = samples[2*num_nodes_row*(num_nodes_row-1)+num_nodes_row::]
+
+    # Fill external edges with samples
+    # -----
+    for i in range(num_nodes_row):
+        # Get index of node
+        left_node =   int(left_nodes[i])
+        right_node =  int(right_nodes[i])
+        top_node =    int(top_nodes[i])
+        bottom_node = int(bottom_nodes[i])
+
+        # Fill horizotal and vertical edges    
+        cond_init_4[left_node,right_node,-1,0] = samples_external_hori[i]
+        cond_init_4[right_node,left_node,+1,0] = samples_external_hori[i]
+        cond_init_4[bottom_node,top_node,0,-1] = samples_external_vert[i]
+        cond_init_4[top_node,bottom_node,0,+1] = samples_external_vert[i]
+
 
     return cond_init_4
