@@ -155,4 +155,7 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
         cond_init_4[top_node,bottom_node,0,+1] = samples_external_vert[i]
 
 
+        # Divide all conductances by sqrt(N) to make fair test
+        cond_init_4 = cond_init_4/numpy.sqrt(num_nodes)
+
     return cond_init_4
