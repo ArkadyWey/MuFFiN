@@ -3,18 +3,17 @@ import os
 import datetime
 
 import run_preprocess_2D
-import configure
 
 
 begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-num_reps = 100 # number of times to repeat a test
+num_reps = 20_000 # number of times to repeat a test
 
-num_nodes_list = [1] # List of num nodes in cells to get distribution for
+num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 
-num_tests = len(num_nodes_list) # Nuber of different cell sizes to test
+num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
 
 
@@ -48,7 +47,7 @@ path_results = os.path.join(".","results_experiment_permdist")
 if not os.path.exists(path_results):
     os.mkdir(path_results)
     
-numpy.save(file=os.path.join(path_results,"perm_effe_2_test.npy"), arr=perm_effe_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_results,"perm_effe_2.npy"), arr=perm_effe_2, allow_pickle=True, fix_imports=True)
 
 
 
