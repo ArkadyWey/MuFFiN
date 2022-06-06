@@ -34,7 +34,7 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
 path_results = os.path.join(".","results_experiment_permdist")
 
 
-num_nodes_list = [1,4,9,16,25,36]
+num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
 num_tests = len(num_nodes_list)
 
 
@@ -99,6 +99,7 @@ for t in range(num_tests):
 ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean-$k^{00}_{N=1}$")
 ax.plot(numpy.linspace(1,100,500), 0.498*numpy.power(numpy.linspace(1,100,500),-0.5), color="tab:orange")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev.")
+ax.plot(numpy.linspace(1,100,500), (mean_1[-1]-mean_1[0])*numpy.ones_like(numpy.linspace(1,100,500)), color="tab:blue", ls="--")
 #ax.plot(numpy.linspace(0,100,1000), 0.1*numpy.power(numpy.linspace(0,100,1000),-0.5)-0.1, color="tab:blue")
 #ax.plot(numpy.linspace(0,100,500), 0.498*numpy.power(numpy.linspace(0,100,500),-0.5), color="tab:blue")
 
