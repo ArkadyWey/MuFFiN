@@ -1,4 +1,5 @@
 
+import numpy
 from scipy.spatial import Delaunay
 import numpy as np
 from matplotlib import pyplot as plt
@@ -11,6 +12,8 @@ num_refs = 3
 
 
 cond_init_4 = np.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs))
+
+
 
 # Get positions of all points 
 # ----------------------------
@@ -52,6 +55,15 @@ for r in range(num_refs):
         pts_4[:,:,r,s] = pts_2[:,:]
 
 
+
+
+
+
+
+
+# Triangulation
+# --------------
+
 # Transform points into correct format for triangulation
 # ----------------------------------------------------
 points  = []
@@ -77,17 +89,20 @@ tri = Delaunay(points=points)
 
 
 
-# Get graph 
-# --------
+
+
+
+# Get adjacency matrix of all nine cells
+# --------------------------------------
 simplices = tri.simplices
+# NB: Simplices are sets of three points 
+# thta make triangles.
 
-print(simplices[0:2])
 
-
-# Get point indexed adjacency matrix
-# ----------------------------------
-
-# 1. Get cycle from simplex
+# 1. Get closed cycle from simplex
+# NB This is set of four points 
+# to close the triangle. 
+# Makes getting edges easily.
 loops = []
 
 for simplex in simplices: 
@@ -95,7 +110,8 @@ for simplex in simplices:
     path.append(path[0])
     loops.append(path)
 
-print(loops[0:2])
+
+
 
 # 2. Get list of all edge tuples
 edges = []
@@ -116,7 +132,7 @@ for loop in loops:
     edges.append(edge_1_reversed)
     edges.append(edge_2_reversed)
 
-print(edges[0:4])
+
 
 # 3. Get adj from list of edges 
 num_pts = num_nodes*9
@@ -128,71 +144,31 @@ for edge in edges:
 
     A[pi,pj] = 1
 
-#print(A[0:4,32:36])
 
-
-
-##### Simplices are unclosed paths that make up triangles. 
-##### I.e. They are sets of three points.
-####
-##### Make path graph that for some reason has wrong adj
-##### but right edges
-####S = nx.Graph()
-####for path in simplices:
-####    # Close path to make triangle in networkx sense, 
-####    # by adding first point of path as last point.
-####    path = list(path)
-####    path.append(path[0])
-####    
-####    # Add this closed path (aka triangle) to graph
-####    nx.add_path(S, path)
-####
-####
-##### Get correct edges from S
-####nodes = range(num_nodes)
-####edges = S.edges
-####
-##### Make graph G.
-##### G is triangulated grpah over nodes indexed by points over 
-##### 9 cells.
-####G = nx.Graph()
-####G.add_nodes_from(nodes)
-####G.add_edges_from(edges)
-####
-##### Get adjacency matrix of G 
-##### This is indexed by points
-####A = nx.adjacency_matrix(G).toarray()
-####
-#####print(A)
-
-
-# Now put actual weights into this adjacency matrix 
+# Put actual weights into this adjacency matrix 
 # -----------------------------------
 
+# Get weights between points
+dist_2 = np.zeros_like(A)
+weig_2 = np.zeros_like(A)
+# weigh_2[pi,pj] = weight between point pi and pj
+for i in range(num_pts):
+    pi = np.array(points[i,:]) 
+    for j in range(num_pts):
+        pj = np.array(points[j,:])
 
-# Now get the cond from this adjacency matrix
+        dist_2[i,j] = np.linalg.norm(pi-pj)
+        weig_2[i,j] = (1/1.72461)*(1/np.sqrt(num_nodes))*dist_2[i,j]
+
+
+
+# Get weighted adjacency matrix
+A = A*weig_2
+        
+
+
+# Get the cond from this adjacency matrix
 # --------------------------------
-#for i in range(num_nodes):
-#    for j in range(num_nodes):
-#        for r in range(num_refs): 
-#            for s in range(num_refs):
-#                
-#                # Get point indices corresponding to (i,r,s) and (j,r,s)
-#                for p in range(len(key)):
-#
-#                    if np.array_equal(a1=key[p], a2=np.array([i,r,s])):
-#                        pi = p
-#                    else: 
-#                        pass
-#
-#                    if np.array_equal(a1=key[p], a2=np.array([j,r,s])):
-#                        pj = p
-#                    else: 
-#                        pass
-#
-#                # Fill corresponding element of conductance        
-#                cond_init_4[i,j,r,s] = A[pi,pj]
-
 for i in range(num_nodes):
     for j in range(num_nodes):
         for r in range(num_refs):
@@ -201,14 +177,17 @@ for i in range(num_nodes):
                 # Get p corresponding to j,r,s
                 for p in range(num_pts):
                     if np.array_equal(a1=key[p], a2=np.array([j,r,s])):
-                        
+
                         # Fill edge (i,j,r,s) where i is in reference cell
                         cond_init_4[i,j,r,s] = A[i,p]
 
+
+# Check that cond components are equal to adj components
+# ------------------------------------------
 a = cond_init_4[:,:,2,2]
 b = A[0:4,32:36]
 
-print(a-b)
+#print(a-b)
 #
 #
 ##
@@ -217,7 +196,7 @@ print(a-b)
 ##plt.show()
 #
 #
-## Plot the graph arising from Delauney triangulation.
+# Plot the graph arising from Delauney triangulation.
 #plt.triplot(points[:,0], points[:,1], tri.simplices)
 ##
 #plt.plot(points[:,0], points[:,1], 'o')
