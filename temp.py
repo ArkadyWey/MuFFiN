@@ -24,8 +24,8 @@ pts_x_1 = pts_x_0 + 1.0*np.ones_like(pts_x_0)
 pts_y_1 = pts_y_0 + 1.0*np.ones_like(pts_y_0)
 
 # Left or down components
-pts_x_m1 = -1.0*pts_x_0
-pts_y_m1 = -1.0*pts_y_0
+pts_x_m1 = -1.0*np.array([el for el in reversed(list(pts_x_0))])
+pts_y_m1 = -1.0*np.array([el for el in reversed(list(pts_y_0))])
 
 # Fill the positions tensor
 pts_4 = np.zeros(shape = (num_nodes, num_dims, num_refs, num_refs) )
@@ -75,53 +75,95 @@ points = np.array(points)
 # ------------------------------
 tri = Delaunay(points=points)
 
-#print(tri.simplices)
-
-plt.triplot(points[:,0], points[:,1], tri.simplices)
-#
-plt.plot(points[:,0], points[:,1], 'o')
-
-for p in range(len(points[:,0])):
-    plt.annotate("num", (points[p,0], points[p,1]))
-
-plt.show()
 
 
 # Get graph 
 # --------
 simplices = tri.simplices
-# Simplices are unclosed paths that make up triangles. 
-# I.e. They are sets of three points.
 
-# Make path graph that for some reason has wrong adj
-# but right edges
-S = nx.Graph()
-for path in simplices:
-    # Close path to make triangle in networkx sense, 
-    # by adding first point of path as last point.
-    path = list(path)
+print(simplices[0:2])
+
+
+# Get point indexed adjacency matrix
+# ----------------------------------
+
+# 1. Get cycle from simplex
+loops = []
+
+for simplex in simplices: 
+    path = list(simplex)
     path.append(path[0])
-    
-    # Add this closed path (aka triangle) to graph
-    nx.add_path(S, path)
+    loops.append(path)
+
+print(loops[0:2])
+
+# 2. Get list of all edge tuples
+edges = []
+
+for loop in loops:
+    # Add the two edges contained in the triangular loop
+    # NB there are always  two becuase it's a triangle
+    edge_1 = [loop[0],loop[1]]
+    edge_2 = [loop[2], loop[3]]
+
+    edges.append(edge_1)
+    edges.append(edge_2)
+
+    # Add the corresponding edges since we'll need a symmetric adj matrix
+    edge_1_reversed = [loop[1],loop[0]]
+    edge_2_reversed = [loop[3], loop[2]]
+
+    edges.append(edge_1_reversed)
+    edges.append(edge_2_reversed)
+
+print(edges[0:4])
+
+# 3. Get adj from list of edges 
+num_pts = num_nodes*9
+A = np.zeros(shape=(num_pts,num_pts))   
+
+for edge in edges:
+    pi = edge[0]
+    pj = edge[1]
+
+    A[pi,pj] = 1
+
+#print(A[0:4,32:36])
 
 
-# Get correct edges from S
-nodes = range(num_nodes)
-edges = S.edges
 
-# Make graph G.
-# G is triangulated grpah over nodes indexed by points over 
-# 9 cells.
-G = nx.Graph()
-G.add_nodes_from(nodes)
-G.add_edges_from(edges)
-
-# Get adjacency matrix of G 
-# This is indexed by points
-A = nx.adjacency_matrix(G).toarray()
-
-print(A)
+##### Simplices are unclosed paths that make up triangles. 
+##### I.e. They are sets of three points.
+####
+##### Make path graph that for some reason has wrong adj
+##### but right edges
+####S = nx.Graph()
+####for path in simplices:
+####    # Close path to make triangle in networkx sense, 
+####    # by adding first point of path as last point.
+####    path = list(path)
+####    path.append(path[0])
+####    
+####    # Add this closed path (aka triangle) to graph
+####    nx.add_path(S, path)
+####
+####
+##### Get correct edges from S
+####nodes = range(num_nodes)
+####edges = S.edges
+####
+##### Make graph G.
+##### G is triangulated grpah over nodes indexed by points over 
+##### 9 cells.
+####G = nx.Graph()
+####G.add_nodes_from(nodes)
+####G.add_edges_from(edges)
+####
+##### Get adjacency matrix of G 
+##### This is indexed by points
+####A = nx.adjacency_matrix(G).toarray()
+####
+#####print(A)
 
 
 # Now put actual weights into this adjacency matrix 
@@ -130,48 +172,66 @@ print(A)
 
 # Now get the cond from this adjacency matrix
 # --------------------------------
+#for i in range(num_nodes):
+#    for j in range(num_nodes):
+#        for r in range(num_refs): 
+#            for s in range(num_refs):
+#                
+#                # Get point indices corresponding to (i,r,s) and (j,r,s)
+#                for p in range(len(key)):
+#
+#                    if np.array_equal(a1=key[p], a2=np.array([i,r,s])):
+#                        pi = p
+#                    else: 
+#                        pass
+#
+#                    if np.array_equal(a1=key[p], a2=np.array([j,r,s])):
+#                        pj = p
+#                    else: 
+#                        pass
+#
+#                # Fill corresponding element of conductance        
+#                cond_init_4[i,j,r,s] = A[pi,pj]
+
 for i in range(num_nodes):
     for j in range(num_nodes):
-        for r in range(num_refs): 
+        for r in range(num_refs):
             for s in range(num_refs):
                 
-                # Get point indices corresponding to (i,r,s) and (j,r,s)
-                for p in range(len(key)):
-
-                    if np.array_equal(a1=key[p], a2=np.array([i,r,s])):
-                        pi = p
-                    else: 
-                        pass
-
+                # Get p corresponding to j,r,s
+                for p in range(num_pts):
                     if np.array_equal(a1=key[p], a2=np.array([j,r,s])):
-                        pj = p
-                    else: 
-                        pass
+                        
+                        # Fill edge (i,j,r,s) where i is in reference cell
+                        cond_init_4[i,j,r,s] = A[i,p]
 
-                # Fill corresponding element of conductance        
-                cond_init_4[i,j,r,s] = A[pi,pj]
+a = cond_init_4[:,:,2,2]
+b = A[0:4,32:36]
 
-
-
+print(a-b)
 #
-#nx.draw(G, with_labels=True, node_size=500, node_color='lightgreen')
+#
+##
+##nx.draw(G, with_labels=True, node_size=500, node_color='lightgreen')
+##
+##plt.show()
+#
+#
+## Plot the graph arising from Delauney triangulation.
+#plt.triplot(points[:,0], points[:,1], tri.simplices)
+##
+#plt.plot(points[:,0], points[:,1], 'o')
+#
+#for p in range(len(points[:,0])):
+#    array = key[p]
+#    i = array[0]
+#    r = array[1]
+#    s = array[2]
+#
+#    plt.annotate(r"{}".format(i), (points[p,0], points[p,1]))
 #
 #plt.show()
-
-
-# Plot the graph arising from Delauney triangulation.
-plt.triplot(points[:,0], points[:,1], tri.simplices)
-#
-plt.plot(points[:,0], points[:,1], 'o')
-
-for p in range(len(points[:,0])):
-    array = key[p]
-    i = array[0]
-    r = array[1]
-    s = array[2]
-
-    plt.annotate(r"{}".format(i), (points[p,0], points[p,1]))
-
-plt.show()
-
-# Check that this graph agrees with cond tensor
+##
+### Check that this graph agrees with cond tensor
+### allocate the points lists to the points that are still there, and 
+### then use these as coordinates in G and plot G using networkx
