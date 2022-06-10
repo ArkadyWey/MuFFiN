@@ -75,13 +75,14 @@ simplices = tri.simplices
 
 
 # Get edges given by triangulation
+# --------------------------------
 loops = []
 for simplex in simplices: 
     path = list(simplex)
     path.append(path[0])
     loops.append(path)
 
-# 2. Get list of all edge tuples
+
 edges = []
 for loop in loops:
     # Add the three edges contained in the triangular loop
@@ -131,61 +132,23 @@ for edge in edges:
     [i_j, r_j, s_j] = n_j
 
     # Keep edge if involves unit cell
-    #if (r_i == 0 and s_i == 0) or (r_j == 0 and s_j == 0):
-    #    # Add these edges to set of useful ones
-    #    useful_edges.append(edge)
-    #    print(len(useful_edges))
     # Either first or second node is in unit cell or they both are
     if (r_i == 0 and s_i == 0):
         # i is in unit cell
-        #print("r_i,s_i,r_j,s_j: {},{},{},{}".format(r_i,s_i,r_j,s_j))
-        print(n_i)
-        print(n_j)
         cond_init_4[i_i,i_j,r_j,s_j] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])    #1.0
         cond_init_4[i_j,i_i,-r_j,-s_j] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) #1.0
     elif (r_j == 0 and s_j == 0):
         # j is in unit cell
-        #print("r_i,s_i,r_j,s_j: {},{},{},{}".format(r_i,s_i,r_j,s_j))
-        print(n_i)
-        print(n_j)
         cond_init_4[i_j,i_i,r_i,s_i] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
         cond_init_4[i_i,i_j,-r_i,-s_i] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-    #elif r_i == 0 and s_i == 0 and r_j == 0 and s_j == 0:
-    #    # j is in unit cell
-    #    cond_init_4[i_j,i_i,r_i,s_i] = 1.0
     else: 
-        # This set shouldn't be here since neither node is in unit cell
+        # neither i or j in unit cell so this edge is not in conductance
         pass
-        #raise Exception
-
-
-## Reflect conductance tensor to fill
-#for i in range(num_nodes):
-#    for j in range(num_nodes):
-#        for r in range(2):
-#            for s in range(2):
-#                cond_init_4[j,i,-r,-s]=cond_init_4[i,j,r,s] 
-
-
-
-
-print(len(useful_edges))
-
-print(sum(sum(sum(sum(cond_init_4)))))
-
-print(cond_init_4[:,:,0,0])
-
-print(cond_init_4[:,:,0,1])
-
-print(cond_init_4[:,:,1,0])
-
-
-
 
 
 
 # Plot original triangulation in top quartile
-
+# ------------------------------------------
 fig, ax = plt.subplots(1,1)
 ax.triplot(pts_to_tri_2[:,0], pts_to_tri_2[:,1], simplices)
 
@@ -215,6 +178,7 @@ plt.savefig(fname="edges_all", format="svg")
 
 
 # Plot initial conductance
+# ----------------------------
 fig, ax = plt.subplots(1,1)
 
 for r in range(num_refs):
