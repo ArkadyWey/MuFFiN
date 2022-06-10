@@ -93,13 +93,6 @@ for loop in loops:
     edges.append(edge_1)
     edges.append(edge_2)
     edges.append(edge_3)
-    ## Add the corresponding edges reversed since we'll need a symmetric adj matrix
-    #edge_1_reversed = [loop[1],loop[0]]
-    #edge_2_reversed = [loop[3], loop[2]]
-#
-    #edges.append(edge_1_reversed)
-    #edges.append(edge_2_reversed)
-
 
 
 # Get distances between points
