@@ -1,5 +1,5 @@
 
-import numpy as np
+import numpy as numpy
 from scipy import spatial
 from  matplotlib import pyplot as plt
 from matplotlib.lines import Line2D  
@@ -9,19 +9,22 @@ num_refs  = 3
 num_dims  = 2
 
 # Get unit cell points
-pts_x_0 = np.random.uniform(low=0.0, high=1.0, size=num_nodes) #np.array([0.5])#
-pts_y_0 = np.random.uniform(low=0.0, high=1.0, size=num_nodes) #np.array([0.5])#
+pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5])#
+pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5])#
 
 # Right or up components
-pts_x_1 = 1.0*np.ones_like(pts_x_0) + pts_x_0 
-pts_y_1 = 1.0*np.ones_like(pts_y_0) + pts_y_0
+pts_x_1 = 1.0*numpy.ones_like(pts_x_0) + pts_x_0 
+pts_y_1 = 1.0*numpy.ones_like(pts_y_0) + pts_y_0
 
 ## Left or down components
-pts_x_m1 = -1.0*np.ones_like(pts_x_0) + pts_x_0
-pts_y_m1 = -1.0*np.ones_like(pts_y_0) + pts_y_0
+pts_x_m1 = -1.0*numpy.ones_like(pts_x_0) + pts_x_0
+pts_y_m1 = -1.0*numpy.ones_like(pts_y_0) + pts_y_0
 
 
-pts_4 = np.zeros(shape=(num_nodes,num_dims,num_refs,num_refs))
+
+# Get points tensor 
+# ------------------
+pts_4 = numpy.zeros(shape=(num_nodes,num_dims,num_refs,num_refs))
 # pts_4[i,m,r,s] is the x^m component of node i in cell at reference r,s
 
 for r in range(num_refs):
@@ -48,9 +51,8 @@ for r in range(num_refs):
 
 
 
-
-
 # Triangulate unit cell with upper quartile
+# -----------------------------------------
 # The rest will be made via reflection
 pts_to_tri_2 = []
 key = []
@@ -65,7 +67,7 @@ for r in range(2):
             pts_to_tri_2.append([i_x,i_y]) 
             key.append([i,r,s])
             
-pts_to_tri_2 = np.array(pts_to_tri_2)
+pts_to_tri_2 = numpy.array(pts_to_tri_2)
 
 tri = spatial.Delaunay(points=pts_to_tri_2)
 simplices = tri.simplices
@@ -100,7 +102,27 @@ for loop in loops:
 
 
 
-cond_init_4 = np.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
+# Get distances between points
+# ----------------------------
+dist_6 = numpy.zeros(shape=(num_nodes,num_refs,num_refs,num_nodes,num_refs,num_refs))
+# dist_6[i,r_i,s_i, j,r_j,s_j] = distance between node (i,r_i,s_i) and (j,r_j,s_j)
+for r_i in range(num_refs):
+    for s_i in range(num_refs):
+        for r_j in range(num_refs):
+            for s_j in range(num_refs):
+                for i in range(num_nodes):
+                    for j in range(num_nodes):
+                        # Get points corresponding to nodes
+                        p_i = pts_4[i,:,r_i,s_i]
+                        p_j = pts_4[j,:,r_j,s_j]
+                        # Get distance between points
+                        dist_6[i,r_i,s_i,j,r_j,s_j] = numpy.linalg.norm(p_i-p_j)
+
+
+
+# Get conductanc tensor 
+# ---------------------
+cond_init_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
 useful_edges = []
 for edge in edges:
     # Get points that edge involves
@@ -126,15 +148,15 @@ for edge in edges:
         #print("r_i,s_i,r_j,s_j: {},{},{},{}".format(r_i,s_i,r_j,s_j))
         print(n_i)
         print(n_j)
-        cond_init_4[i_i,i_j,r_j,s_j] = 1.0
-        cond_init_4[i_j,i_i,-r_j,-s_j] = 1.0
+        cond_init_4[i_i,i_j,r_j,s_j] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])    #1.0
+        cond_init_4[i_j,i_i,-r_j,-s_j] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) #1.0
     elif (r_j == 0 and s_j == 0):
         # j is in unit cell
         #print("r_i,s_i,r_j,s_j: {},{},{},{}".format(r_i,s_i,r_j,s_j))
         print(n_i)
         print(n_j)
-        cond_init_4[i_j,i_i,r_i,s_i] = 1.0
-        cond_init_4[i_i,i_j,-r_i,-s_i] = 1.0
+        cond_init_4[i_j,i_i,r_i,s_i] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+        cond_init_4[i_i,i_j,-r_i,-s_i] = (1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
     #elif r_i == 0 and s_i == 0 and r_j == 0 and s_j == 0:
     #    # j is in unit cell
     #    cond_init_4[i_j,i_i,r_i,s_i] = 1.0
@@ -150,6 +172,8 @@ for edge in edges:
 #        for r in range(2):
 #            for s in range(2):
 #                cond_init_4[j,i,-r,-s]=cond_init_4[i,j,r,s] 
+
+
 
 
 print(len(useful_edges))
@@ -266,7 +290,7 @@ plt.savefig(fname="edges_removed", format="svg")
 ###        if triangulation_started == False:
 ###            if num_pts_in_batch >= 4: 
 ###                # Start triangulation
-###                tri = spatial.Delaunay(points=np.array(pts_batch_to_tri),incremental=True,qhull_options="Qz")
+###                tri = spatial.Delaunay(points=numpy.array(pts_batch_to_tri),incremental=True,qhull_options="Qz")
 ###                # Announce triangulation start
 ###                triangulation_started = True
 ###                # Reset points batch 
@@ -276,7 +300,7 @@ plt.savefig(fname="edges_removed", format="svg")
 ###                pass
 ###        elif triangulation_started == True:
 ###            # Continue triangulation
-###            tri = spatial.Delaunay.add_points(points=np.array(pts_batch_to_tri), restart=False)
+###            tri = spatial.Delaunay.add_points(points=numpy.array(pts_batch_to_tri), restart=False)
 ###            # Reset points batch 
 ###            pts_batch_to_tri = []
 ###        else: 
