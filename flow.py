@@ -63,7 +63,7 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_discs_1,perm_p
 
     # Get max of concentration 
     # -----
-    conc_max_1 = numpy.amax(a=conc_2,axis=0)
+    conc_max_1 = numpy.amax(a=conc_2,axis=1)
     # conc_max_1[i_x] = the max concentration that position[i_x] has seen up to time[i_t].
     conc_max = conc_max_1[i_x]
 
