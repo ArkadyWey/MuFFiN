@@ -49,7 +49,7 @@ def main(time_1, posi_1, conc_max_discs_1, perm_prep_1, depo_prep_1, dt, dx, con
 
     for i_t in range(num_times):
     # predict values now using previous time step
-
+        print("Calculating conc at time step {} of {}".format(i_t, num_times))
         # Get concentration at this time using conc and parameters from previous step
         # -----
         conc_1 = numpy.zeros(shape=num_positions)
