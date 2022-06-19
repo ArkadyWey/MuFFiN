@@ -88,7 +88,7 @@ if __name__ == "__main__":
     #print("refs_1: \n {}".format(refs_1))
     
     num_refs  = len(refs_1)
-    num_concs = 11
+    num_concs = 1_001
     num_nodes = 4
     length    = 1.0
     alpha     = 1.0
@@ -125,6 +125,19 @@ if __name__ == "__main__":
     cond_init_3[0,1,2] = 1.0 #1.0
     cond_init_3[3,2,1] = 1.0 #1.0
     cond_init_3[2,3,2] = 1.0 #1.0
+
+    #cond_init_3[0,1,0] = 0.5 #1.0
+    #cond_init_3[1,0,0] = 0.5 #1.0
+    #cond_init_3[1,3,0] = 0.5 #1.0
+    #cond_init_3[3,1,0] = 0.5 #1.0
+    #cond_init_3[2,3,0] = 0.5 #1.0
+    #cond_init_3[3,2,0] = 0.5 #1.0
+    #cond_init_3[0,2,0] = 0.5 #1.0
+    #cond_init_3[2,0,0] = 0.5 #1.0
+    #cond_init_3[1,0,1] = 0.5 #1.0
+    #cond_init_3[0,1,2] = 0.5 #1.0
+    #cond_init_3[3,2,1] = 0.5 #1.0
+    #cond_init_3[2,3,2] = 0.5 #1.0
 
 
     # Get permeability and deposition parameter tables
