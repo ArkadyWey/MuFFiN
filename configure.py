@@ -50,13 +50,16 @@ class Configure():
 
         self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
 
-        #self.cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
-        #                                                         num_refs=self.num_refs, 
-        #                                                         mean=self.mean,
-        #                                                         sd=self.sd)
+        #self.cond_init_4 = initial_conditions_2D.grid_prescribed(num_nodes=self.num_nodes,
+        #                                                         num_refs=self.num_refs)
 
-        self.cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
-                                                                          num_refs=self.num_refs)
+        self.cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
+                                                                 num_refs=self.num_refs, 
+                                                                 mean=self.mean,
+                                                                 sd=self.sd)
+
+        #self.cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
+        #                                                                  num_refs=self.num_refs)
 
     
 

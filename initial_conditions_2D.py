@@ -2,6 +2,8 @@ import numpy
 import networkx
 from scipy import spatial
 
+import cells 
+
 def grid_prescribed(num_nodes: int, num_refs: int):
     """
     - num_nodes: int
@@ -45,24 +47,24 @@ def grid_prescribed(num_nodes: int, num_refs: int):
         #           0         1
 
         # Internal edges
-        cond_init_4[0,1,0,0] = 0.8 #1.0
-        cond_init_4[1,0,0,0] = 0.8 #1.0
+        cond_init_4[0,1,0,0] = 2.0#0.8 #1.0
+        cond_init_4[1,0,0,0] = 2.0#0.8 #1.0
 
-        cond_init_4[1,3,0,0] = 0.2 #1.0
-        cond_init_4[3,1,0,0] = 0.2 #1.0
+        cond_init_4[1,3,0,0] = 2.0#0.2 #1.0
+        cond_init_4[3,1,0,0] = 2.0#0.2 #1.0
 
-        cond_init_4[2,3,0,0] = 0.4 #1.0
-        cond_init_4[3,2,0,0] = 0.4 #1.0
+        cond_init_4[2,3,0,0] = 2.0#0.4 #1.0
+        cond_init_4[3,2,0,0] = 2.0#0.4 #1.0
 
-        cond_init_4[0,2,0,0] = 0.6 #1.0
-        cond_init_4[2,0,0,0] = 0.6 #1.0
+        cond_init_4[0,2,0,0] = 2.0#0.6 #1.0
+        cond_init_4[2,0,0,0] = 2.0#0.6 #1.0
 
         ## External edges
-        cond_init_4[1,0,1,0] = 1.0 #1.0
-        cond_init_4[0,1,-1,0] = 1.0 #1.0
+        cond_init_4[1,0,1,0]  = 2.0#1.0 #1.0
+        cond_init_4[0,1,-1,0] = 2.0#1.0 #1.0
 
-        cond_init_4[3,2,1,0] = 1.0 #1.0
-        cond_init_4[2,3,-1,0] = 1.0 #1.0
+        cond_init_4[3,2,1,0]  = 2.0#1.0 #1.0
+        cond_init_4[2,3,-1,0] = 2.0#1.0 #1.0
         #
         #cond_init_4[0,2,0,1]  = 1.0
         #cond_init_4[2,0,0,-1] = 1.0
@@ -93,34 +95,54 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
     # -----
     cond_init_4 = numpy.zeros(shape=(num_nodes, num_nodes, num_refs, num_refs))
     num_unique_edges = int(2*num_nodes)
-    samples = numpy.random.lognormal(mean=mean, sigma=sd, size=num_unique_edges)
+    samples = numpy.random.lognormal(mean=mean, sigma=sd, size=num_unique_edges) #/numpy.sqrt(num_nodes)
     num_nodes_row = int(numpy.sqrt(num_nodes))
+    # numpy.random.choice(a=numpy.array([4,8]), size=num_unique_edges)#
 
     # Internal edges
     # ------
-    # Make grid graph for internal edges
-    G = networkx.grid_graph(dim=[num_nodes_row,num_nodes_row],periodic=False)
-
-
-    # Add random sample to graph edges as weight
-    # -----
+    ## Make grid graph for internal edges
+    #G = networkx.grid_graph(dim=[num_nodes_row,num_nodes_row],periodic=False)
+    #networkx.convert_node_labels_to_integers(G)
+#
+    ## Add random sample to graph edges as weight
+    ## -----
     num_internal_edges = 2*num_nodes_row*(num_nodes_row-1)
     samples_internal = samples[0:num_internal_edges]
-    k = 0
-    for i,j in G.edges():
-        G[i][j]['weight'] = samples_internal[k]
-        k=k+1
+    #k = 0
+    #print(G.edges())
+    #for i,j in G.edges():
+    #    G[i][j]['weight'] = samples_internal[k]
+    #    k=k+1
+#
+#
+    ## Get the adjacency matrix of internal graph
+    ## ------
+    #A = networkx.adjacency_matrix(G)
 
+    # Get cell class 
+    cell = cells.Cell_2D_Grid(num_rows_cell=num_nodes_row, 
+                              num_cols_cell=num_nodes_row)
 
-    # Get the adjacency matrix of internal graph
-    # ------
-    A = networkx.adjacency_matrix(G)
+    # Get adjacency matrix with ones 
+    adj_2 = cell.adj_intra_2
+    
 
+    # Fill adjacency matrix with samples 
+    k = 0 #  index of element we'll take from sample
+    for i in range(num_nodes):
+        for j in range(num_nodes):
+            if j>=i: # fill upper triangle then reflect
+                if adj_2[i,j] == 1.0:
+                    adj_2[i,j] = samples_internal[k]
+                    adj_2[j,i] = adj_2[i,j]
+                    k = k+1 # increase k so don't take same twice
+                    #print(k)
 
     # Send adjacency matrix of internal graph to conductance tensor
     # -----
-    cond_init_4[:,:,0,0] = A.toarray()
-
+    #cond_init_4[:,:,0,0] = A.toarray()
+    cond_init_4[:,:,0,0] = adj_2[:,:]
 
     # External edges
     # --------------
@@ -139,6 +161,8 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
     # ------
     samples_external_hori = samples[2*num_nodes_row*(num_nodes_row-1):2*num_nodes_row*(num_nodes_row-1)+num_nodes_row]
     samples_external_vert = samples[2*num_nodes_row*(num_nodes_row-1)+num_nodes_row::]
+    #samples_external_hori = numpy.ones_like(samples_external_hori)
+    #samples_external_vert = numpy.ones_like(samples_external_vert)
 
     # Fill external edges with samples
     # -----
@@ -156,8 +180,8 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
         cond_init_4[top_node,bottom_node,0,+1] = samples_external_vert[i]
 
 
-        # Divide all conductances by sqrt(N) to make fair test
-        cond_init_4 = cond_init_4/numpy.sqrt(num_nodes)
+    # Divide all conductances by sqrt(N) to make fair test
+    #cond_init_4 = cond_init_4 #/numpy.sqrt(num_nodes)
 
     return cond_init_4
 
