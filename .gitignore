@@ -4,3 +4,5 @@ __pycache__
 /results*
 password.txt
 scrap2.py
+*.svg
+*.npy
