@@ -9,7 +9,7 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-num_reps = 20_000 # number of times to repeat a test
+num_reps = 50_000 # number of times to repeat a test
 
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 num_nodes_list = [1]
@@ -37,7 +37,7 @@ for t in range(num_tests):
         perm_3, depo_2, conc_max_disc_1 = run_preprocess_2D.main(num_nodes=num_nodes)
 
         perm_effe = perm_3[0,0,0]
-        depo_effe = depo_2[0,0]
+        depo_effe = depo_2[-1,0]
 
         #print(perm_effe)
         #print(depo_effe)
@@ -48,19 +48,19 @@ for t in range(num_tests):
 end_time = datetime.datetime.now()
 print("sim_time:\n {}".format(end_time-begin_time))
 
+mean_perm = numpy.mean(perm_effe_2[0,:])
+mean_depo = numpy.mean(depo_effe_2[0,:])
 
+print("mean_perm:{}".format(mean_perm))
+print("mean_depo:{}".format(mean_depo))
 
 # Save results 
 # -----
-path_results = os.path.join(".","results_experiment_permdist")
+path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 if not os.path.exists(path_results):
     os.mkdir(path_results)
 
 N = num_nodes_list[0]
-    
+ 
 numpy.save(file=os.path.join(path_results,"perm_effe_2_N-{}.npy".format(N)), arr=perm_effe_2, allow_pickle=True, fix_imports=True)
 numpy.save(file=os.path.join(path_results,"depo_effe_2_N-{}.npy".format(N)), arr=depo_effe_2, allow_pickle=True, fix_imports=True)
-
-
-
-
