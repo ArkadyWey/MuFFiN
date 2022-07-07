@@ -31,9 +31,11 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_permdist_reps-50k")
+path_results = os.path.join(".","results_experiment_permdist_random-structure")
+#path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 
-num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+#num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+num_nodes_list = [1,4,9,16,25,36,49]
 num_tests = len(num_nodes_list)
 
 
@@ -66,7 +68,7 @@ for t in range(num_tests):
 
     num_pts_to_interp = 55
     # TODO: make interp with lower binned histogram to get cleaner lines
-    #hist = numpy.histogram(a=perm_effe_2[0,:], bins=num_bins[t], range=None, normed=True, weights=None, density=True)
+    #hist = numpy.histogram(a=perm_effe_2[0,:], bins=num_bins[t ], range=None, normed=True, weights=None, density=True)
     dist_interp_1 = get_new_interpolated_point(table_x=numpy.linspace(min(bins), max(bins), num_bins[t]), 
                                                table_y=count, 
                                                new_x_value=numpy.linspace(min(bins), max(bins), num_pts_to_interp))
@@ -75,7 +77,7 @@ for t in range(num_tests):
 
 ax.set_xlabel(r"$k^{00}$")
 ax.set_ylabel(r"Probability density")
-ax.set_xlim(left=0.0,right=3.5)
+ax.set_xlim(left=0.0,right=7.0)
 ax.legend()
 
 plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format="svg")
@@ -105,10 +107,12 @@ ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,100,500)
-ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
-ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+# grid fit
+ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"grid fit",ls="--")
+# new fit
+ax.plot(N_smooth, 1.221*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1.221N^{-\frac{1}{2}}$",ls="-")
+ax.plot(N_smooth, (-0.07469260409119505)*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"grid mean")
 
-#print(mean_1[-1]-mean_1[0])
 
 #ax.scatter(num_nodes_list,mean_1-1.72461, label=r"mean-$k^{00}_{N=1}$")
 #ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean-$k^{00}_{N=1}$")
@@ -133,8 +137,8 @@ fig, ax = plt.subplots(1,1)
 N_smoother = numpy.linspace(0.01,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"$log($mean $k^{00}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"$log$(std. dev. $k^{00}$$)$")
-ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
-
+ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", ls="--", label=r"grid fit")
+ax.plot(N_smoother, -0.5*N_smoother + (0.2*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
 # Cleanup plot
 ax.set_xlabel(r"$log(N)$")
 ax.legend()
