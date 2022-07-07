@@ -3,14 +3,21 @@ import numpy as numpy
 from scipy import spatial
 from  matplotlib import pyplot as plt
 from matplotlib.lines import Line2D  
-    
-num_nodes = 3
+import os
+
+# Parameters 
+path_results = "results_delaun"
+
+if not os.path.exists(os.path.join(".",path_results)):
+    os.mkdir(path_results)
+
+num_nodes = 4
 num_refs  = 3
 num_dims  = 2
 
 # Get unit cell points
-pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5])#
-pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5])#
+pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5]) #numpy.array([0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95])
+pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) #numpy.array([0.5]) #numpy.array([0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95])
 
 # Right or up components
 pts_x_1 = 1.0*numpy.ones_like(pts_x_0) + pts_x_0 
@@ -114,7 +121,7 @@ for r_i in range(num_refs):
 
 
 
-# Get conductanc tensor 
+# Get conductance tensor 
 # ---------------------
 cond_init_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
 useful_edges = []
@@ -150,9 +157,9 @@ for edge in edges:
 # Plot original triangulation in top quartile
 # ------------------------------------------
 fig, ax = plt.subplots(1,1)
-ax.triplot(pts_to_tri_2[:,0], pts_to_tri_2[:,1], simplices)
+ax.triplot(pts_to_tri_2[:,0], pts_to_tri_2[:,1], simplices, color="tab:blue", linewidth=2.0)
 
-ax.plot(pts_to_tri_2[:,0], pts_to_tri_2[:,1], 'o')
+ax.plot(pts_to_tri_2[:,0], pts_to_tri_2[:,1], 'go', markersize=5.0)
 
 for p in range(len(pts_to_tri_2[:,0])):
     array = key[p]
@@ -172,7 +179,11 @@ for x in [-1,0,1]:
 
 ax.set_xlim(left=-1,right=+2)
 ax.set_ylim(bottom=-1,top=+2)
-plt.savefig(fname="edges_all", format="svg")
+
+ax.set_aspect("equal")
+plt.axis('off')
+
+plt.savefig(fname=os.path.join(path_results,"edges_all.svg"), format="svg")
 
 
 
@@ -200,28 +211,36 @@ for r in range(num_refs):
                     x_vals_of_points = [x_i, x_j]
                     y_vals_of_points = [y_i, y_j]
 
-                    ax.plot(x_i,y_i,'ro')
-                    ax.plot(x_j,y_j,'ro') 
-                    ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points))
+                    ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=2.0, color="tab:blue"))
+                    ax.plot(x_i,y_i,'go', markersize=5.0)
+                    ax.plot(x_j,y_j,'go', markersize=5.0) 
+                    
+                    #ax.plot(x_i,y_i,'ko', markersize=12.0)
+                    #ax.plot(x_j,y_j,'ko', markersize=12.0) 
+                    #ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=3.0, color="black"))
 
-#for p in range(len(pts_to_tri_2[:,0])):
-#    array = key[p]
-#    i = array[0]
-#    r = array[1]
-#    s = array[2]
-#
-#    ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
+for p in range(len(pts_to_tri_2[:,0])):
+    array = key[p]
+    i = array[0]
+    r = array[1]
+    s = array[2]
+
+    ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 for x in [-1,0,1]:
     for y in [-1,0,1]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.2, color="tab:red"))
+            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
+            #pass
             ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 ax.set_xlim(left=-1,right=+2)
 ax.set_ylim(bottom=-1,top=+2)
-plt.savefig(fname="edges_removed", format="svg")
+
+ax.set_aspect("equal")
+plt.axis('off')
+plt.savefig(fname=os.path.join(path_results,"edges_removed.svg"), format="svg")
                         
 
 
