@@ -38,7 +38,7 @@ class Configure():
         # Do secondary configuration 
         # -----
         self.leng_1          = numpy.array([self.l1, self.l2])
-        self.conc_max_disc_1 = numpy.linspace(0, 1, self.num_concs)
+        self.conc_max_disc_1 = numpy.linspace(0, 1.0, self.num_concs)
         self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
                                                            num_dims=self.num_dims)
 
@@ -53,13 +53,13 @@ class Configure():
         #self.cond_init_4 = initial_conditions_2D.grid_prescribed(num_nodes=self.num_nodes,
         #                                                         num_refs=self.num_refs)
 
-        self.cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
-                                                                 num_refs=self.num_refs, 
-                                                                 mean=self.mean,
-                                                                 sd=self.sd)
+        #self.cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
+        #                                                         num_refs=self.num_refs, 
+        #                                                         mean=self.mean,
+        #                                                         sd=self.sd)
 
-        #self.cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
-        #                                                                  num_refs=self.num_refs)
+        self.cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
+                                                                          num_refs=self.num_refs)
 
     
 
