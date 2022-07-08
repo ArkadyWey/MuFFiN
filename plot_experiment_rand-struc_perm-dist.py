@@ -31,11 +31,12 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_permdist_random-structure")
+path_results = os.path.join(".","results_experiment_param-dist_random-structure_reps-5k")
 #path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 
 #num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list = [1,4,9,16,25,36,49]
+#num_nodes_list = [1,4,9,16,25,36,49]
+num_nodes_list = [4,9,16,25]
 num_tests = len(num_nodes_list)
 
 
