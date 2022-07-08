@@ -260,3 +260,28 @@ def random_structure_uniform(num_nodes: int, num_refs: int):
     cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
 
     return cond_init_4
+
+
+def hexag_struc(num_nodes: int, num_refs: int, mean: float, sd: float):
+    """
+    - Get specified number of (x,y) points within a unit cell. 
+    - Calculate simplices of delauney triangulation. 
+    - Use simplices to get a graph. 
+    - Use simplices to calculate distances between connected points.
+    - Use distances between points to get their conductance. 
+    - Add conductances to graph as weights.
+    """
+    num_dims  = 2
+
+    cell = cells.Cell_2D_Hexagonal_Structure(num_nodes=num_nodes,
+                                             num_refs=num_refs,
+                                             num_dims=num_dims, 
+                                             mean=mean, 
+                                             sd=sd)
+
+    cond_init_4 = cell.cond_init_4
+
+    # Divide to make fair test compared to sqaure grid
+    cond_init_4 = cond_init_4*numpy.sqrt(3.0)/2.0
+
+    return cond_init_4

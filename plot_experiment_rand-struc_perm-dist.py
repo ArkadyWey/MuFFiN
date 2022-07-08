@@ -34,9 +34,9 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
 path_results = os.path.join(".","results_experiment_param-dist_random-structure_reps-5k")
 #path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 
-#num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+num_nodes_list = [4,9,16,25,36,49,64,81,100]
 #num_nodes_list = [1,4,9,16,25,36,49]
-num_nodes_list = [4,9,16,25]
+#num_nodes_list = [4,9,16,25]
 num_tests = len(num_nodes_list)
 
 
@@ -111,7 +111,7 @@ N_smooth = numpy.linspace(1,100,500)
 # grid fit
 ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"grid fit",ls="--")
 # new fit
-ax.plot(N_smooth, 1.221*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1.221N^{-\frac{1}{2}}$",ls="-")
+ax.plot(N_smooth, 1.1*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1.1N^{-\frac{1}{2}}$",ls="-")
 ax.plot(N_smooth, (-0.07469260409119505)*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"grid mean")
 
 

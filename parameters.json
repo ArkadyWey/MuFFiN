@@ -10,5 +10,5 @@
     "l2"             : 1.0, 
     "mean"           : 0.5, 
     "sd"             : 0.3,
-    "initialisation" : "rand-struc"
+    "initialisation" : "hexag-struc"
 }

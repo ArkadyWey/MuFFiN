@@ -70,10 +70,13 @@ class Configure():
                                                                      sd=self.sd)
         elif self.initialisation == "rand-struc":
             cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
-                                                                              num_refs=self.num_refs)
+                                                                         num_refs=self.num_refs)
 
         elif self.initialisation == "hexag-struc":
-            raise Exception("Need to implement hexag-struc...")
+            cond_init_4 = initial_conditions_2D.hexag_struc(num_nodes=self.num_nodes, 
+                                                            num_refs=self.num_refs, 
+                                                            mean=self.mean, 
+                                                            sd=self.sd)
 
         else: 
             raise Exception("""initialisation must be: square-struc_prescribed or \
@@ -81,7 +84,7 @@ class Configure():
 
         return cond_init_4
 
-        
+
 if __name__ == "__main__":
 
     num_nodes = 1
