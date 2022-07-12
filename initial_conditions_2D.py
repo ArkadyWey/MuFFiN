@@ -281,7 +281,4 @@ def hexag_struc(num_nodes: int, num_refs: int, mean: float, sd: float):
 
     cond_init_4 = cell.cond_init_4
 
-    # Divide to make fair test compared to sqaure grid
-    cond_init_4 = cond_init_4*numpy.sqrt(3.0)/2.0
-
     return cond_init_4

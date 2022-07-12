@@ -663,13 +663,13 @@ class Cell_2D_Hexagonal_Structure():
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
                 sample = numpy.random.lognormal(mean=self.mean, sigma=self.sd)
-                cond_init_4[i_i,i_j,r_j,s_j]   = sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                cond_init_4[i_i,i_j,r_j,s_j]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                cond_init_4[i_j,i_i,-r_j,-s_j] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
                 sample = numpy.random.lognormal(mean=self.mean, sigma=self.sd)
-                cond_init_4[i_j,i_i,r_i,s_i]   = sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_j,i_i,r_i,s_i]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_i,i_j,-r_i,-s_i] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass
