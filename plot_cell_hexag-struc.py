@@ -5,7 +5,7 @@ import numpy
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D  
 
-
+import configure
 
 # Parameters 
 # ---------
@@ -25,6 +25,14 @@ num_refs    = len(cond_init_4[0,0,:,0])
 num_dims    = 2
 pts_4       = numpy.load(os.path.join(path_results,"pts_4.npy"))
 
+
+# Get the run's configuration parameters (needed for lengths etc in plot)
+#  -------------------------------------
+conf = configure.Configure(num_nodes=num_nodes)
+num_rows_or_cols = int(numpy.sqrt(num_nodes/2.0))
+
+
+
 # Plot original triangulation with no removal
 # ------------------------------------------
 fig, ax = plt.subplots(1,1)
@@ -37,6 +45,10 @@ ax.triplot(pts_x, pts_y, simplices, color="tab:blue", linewidth=2.0)
 # Plot nodes
 ax.plot(pts_x, pts_y, 'go', markersize=5.0)
 
+# Plot crosses at where construction nodes should be
+ax.plot(0.0,0.0,                 "+", color="black", markersize=5.0)
+ax.plot(conf.l1/2.0,conf.l2/2.0, "+", color="black", markersize=5.0)
+
 # Plot node index
 for p in range(len(pts_x)):
     array = key[p]
@@ -47,16 +59,16 @@ for p in range(len(pts_x)):
     ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 # Plot cell boundaries
-for x in [-2,0,2]:
-    for y in [-2*numpy.sqrt(3.0),0,2*numpy.sqrt(3.0)]:
+for x in [-num_rows_or_cols*conf.l1,0,num_rows_or_cols*conf.l1]:
+    for y in [-num_rows_or_cols*conf.l2,0,num_rows_or_cols*conf.l2]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=2, height=2*numpy.sqrt(3), alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
-            ax.add_patch(Rectangle(xy=(x, y), width=2, height=2*numpy.sqrt(3), alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 # Clean up plot
-ax.set_xlim(left=-2-1,right=+4+1)
-ax.set_ylim(bottom=-2*numpy.sqrt(3)-1,top=+4*numpy.sqrt(3)+1)
+ax.set_xlim(left=-num_rows_or_cols*conf.l1-1,right=+2*num_rows_or_cols*conf.l1+1)
+ax.set_ylim(bottom=-num_rows_or_cols*conf.l2-1,top=+2*num_rows_or_cols*conf.l2+1)
 
 ax.set_aspect("equal")
 plt.axis('off')
@@ -70,8 +82,6 @@ plt.savefig(fname=os.path.join(path_results,"9-cells_random-structure.svg"), for
 # ----------------------------
 fig, ax = plt.subplots(1,1)
 
-# Plot all nodes
-ax.plot(pts_x, pts_y, 'go', markersize=5.0)
 
 # Plot edges
 for r in range(num_refs):
@@ -106,6 +116,14 @@ for r in range(num_refs):
                     #ax.plot(x_j,y_j,'ko', markersize=12.0) 
                     #ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=3.0, color="black"))
 
+
+# Plot all nodes
+ax.plot(pts_x, pts_y, 'go', markersize=5.0)
+
+# Plot crosses at where construction nodes should be
+ax.plot(0.0,0.0,                 "+", color="black", markersize=5.0)
+ax.plot(conf.l1/2.0,conf.l2/2.0, "+", color="black", markersize=5.0)
+
 # Plot node names
 for p in range(len(pts_to_tri_2[:,0])):
     array = key[p]
@@ -116,16 +134,16 @@ for p in range(len(pts_to_tri_2[:,0])):
     ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 # Plot cell boundaries
-for x in [-2,0,2]:
-    for y in [-2*numpy.sqrt(3.0),0,2*numpy.sqrt(3.0)]:
+for x in [-num_rows_or_cols*conf.l1,0,num_rows_or_cols*conf.l1]:
+    for y in [-num_rows_or_cols*conf.l2,0,num_rows_or_cols*conf.l2]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=2, height=2*numpy.sqrt(3), alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
-            ax.add_patch(Rectangle(xy=(x, y), width=2, height=2*numpy.sqrt(3), alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 # Clean up plot
-ax.set_xlim(left=-2-1,right=+4+1)
-ax.set_ylim(bottom=-2*numpy.sqrt(3)-1,top=+4*numpy.sqrt(3)+1)
+ax.set_xlim(left=-num_rows_or_cols*conf.l1-1,right=+2*num_rows_or_cols*conf.l1+1)
+ax.set_ylim(bottom=-num_rows_or_cols*conf.l2-1,top=+2*num_rows_or_cols*conf.l2+1)
 
 ax.set_aspect("equal")
 plt.axis('off')
