@@ -32,14 +32,16 @@ end            = -1
 # Plot conccentration
 # -----
 fig, ax = plt.subplots(1,1)
-ax.plot(posi_1,conc_2[:,start])
-ax.plot(posi_1,conc_2[:,first_quarter])
-ax.plot(posi_1,conc_2[:,second_quarter])
-ax.plot(posi_1,conc_2[:,third_quarter])
-ax.plot(posi_1,conc_2[:,end])
+ax.plot(posi_1,conc_2[:,start], label=r"$t=0$")
+ax.plot(posi_1,conc_2[:,first_quarter], label=r"$t=0.25$")
+ax.plot(posi_1,conc_2[:,second_quarter], label=r"$t=0.50$")
+ax.plot(posi_1,conc_2[:,third_quarter], label=r"$t=0.75$")
+ax.plot(posi_1,conc_2[:,end], label=r"$t=1.0$")
 
-ax.set_xlabel("x")
-ax.set_ylabel("c")
+ax.set_xlabel(r"$x$")
+ax.set_ylabel(r"$c$")
+
+#ax.legend()
 
 plt.savefig(fname=os.path.join(path_results,"conc_2__v__posi_1.svg"), format="svg")
 
@@ -61,7 +63,7 @@ plt.savefig(fname=os.path.join(path_results,"velo_1__v__time_1.svg"), format="sv
 fig, ax = plt.subplots(1,1)
 
 ax.plot(posi_1,psi_2[:,start])
-ax.plot(posi_1,psi_2[:,start+50])
+ax.plot(posi_1,psi_2[:,first_quarter])
 ax.plot(posi_1,psi_2[:,second_quarter])
 ax.plot(posi_1,psi_2[:,third_quarter])
 ax.plot(posi_1,psi_2[:,end])
@@ -77,7 +79,7 @@ plt.savefig(fname=os.path.join(path_results,"psi_2__v__posi_1.svg"), format="svg
 fig, ax = plt.subplots(1,1)
 
 ax.plot(posi_1,perm_2[:,start])
-ax.plot(posi_1,perm_2[:,start+50])
+ax.plot(posi_1,perm_2[:,first_quarter])
 ax.plot(posi_1,perm_2[:,second_quarter])
 ax.plot(posi_1,perm_2[:,third_quarter])
 ax.plot(posi_1,perm_2[:,end])
@@ -93,7 +95,7 @@ plt.savefig(fname=os.path.join(path_results,"perm_2__v__posi_1.svg"), format="sv
 fig, ax = plt.subplots(1,1)
 
 ax.plot(posi_1, depo_2[:,start])
-ax.plot(posi_1, depo_2[:,start+50])
+ax.plot(posi_1, depo_2[:,first_quarter])
 ax.plot(posi_1, depo_2[:,second_quarter])
 ax.plot(posi_1, depo_2[:,third_quarter])
 ax.plot(posi_1, depo_2[:,end])
@@ -109,7 +111,7 @@ plt.savefig(fname=os.path.join(path_results,"depo_2__v__posi_1.svg"), format="sv
 fig, ax = plt.subplots(1,1)
 
 ax.plot(posi_1, dpdx_2[:,start])
-ax.plot(posi_1, dpdx_2[:,start+50])
+ax.plot(posi_1, dpdx_2[:,first_quarter])
 ax.plot(posi_1, dpdx_2[:,second_quarter])
 ax.plot(posi_1, dpdx_2[:,third_quarter])
 ax.plot(posi_1, dpdx_2[:,end])
@@ -118,3 +120,29 @@ ax.set_xlabel(r"$x$")
 ax.set_ylabel(r"$dp/dx$")
 
 plt.savefig(fname=os.path.join(path_results,"dpdx_2__v__posi_1.svg"), format="svg")
+
+
+
+
+
+# Plot permeability ad deposition on on graph
+# -----
+fig, ax = plt.subplots(1,1)
+
+ax.plot(posi_1,perm_2[:,start], label=r"$k^{00}$", color="tab:red")
+#ax.plot(posi_1,perm_2[:,first_quarter])
+#ax.plot(posi_1,perm_2[:,second_quarter])
+#ax.plot(posi_1,perm_2[:,third_quarter])
+#ax.plot(posi_1,perm_2[:,end])
+
+ax.plot(posi_1, -depo_2[:,start], label=r"$j^{0}$", color="tab:blue")
+#ax.plot(posi_1, depo_2[:,first_quarter])
+#ax.plot(posi_1, depo_2[:,second_quarter])
+#ax.plot(posi_1, depo_2[:,third_quarter])
+#ax.plot(posi_1, depo_2[:,end])
+
+ax.set_xlabel(r"$x$")
+#ax.set_ylabel(r"$k$")
+
+ax.legend()
+plt.savefig(fname=os.path.join(path_results,"perm_2_and_depo_1__v__posi_1.svg"), format="svg")

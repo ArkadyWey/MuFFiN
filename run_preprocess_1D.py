@@ -13,7 +13,7 @@ import os
 
 import preprocess_1D
 
-def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
+def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     """
     """
 
@@ -71,9 +71,9 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
                                                                  delt_4=delt_4, 
                                                                  heav_4=heav_4, 
                                                                  cond_init_3=cond_init_3, 
-                                                                 v=v)
-    #print("perm_prep_1[:]: \n{}".format(perm_prep_1[:]))
-    print("depo_prep_1[:]: \n{}".format(depo_prep_1[:]))
+                                                                 length=length)
+    #print("perm_prep_1[:]: \n{}".format(perm_prep_1[0]))
+    #print("depo_prep_1[:]: \n{}".format(depo_prep_1[-1]))
     return (perm_prep_1,depo_prep_1)
 
 
@@ -88,15 +88,15 @@ if __name__ == "__main__":
     #print("refs_1: \n {}".format(refs_1))
     
     num_refs  = len(refs_1)
-    num_concs = 11
-    num_nodes = 4
+    num_concs = 1_001
+    num_nodes = 1
+    alpha     = 0.1
+    v         = 0.5 #2.0 # Sum of volumes of nodes in cell
     length    = 1.0
-    alpha     = 1.0
-    v         = 1.0 #2.0 # Sum of volumes of nodes in cell
-    phi       = 0.5 # TODO: Define this properly
+    phi       = v/length # TODO: Define this properly
     
     # Concentrations to tabulate 
-    conc_max_discs_1 = numpy.linspace(0,1,num_concs) # discrete list of possible concentrations
+    conc_max_discs_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
     #print("conc_max_discs_1: \n {}".format(conc_max_discs_1))
     
     # Conductance and adhesivity 
@@ -104,27 +104,61 @@ if __name__ == "__main__":
     adhe_init_3 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs)) 
     # TODO: initial condition should be random
     
-    # line of three nodes
-    #cond_init_3[0,1,0] = 1
-    #cond_init_3[1,0,0] = 1
-    #cond_init_3[1,2,0] = 1
-    #cond_init_3[2,1,0] = 1
-    #cond_init_3[2,0,1] = 1
-    #cond_init_3[0,2,2] = 1
+    # Line of one node:
+    # -----
+    # External edges
+    cond_init_3[0,0,1]  = 1.0
+    cond_init_3[0,0,-1] = 1.0
+
+    # Line of two nodes:
+    # -----
+    ## Internal edges
+    #cond_init_3[0,1,0] = 1.0
+    #cond_init_3[1,0,0] = 1.0
+    ## External edges 
+    #cond_init_3[1,0,1] = 1.0
+    #cond_init_3[0,1,-1] = 1.0
     
-    # grid of four nodes
-    cond_init_3[0,1,0] = 0.8 #1.0
-    cond_init_3[1,0,0] = 0.8 #1.0
-    cond_init_3[1,3,0] = 0.2 #1.0
-    cond_init_3[3,1,0] = 0.2 #1.0
-    cond_init_3[2,3,0] = 0.4 #1.0
-    cond_init_3[3,2,0] = 0.4 #1.0
-    cond_init_3[0,2,0] = 0.6 #1.0
-    cond_init_3[2,0,0] = 0.6 #1.0
-    cond_init_3[1,0,1] = 1.0 #1.0
-    cond_init_3[0,1,2] = 1.0 #1.0
-    cond_init_3[3,2,1] = 1.0 #1.0
-    cond_init_3[2,3,2] = 1.0 #1.0
+    
+    # Line of three nodes
+    # -----
+    # Internal
+    #cond_init_3[0,1,0] = 1.0
+    #cond_init_3[1,0,0] = 1.0
+    #
+    #cond_init_3[1,2,0] = 1.0
+    #cond_init_3[2,1,0] = 1.0
+    #
+    ## External
+    #cond_init_3[2,0,1] = 1.0
+    #cond_init_3[0,2,-1] = 1.0
+    
+    # grid of four nodes (embedded in 1D)
+    #cond_init_3[0,1,0] = 0.8  #1.6  #1.0
+    #cond_init_3[1,0,0] = 0.8  #1.6  #1.0
+    #cond_init_3[1,3,0] = 0.2  #0.4  #1.0
+    #cond_init_3[3,1,0] = 0.2  #0.4  #1.0
+    #cond_init_3[2,3,0] = 0.4  #0.8  #1.0
+    #cond_init_3[3,2,0] = 0.4  #0.8  #1.0
+    #cond_init_3[0,2,0] = 0.6  #1.2  #1.0
+    #cond_init_3[2,0,0] = 0.6  #1.2  #1.0
+    #cond_init_3[1,0,1] = 1.0  #2.0 
+    #cond_init_3[0,1,2] = 1.0  #2.0 
+    #cond_init_3[3,2,1] = 1.0  #2.0 
+    #cond_init_3[2,3,2] = 1.0  #2.0 
+
+    #cond_init_3[0,1,0] = 2.0 #1.0
+    #cond_init_3[1,0,0] = 2.0 #1.0
+    #cond_init_3[1,3,0] = 2.0 #1.0
+    #cond_init_3[3,1,0] = 2.0 #1.0
+    #cond_init_3[2,3,0] = 2.0 #1.0
+    #cond_init_3[3,2,0] = 2.0 #1.0
+    #cond_init_3[0,2,0] = 2.0 #1.0
+    #cond_init_3[2,0,0] = 2.0 #1.0
+    #cond_init_3[1,0,1] = 2.0 #1.0
+    #cond_init_3[0,1,2] = 2.0 #1.0
+    #cond_init_3[3,2,1] = 2.0 #1.0
+    #cond_init_3[2,3,2] = 2.0 #1.0
 
 
     # Get permeability and deposition parameter tables
@@ -134,8 +168,7 @@ if __name__ == "__main__":
                                     adhe_init_3=adhe_init_3,
                                     alpha=alpha,
                                     refs_1=refs_1,
-                                    length=length,
-                                    v=v)
+                                    length=length)
     
 
     # Save results 

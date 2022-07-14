@@ -21,7 +21,7 @@ def main(num_nodes):
     alpha           = conf.alpha 
     refs_2          = conf.refs_2 
     leng_1          = conf.leng_1 
-    v               = conf.v
+
 
 
     cond_tabl_5, adhe_tabl_5 = preprocess_2D.get_conductance_and_adhesivity(conc_max_disc_1=conc_max_disc_1, 
@@ -65,7 +65,6 @@ def main(num_nodes):
                                                                    delt_5=delt_5,
                                                                    heav_5=heav_5,
                                                                    leng_1=leng_1,
-                                                                   v=v, 
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
@@ -79,7 +78,7 @@ if __name__ == "__main__":
 
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 4
+    num_nodes = 2
     
     # Get permeability and deposition parameter
     # -----

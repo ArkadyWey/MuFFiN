@@ -331,8 +331,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                                     adhe_tabl_5: numpy.ndarray,
                                     delt_5: numpy.ndarray,
                                     heav_5: numpy.ndarray, 
-                                    leng_1: numpy.ndarray, 
-                                    v: float, 
+                                    leng_1: numpy.ndarray,
                                     cond_init_4: numpy.ndarray):
     """
     Given the working parameters, return the permeability as a spatial matrix, and
@@ -445,8 +444,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
     for m in range(num_dims):
         for n in range(num_dims):
             perm_3[:,m,n] = 0.5*(leng_1[m]/numpy.prod(leng_1))*perm_3[:,m,n]
-
-    depo_2 = (1/v)*depo_2
-
+    
+    depo_2 = -(1/numpy.prod(leng_1))*depo_2
 
     return (perm_3, depo_2)
