@@ -4,7 +4,7 @@ scrap3.py
 scrap4.py
 __pycache__
 .pytest_cache
-/results*
+results/*
 password.txt
 scrap2.py
 *.svg
