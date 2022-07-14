@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 import os 
 import numpy
 
-import utils_param_dist
+import utils_plot_exp_param_dist
 
 
 # Parameters 
@@ -12,12 +12,12 @@ path_results = os.path.join(".","results/results_experiment_param-dist_structure
 if not os.path.exists(path_results):
     os.mkdir(path_results)
 
-parameter_name = "depo"
+parameter_name = "perm"
 
 # Paths to param experiment results for each structure
 path_results_square_struc = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
-path_results_hexag_struc = os.path.join("."," results_experiment_param-dist_hexag-structure_reps-5k")
-path_results_rand_struc = os.path.join(".","  results_experiment_param-dist_random-structure_reps-50k")
+path_results_hexag_struc = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-5k")
+path_results_rand_struc = os.path.join(".","results_experiment_param-dist_random-structure_reps-50k")
 
 paths_results = [
     path_results_square_struc,
@@ -38,13 +38,13 @@ num_nodes_lists = [num_nodes_list_square_struc,
                    num_nodes_list_rand_struc]
 
 # Each structure needs its own labels in plot
-labels_mean = [r"mean $j^{0}$ - 4-lattice", r"mean $j^{0}$ - 6-lattice", r"mean $j^{0}$ - 6-random"]
-labels_sd = [r"std. dev. $j^{0}$ - 4-lattice", r"std. dev. $j^{0}$ - 6-lattice", r"std. dev. $j^{0}$ - 6-random"]
+labels_mean = [r"mean $k^{00}$ - 4-lattice", r"mean $k^{00}$ - 6-lattice", r"mean $k^{00}$ - 6-random"]
+labels_sd = [r"std. dev. $k^{00}$ - 4-lattice", r"std. dev. $k^{00}$ - 6-lattice", r"std. dev. $k^{00}$ - 6-random"]
 
-sd_constants_and_powers = [[0.406,-0.5],[0.684, -0.5],[0.779, -1.0/3.0]]  # first index is constant out front, second is power
-labels_sd_fit = [r"$0.406N^{-\frac{1}{2}}$", 
-                 r"$0.684N^{-\frac{1}{2}}$",
-                 r"$0.779N^{-\frac{1}{3}}$"
+sd_constants_and_powers = [[0.498,-0.5],[0.577, -0.5],[1.1, -0.5]]  # first index is constant out front, second is power
+labels_sd_fit = [r"$0.498N^{-\frac{1}{2}}$", 
+                 r"$0.577N^{-\frac{1}{2}}$",
+                 r"$1.1N^{-\frac{1}{2}}$"
                 ]
 
 # For guidelines, need smooth x axis
@@ -58,7 +58,7 @@ N_smooth = numpy.linspace(1,200,1000) # For guide lines
 fig_mean, ax_mean = plt.subplots(1,1)
 fig_sd, ax_sd = plt.subplots(1,1)
 
-plot_parameter_mean_and_sd = utils_param_dist.PlotParameterMeanAndSD(parameter_name=parameter_name,
+plot_parameter_mean_and_sd = utils_plot_exp_param_dist.PlotParameterMeanAndSD(parameter_name=parameter_name,
                                                                      paths_results=paths_results,
                                                                      num_nodes_lists=num_nodes_lists,
                                                                      markers=markers,
@@ -78,5 +78,5 @@ plot_parameter_mean_and_sd.ax_mean.legend()
 plot_parameter_mean_and_sd.ax_sd.set_xlabel(r"$N$")
 plot_parameter_mean_and_sd.ax_sd.legend()
 
-fig_mean.savefig(fname=os.path.join(path_results,"compare__mean-j__v__N.svg"), format="svg")
-fig_sd.savefig(fname=os.path.join(path_results,"compare__sd-j__v__N.svg"), format="svg")
+fig_mean.savefig(fname=os.path.join(path_results,"compare__mean-k__v__N.svg"), format="svg")
+fig_sd.savefig(fname=os.path.join(path_results,"compare__sd-k__v__N.svg"), format="svg")

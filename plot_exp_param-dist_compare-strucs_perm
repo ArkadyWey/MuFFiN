@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 import os 
 import numpy
 
-import utils_param_dist
+import utils_plot_exp_param_dist
 
 
 # Parameters 
@@ -58,7 +58,7 @@ N_smooth = numpy.linspace(1,200,1000) # For guide lines
 fig_mean, ax_mean = plt.subplots(1,1)
 fig_sd, ax_sd = plt.subplots(1,1)
 
-plot_parameter_mean_and_sd = utils_param_dist.PlotParameterMeanAndSD(parameter_name=parameter_name,
+plot_parameter_mean_and_sd = utils_plot_exp_param_dist.PlotParameterMeanAndSD(parameter_name=parameter_name,
                                                                      paths_results=paths_results,
                                                                      num_nodes_lists=num_nodes_lists,
                                                                      markers=markers,
