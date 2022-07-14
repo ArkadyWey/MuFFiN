@@ -4,21 +4,23 @@ import numpy
 
 import utils_param_dist
 
+
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
+path_results = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-5k_new")
+#path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 
-#num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list = [4,16,36,64,100]
+#num_nodes_list = [2,8,18,32,50,72,98,128,162,200]
+num_nodes_list = [2,18,50,98]
 num_tests = len(num_nodes_list)
 
 
-# Plot histograms with all bars same width
-# ----------------------------------------
+# Plot permeability histogram fo all N on same graph
+# -----    
 fig, ax = plt.subplots(1,1)
 
-num_bins_in_range = 100
-num_pts_to_interp = 200
+num_bins_in_range = 250
+num_pts_to_interp = 300
 
 ax_parameter_distribution =  utils_param_dist.PlotParameterDistribution(parameter_name="perm",
                                                                         num_nodes_list=num_nodes_list,
@@ -29,7 +31,7 @@ ax_parameter_distribution =  utils_param_dist.PlotParameterDistribution(paramete
 
 ax.set_xlabel(r"$k^{00}$")
 ax.set_ylabel(r"Probability density")
-ax.set_xlim(left=0.5,right=3.0)
+ax.set_xlim(left=1.5,right=4.0)
 ax.set_ylim(bottom=0.0)
 ax.legend()
 
@@ -37,9 +39,11 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 
 
 
+
+
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+num_nodes_list = [2,8,18,32,50,72,98,128,162]
 num_tests = len(num_nodes_list)
 
 fig, ax = plt.subplots(1,1)
@@ -52,19 +56,26 @@ for t in range(num_tests):
 
     perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
     mean_1[t] = numpy.mean(a=perm_effe_2, axis=1)
+    
     sd_1[t]   = numpy.std(a=perm_effe_2, axis=1)
 
+print(mean_1)
 
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean $k^{00}-\bar{k}_4$")
+#ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean $k^{00}-k^{00}_{N=1}$")
+ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{00}-\bar{k}_6$")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
 
 # Plot guide lines
-N_smooth = numpy.linspace(1,100,500)
-ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
-ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
-
-#print(mean_1[-1]-mean_1[0])
+N_smooth = numpy.linspace(1,200,1000)
+# square grid fit
+#ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"square grid fit",ls="--")
+# random fit
+#ax.plot(N_smooth, 1.1*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"random fit",ls=":")
+# new fit
+ax.plot(N_smooth, 0.561*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.561N^{-\frac{1}{2}}$",ls="-")
+#ax.plot(N_smooth, (-0.07469260409119505)*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"square grid mean")
+ax.plot(N_smooth, (mean_1[-1]-2.77982)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
 
 #ax.scatter(num_nodes_list,mean_1-1.72461, label=r"mean-$k^{00}_{N=1}$")
 #ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean-$k^{00}_{N=1}$")
@@ -89,38 +100,12 @@ fig, ax = plt.subplots(1,1)
 N_smoother = numpy.linspace(0.01,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"$log($mean $k^{00}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"$log$(std. dev. $k^{00}$$)$")
-ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
-
+#ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", ls="--", label=r"square grid fit")
+#ax.plot(N_smoother, -0.5*N_smoother + (0.2*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
+ax.plot(N_smoother, -0.5*N_smoother + (-0.577*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
+#ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(1.1)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
 # Cleanup plot
 ax.set_xlabel(r"$log(N)$")
 ax.legend()
 
 plt.savefig(fname=os.path.join(path_results,"logmean-k_and_logstd-k__v__logN.svg"), format="svg")
-
-
-
-
-
-
-
-# Plot histogram for N=1 (outside to get bins for pdf)
-# -----
-fig, ax = plt.subplots(1,1)
-perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-1.npy"))
-count, bins_1, ignored = ax.hist(x=perm_effe_2[0,:], bins=75, density=True, align='mid', label=r"$N=1$", alpha=0.4)
-
-# ...and compare with log-normal distribution that edges are drawn from 
-# # -----
-
-import configure
-mu = configure.Configure(num_nodes=1).mean
-sigma = configure.Configure(num_nodes=1).sd
-x = numpy.linspace(min(bins_1), max(bins_1), 1_000)
-pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi))) 
-ax.plot(x, pdf, linewidth=2, color='r', label=r"pdf")
-
-ax.set_xlabel(r"$k^{00}$")
-ax.set_ylabel(r"Probability density")
-
-ax.legend()
-plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm_N=1.svg"), format="svg")
