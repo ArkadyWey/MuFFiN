@@ -7,7 +7,7 @@ import utils_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_param-dist_structure-comparison")
+path_results = os.path.join(".","results/results_experiment_param-dist_structure-comparison")
 
 if not os.path.exists(path_results):
     os.mkdir(path_results)
@@ -16,8 +16,8 @@ parameter_name = "depo"
 
 # Paths to param experiment results for each structure
 path_results_square_struc = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
-path_results_hexag_struc = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-5k")
-path_results_rand_struc = os.path.join(".","results_experiment_param-dist_random-structure_reps-50k")
+path_results_hexag_struc = os.path.join("."," results_experiment_param-dist_hexag-structure_reps-5k")
+path_results_rand_struc = os.path.join(".","  results_experiment_param-dist_random-structure_reps-50k")
 
 paths_results = [
     path_results_square_struc,

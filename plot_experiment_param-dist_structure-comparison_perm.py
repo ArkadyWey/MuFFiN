@@ -7,7 +7,7 @@ import utils_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_param-dist_structure-comparison")
+path_results = os.path.join(".","results/results_experiment_param-dist_structure-comparison")
 
 if not os.path.exists(path_results):
     os.mkdir(path_results)

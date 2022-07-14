@@ -4,7 +4,7 @@ import os
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_kj_asymp")
+path_results = os.path.join(".","results/results_kj_asymp")
 
 N = numpy.linspace(1,10,10)**2
 N_smooth = numpy.linspace(N[0],N[-1],1000)

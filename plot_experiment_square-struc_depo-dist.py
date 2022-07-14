@@ -7,7 +7,7 @@ import utils_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
+path_results = os.path.join(".","results/results_experiment_param-dist_square-structure_reps-50k")
 
 #num_nodes_list = [16,25,36,49,64,81,100]
 #num_nodes_list = [1,4,9,16,25,36,49,64,81,100]

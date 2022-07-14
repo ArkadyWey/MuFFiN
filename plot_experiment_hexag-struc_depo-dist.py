@@ -8,7 +8,7 @@ import utils_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-5k_new")
+path_results = os.path.join(".","results/results_experiment_param-dist_hexag-structure_reps-5k_new")
 
 #num_nodes_list = [2,8,18,32,50,72,98,128,162,200]
 num_nodes_list = [2,18,50,98]

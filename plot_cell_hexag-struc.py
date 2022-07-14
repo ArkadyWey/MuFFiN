@@ -9,7 +9,7 @@ import configure
 
 # Parameters 
 # ---------
-path_results = "results_hexag"
+path_results = "results/results_hexag"
 
 
 # Arrays for first plot:

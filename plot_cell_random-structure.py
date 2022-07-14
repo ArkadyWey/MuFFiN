@@ -9,7 +9,7 @@ from matplotlib.lines import Line2D
 
 # Parameters 
 # ---------
-path_results = "results_delaun"
+path_results = "results/results_delaun"
 
 
 # Arrays for first plot:

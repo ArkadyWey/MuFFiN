@@ -4,7 +4,7 @@ import numpy
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results_preprocess_2D")
+path_results = os.path.join(".","results/results_preprocess_2D")
 
 
 # Load variables
