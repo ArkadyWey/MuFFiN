@@ -25,6 +25,7 @@ depo_effe_2 = numpy.zeros(shape=(num_tests, num_reps)) # place to store result
 # depo_effe_2[t,r] = effective deposition for repeat repeats[r] of test tests[t]
 
 for t in range(num_tests):
+    N = num_nodes_list[t]
     for r in range(num_reps):  
         print("Repeat {} of {}.".format(r,num_reps))
         # Get correct number of nodes 
@@ -60,11 +61,9 @@ for t in range(num_tests):
     path_results = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-p1k")
     if not os.path.exists(path_results):
         os.mkdir(path_results)
-
-    N = num_nodes_list[t]
     
-    numpy.save(file=os.path.join(path_results,"perm_effe_2_N-{}.npy".format(N)), arr=perm_effe_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"depo_effe_2_N-{}.npy".format(N)), arr=depo_effe_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"perm_effe_1_N-{}.npy".format(N)), arr=perm_effe_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_effe_1_N-{}.npy".format(N)), arr=depo_effe_1, allow_pickle=True, fix_imports=True)
 
 
 end_time = datetime.datetime.now()
