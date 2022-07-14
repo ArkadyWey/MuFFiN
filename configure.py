@@ -59,27 +59,27 @@ class Configure():
         initialisation, which is prescribed in the parameters 
         dictionary.
         """
-        if self.initialisation == "square-struc_prescribed":
-            cond_init_4 = initial_conditions_2D.grid_prescribed(num_nodes=self.num_nodes,
+        if self.initialisation == "4-reg_prescribed":
+            cond_init_4 = initial_conditions_2D.four_reg_prescribed(num_nodes=self.num_nodes,
                                                                      num_refs=self.num_refs)
-        elif self.initialisation == "square-struc":
-            cond_init_4 = initial_conditions_2D.grid_log_normal(num_nodes=self.num_nodes, 
+        elif self.initialisation == "4-reg":
+            cond_init_4 = initial_conditions_2D.four_reg(num_nodes=self.num_nodes, 
                                                                      num_refs=self.num_refs, 
                                                                      mean=self.mean,
                                                                      sd=self.sd)
-        elif self.initialisation == "rand-struc":
-            cond_init_4 = initial_conditions_2D.random_structure_uniform(num_nodes=self.num_nodes,
+        elif self.initialisation == "6-ireg":
+            cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
                                                                          num_refs=self.num_refs)
 
-        elif self.initialisation == "hexag-struc":
-            cond_init_4 = initial_conditions_2D.hexag_struc(num_nodes=self.num_nodes, 
+        elif self.initialisation == "6-reg":
+            cond_init_4 = initial_conditions_2D.six_reg(num_nodes=self.num_nodes, 
                                                             num_refs=self.num_refs, 
                                                             mean=self.mean, 
                                                             sd=self.sd)
 
         else: 
-            raise Exception("""initialisation must be: square-struc_prescribed or \
-                               square-struc or rand-struc or hexag-struc.""")
+            raise Exception("""initialisation must be: 4-reg_prescribed or \
+                               4-reg or 6-ireg or 6-reg.""")
 
         return cond_init_4
 

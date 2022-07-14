@@ -2,7 +2,7 @@ import numpy
 
 import cells 
 
-def grid_prescribed(num_nodes: int, num_refs: int):
+def four_reg_prescribed(num_nodes: int, num_refs: int):
     """
     - num_nodes: int
         Number of nodes in the cell.
@@ -132,7 +132,7 @@ def grid_prescribed(num_nodes: int, num_refs: int):
 
 
 
-def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
+def four_reg(num_nodes: int, num_refs: int, mean: float, sd: float):
     """
     - num_nodes: int
         Number of nodes in the cell. Must be square number.
@@ -242,7 +242,7 @@ def grid_log_normal(num_nodes: int, num_refs: int, mean: float, sd: float):
 
 
 
-def random_structure_uniform(num_nodes: int, num_refs: int):
+def six_ireg(num_nodes: int, num_refs: int):
     """
     - Get specified number of (x,y) points within a unit cell. 
     - Calculate simplices of delauney triangulation. 
@@ -262,7 +262,7 @@ def random_structure_uniform(num_nodes: int, num_refs: int):
     return cond_init_4
 
 
-def hexag_struc(num_nodes: int, num_refs: int, mean: float, sd: float):
+def six_reg(num_nodes: int, num_refs: int, mean: float, sd: float):
     """
     - Get specified number of (x,y) points within a unit cell. 
     - Calculate simplices of delauney triangulation. 
