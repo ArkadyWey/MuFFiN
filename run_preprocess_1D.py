@@ -13,7 +13,7 @@ import os
 
 import preprocess_1D
 
-def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
+def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     """
     """
 
@@ -71,7 +71,7 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length,v):
                                                                  delt_4=delt_4, 
                                                                  heav_4=heav_4, 
                                                                  cond_init_3=cond_init_3, 
-                                                                 v=v)
+                                                                 length=length)
     #print("perm_prep_1[:]: \n{}".format(perm_prep_1[0]))
     #print("depo_prep_1[:]: \n{}".format(depo_prep_1[-1]))
     return (perm_prep_1,depo_prep_1)
@@ -90,10 +90,10 @@ if __name__ == "__main__":
     num_refs  = len(refs_1)
     num_concs = 1_001
     num_nodes = 1
-    length    = 1.0
     alpha     = 0.1
-    v         = 1.0 #2.0 # Sum of volumes of nodes in cell
-    phi       = 0.5 # TODO: Define this properly
+    v         = 0.5 #2.0 # Sum of volumes of nodes in cell
+    length    = 1.0
+    phi       = v/length # TODO: Define this properly
     
     # Concentrations to tabulate 
     conc_max_discs_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
@@ -168,8 +168,7 @@ if __name__ == "__main__":
                                     adhe_init_3=adhe_init_3,
                                     alpha=alpha,
                                     refs_1=refs_1,
-                                    length=length,
-                                    v=v)
+                                    length=length)
     
 
     # Save results 

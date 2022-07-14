@@ -4,11 +4,11 @@
     "num_concs"      : 11,
     "num_nodes"      : 1,
     "alpha"          : 1.0,
-    "v"              : 1.0, 
-    "phi"            : 0.5, 
+    "v"              : 0.5,  
     "l1"             : 1.07456993183,
     "l2"             : 1.86120971822, 
     "mean"           : 0.5, 
     "sd"             : 0.3,
-    "initialisation" : "hexag-struc"
+    "initialisation" : "hexag-struc",
+    "_comments"      : "l1 for hex: 1.07456993183, l2 for hex: 1.86120971822"
 }

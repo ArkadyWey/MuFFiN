@@ -9,10 +9,10 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-num_reps = 50_000 # number of times to repeat a test
+num_reps = 100 # number of times to repeat a test
 
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
-num_nodes_list = [1]
+num_nodes_list = [2,8,18,32]
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
@@ -45,22 +45,33 @@ for t in range(num_tests):
         perm_effe_2[t,r] = perm_effe
         depo_effe_2[t,r] = depo_effe
 
+    mean_perm = numpy.mean(perm_effe_2[t,:])
+    mean_depo = numpy.mean(depo_effe_2[t,:])
+    print("mean_perm:{}".format(mean_perm))
+    print("mean_depo:{}".format(mean_depo))
+
+    # Get array for this N
+    # -----
+    perm_effe_1 = perm_effe_2[t,:]
+    depo_effe_1 = depo_effe_2[t,:]
+
+    # Save results at current N
+    # -----
+    path_results = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-p1k")
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
+
+    N = num_nodes_list[t]
+    
+    numpy.save(file=os.path.join(path_results,"perm_effe_2_N-{}.npy".format(N)), arr=perm_effe_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_effe_2_N-{}.npy".format(N)), arr=depo_effe_1, allow_pickle=True, fix_imports=True)
+
+
 end_time = datetime.datetime.now()
 print("sim_time:\n {}".format(end_time-begin_time))
 
-mean_perm = numpy.mean(perm_effe_2[0,:])
-mean_depo = numpy.mean(depo_effe_2[0,:])
 
-print("mean_perm:{}".format(mean_perm))
-print("mean_depo:{}".format(mean_depo))
 
-# Save results 
-# -----
-path_results = os.path.join(".","results_experiment_permdist_reps-50k")
-if not os.path.exists(path_results):
-    os.mkdir(path_results)
 
-N = num_nodes_list[0]
- 
-numpy.save(file=os.path.join(path_results,"perm_effe_2_N-{}.npy".format(N)), arr=perm_effe_2, allow_pickle=True, fix_imports=True)
-numpy.save(file=os.path.join(path_results,"depo_effe_2_N-{}.npy".format(N)), arr=depo_effe_2, allow_pickle=True, fix_imports=True)
+
+

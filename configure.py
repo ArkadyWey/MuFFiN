@@ -28,7 +28,6 @@ class Configure():
         self.num_concs      = parameters["num_concs"]
         self.alpha          = parameters["alpha"]
         self.v              = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
-        self.phi            = parameters["phi"]  # TODO: Define this properly
         self.l1             = parameters["l1"]
         self.l2             = parameters["l2"]
         self.mean           = parameters["mean"] 
@@ -42,7 +41,7 @@ class Configure():
         self.conc_max_disc_1 = numpy.linspace(0, 1.0, self.num_concs)
         self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
                                                            num_dims=self.num_dims)
-
+        self.phi             = self.v/(numpy.prod(self.leng_1))
 
 
         # Get initial conditions: conductance and adhesivity 

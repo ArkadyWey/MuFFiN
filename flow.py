@@ -153,7 +153,7 @@ def get_reaction_parameter_at_time(depo_1,dpdx_1):
         The reaction parameter at a set of positions, 
         so that psi_1[i_x] = reaction parameter psi at position[i_x] = j[i_x]*dpdx[i_x].
     """
-    psi_1 = depo_1*dpdx_1
+    psi_1 = -depo_1*dpdx_1
     return psi_1
 
 
@@ -217,7 +217,7 @@ def get_concentration_at_time_and_position(conc_2,velo_1,psi_2,phi,conc_in,dt,dx
             psi_prev     = psi_2[i_x,i_t-1]
             velo_prev    = velo_1[i_t-1] 
             
-            conc = conc_prev - (velo_prev/phi)*(dt/dx)*(conc_prev-conc_prev_m1) - psi_prev*dt*conc_prev
+            conc = conc_prev - (velo_prev/phi)*(dt/dx)*(conc_prev-conc_prev_m1) - (psi_prev/phi)*dt*conc_prev
             #print("conc_prev: \n{}".format(conc_prev))
             #print("reaction: \n{}".format(psi_prev))
             #if psi_prev*dt*conc_prev < 0:
