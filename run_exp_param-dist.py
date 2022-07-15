@@ -41,8 +41,8 @@ num_tests = len(num_nodes_list) # Number of different cell sizes to test
 l1_list = []
 l2_list = []
 for N in num_nodes_list:
-    l1_list.append(N)
-    l2_list.append(N) 
+    l1_list.append(1.07456993183*numpy.sqrt(N))
+    l2_list.append(1.86120971822*numpy.sqrt(N)) 
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 # Main
