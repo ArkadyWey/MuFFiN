@@ -7,20 +7,21 @@ import preprocess_2D
 
 
 
-def main(num_nodes):
+def main(num_nodes: int, l1: int, l2: int):
     """
     """
-
     # Get parameters needed to find perm and depo
     # -----
-    conf = configure.Configure(num_nodes=num_nodes)
+    conf = configure.Configure(num_nodes=num_nodes, 
+                               l1=l1,
+                               l2=l2)
     
     conc_max_disc_1 = conf.conc_max_disc_1 
     cond_init_4     = conf.cond_init_4 
     adhe_init_4     = conf.adhe_init_4 
     alpha           = conf.alpha 
     refs_2          = conf.refs_2 
-    leng_1          = conf.leng_1 
+    leng_1          = conf.leng_1
 
 
 
@@ -79,10 +80,13 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 2
+    l1        = 1.0
+    l2        = 1.0
+    leng_1    = numpy.array([l1,l2])
     
     # Get permeability and deposition parameter
     # -----
-    perm_prep_3, depo_prep_2, conc_max_disc_1 = main(num_nodes=num_nodes)
+    perm_prep_3, depo_prep_2, conc_max_disc_1 = main(num_nodes=num_nodes, l1=l1, l2=l2)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))

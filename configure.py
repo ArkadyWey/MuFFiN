@@ -9,14 +9,17 @@ import initial_conditions_2D
 class Configure():
     """
     """ 
-    def __init__(self, num_nodes: int):
+    def __init__(self, num_nodes: int, 
+                       l1: float, 
+                       l2: float):
         """
         """      
 
         # Get class parameters 
         # -----
         self.num_nodes    = num_nodes
-        
+        self.l1           = l1
+        self.l2           = l2
         
         # Get input parameters from parameters dictionary or class parameters
         # -----
@@ -28,8 +31,6 @@ class Configure():
         self.num_concs      = parameters["num_concs"]
         self.alpha          = parameters["alpha"]
         self.v              = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
-        self.l1             = parameters["l1"]
-        self.l2             = parameters["l2"]
         self.mean           = parameters["mean"] 
         self.sd             = parameters["sd"]
         self.initialisation = parameters["initialisation"]
