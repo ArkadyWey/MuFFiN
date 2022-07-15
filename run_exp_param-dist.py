@@ -18,9 +18,13 @@ num_reps = 10 # number of times to repeat a test
 
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 num_nodes_list = [2]
-l1_list = [1.0]
-l2_list = [1.0]
+num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
+l1_list = []
+l2_list = []
+for N in num_tests:
+    l1_list.append(N)
+    l2_list.append(N) 
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 # Main
