@@ -4,7 +4,7 @@ from scipy import spatial
 
 
 
-class Cell_2D_Grid:
+class Cell_2D_four_reg():
     """
     Class for the cell of a 2D grid network.
     In cell, we form the intra adjacency matrix, which is the cell adjacency matrix, 
@@ -65,7 +65,7 @@ class Cell_2D_Grid:
 
   
 
-class Cell_2D_Random_Structure():
+class Cell_2D_six_ireg():
     """
     """ 
     def __init__(self, num_nodes: int,
@@ -363,7 +363,7 @@ class Cell_2D_Random_Structure():
 
 
 
-class Cell_2D_Hexagonal_Structure():
+class Cell_2D_six_reg():
     """
     """ 
     def __init__(self, num_nodes: int,

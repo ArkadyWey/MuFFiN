@@ -176,8 +176,8 @@ def four_reg(num_nodes: int, num_refs: int, mean: float, sd: float):
     #A = networkx.adjacency_matrix(G)
 
     # Get cell class 
-    cell = cells.Cell_2D_Grid(num_rows_cell=num_nodes_row, 
-                              num_cols_cell=num_nodes_row)
+    cell = cells.Cell_2D_four_reg(num_rows_cell=num_nodes_row, 
+                                  num_cols_cell=num_nodes_row)
 
     # Get adjacency matrix with ones 
     adj_2 = cell.adj_intra_2
@@ -253,9 +253,9 @@ def six_ireg(num_nodes: int, num_refs: int):
     """
     num_dims  = 2
 
-    cell = cells.Cell_2D_Random_Structure(num_nodes=num_nodes,
-                                          num_refs=num_refs,
-                                          num_dims=num_dims)
+    cell = cells.Cell_2D_six_ireg(num_nodes=num_nodes,
+                                  num_refs=num_refs,
+                                  num_dims=num_dims)
 
     cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
 
@@ -273,11 +273,11 @@ def six_reg(num_nodes: int, num_refs: int, mean: float, sd: float):
     """
     num_dims  = 2
 
-    cell = cells.Cell_2D_Hexagonal_Structure(num_nodes=num_nodes,
-                                             num_refs=num_refs,
-                                             num_dims=num_dims, 
-                                             mean=mean, 
-                                             sd=sd)
+    cell = cells.Cell_2D_six_reg(num_nodes=num_nodes,
+                                 num_refs=num_refs,
+                                 num_dims=num_dims, 
+                                 mean=mean, 
+                                 sd=sd)
 
     cond_init_4 = cell.cond_init_4
 
