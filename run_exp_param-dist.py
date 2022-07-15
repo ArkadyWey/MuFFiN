@@ -22,13 +22,17 @@ if not os.path.exists(path_results):
 parser = argparse.ArgumentParser(description="Input parameters")
 parser.add_argument("-Ns", "--num_nodes_list", dest="num_nodes_list", nargs="+", required=True,
                     help="num_nodes values for exp_param-dist", type=int)
+
+parser.add_argument("-r", "--num_reps", dest="num_reps", required=True,
+                    help="number of repeats at each N", type=int)
+
 args = parser.parse_args()
 
 num_nodes_list = args.num_nodes_list
 #num_nodes_list = [2,8,18]
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 
-num_reps = 100 # number of times to repeat a test
+num_reps = args.num_reps#100 # number of times to repeat a test
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
