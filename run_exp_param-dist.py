@@ -9,7 +9,7 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-path_results = os.path.join(".","results/results_experiment_param-dist_hexag-structure_reps-p1k")
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-5k")
 if not os.path.exists(path_results):
     os.mkdir(path_results)
 
