@@ -2,7 +2,7 @@
     "max_ref_dist"   : 1,
     "num_dims"       : 2,
     "num_concs"      : 11,
-    "alpha"          : 1.0,
+    "alpha"          : 0.1,
     "v"              : 0.5,  
     "mean"           : 0.5, 
     "sd"             : 0.3,

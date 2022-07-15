@@ -67,8 +67,8 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                    heav_5=heav_5,
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
-    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
     return (perm_3, depo_2, conc_max_disc_1)
     
@@ -79,9 +79,9 @@ if __name__ == "__main__":
 
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 2
-    l1        = 1.0
-    l2        = 1.0
+    num_nodes = 18
+    l1        = numpy.sqrt(18)
+    l2        = numpy.sqrt(18)
     leng_1    = numpy.array([l1,l2])
     
     # Get permeability and deposition parameter
