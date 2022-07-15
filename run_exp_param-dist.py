@@ -1,9 +1,14 @@
 import numpy
 import os
 import datetime
+import argparse
 
 import run_preprocess_2D
 
+"""
+To run in parallel: 
+parallel python3 run_exp_param-dist.py -Ns ::: 2 8 18 etc...
+"""
 
 begin_time = datetime.datetime.now()
 
@@ -14,15 +19,22 @@ if not os.path.exists(path_results):
     os.mkdir(path_results)
 
 
-num_reps = 10 # number of times to repeat a test
+parser = argparse.ArgumentParser(description="Input parameters")
+parser.add_argument("-Ns", "--num_nodes_list", dest="num_nodes_list", nargs="+", required=True,
+                    help="num_nodes values for exp_param-dist", type=int)
+args = parser.parse_args()
 
+num_nodes_list = args.num_nodes_list
+#num_nodes_list = [2,8,18]
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
-num_nodes_list = [2]
+
+num_reps = 100 # number of times to repeat a test
+
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
 l1_list = []
 l2_list = []
-for N in num_tests:
+for N in num_nodes_list:
     l1_list.append(N)
     l2_list.append(N) 
 
@@ -37,6 +49,7 @@ depo_effe_2 = numpy.zeros(shape=(num_tests, num_reps)) # place to store result
 
 for t in range(num_tests):
     num_nodes = num_nodes_list[t]
+    print("Running for N={}.".format(num_nodes))
     l1 = l1_list[t]
     l2 = l2_list[t]
 
