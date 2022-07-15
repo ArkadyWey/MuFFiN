@@ -32,7 +32,7 @@ num_reps = args.num_reps#100 # number of times to repeat a test
 
 path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}".format(num_reps))
 if not os.path.exists(path_results):
-    os.mkdir(path_results)
+    os.makedirs(path_results)
 
 
 
