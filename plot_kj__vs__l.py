@@ -4,7 +4,7 @@ import os
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_kj_asymp")
+path_results = os.path.join(".","results/results_exp_kj__vs__Nl")
 
 l = numpy.linspace(1,10,10)
 l_smooth = numpy.linspace(l[0],l[-1],1000)
