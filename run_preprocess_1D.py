@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     # Save results 
     # -----
-    path_results = os.path.join(".","results_preprocess_1D")
+    path_results = os.path.join(".","results/results_preprocess_1D")
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 

@@ -9,6 +9,11 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
+path_results = os.path.join(".","results/results_experiment_param-dist_hexag-structure_reps-p1k")
+if not os.path.exists(path_results):
+    os.mkdir(path_results)
+
+
 num_reps = 10 # number of times to repeat a test
 
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
@@ -58,11 +63,7 @@ for t in range(num_tests):
     depo_effe_1 = depo_effe_2[t,:]
 
     # Save results at current N
-    # -----
-    path_results = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-p1k")
-    if not os.path.exists(path_results):
-        os.mkdir(path_results)
-    
+    # -----   
     numpy.save(file=os.path.join(path_results,"perm_effe_1_N-{}.npy".format(num_nodes)), arr=perm_effe_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_effe_1_N-{}.npy".format(num_nodes)), arr=depo_effe_1, allow_pickle=True, fix_imports=True)
 
