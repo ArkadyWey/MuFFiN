@@ -257,8 +257,9 @@ def six_ireg(num_nodes: int, num_refs: int):
                                   num_refs=num_refs,
                                   num_dims=num_dims)
 
-    cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
-
+    #cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
+    cond_init_4 = cell.cond_init_4
+    
     return cond_init_4
 
 
