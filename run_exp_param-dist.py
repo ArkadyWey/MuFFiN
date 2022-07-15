@@ -14,11 +14,6 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-5k")
-if not os.path.exists(path_results):
-    os.mkdir(path_results)
-
-
 parser = argparse.ArgumentParser(description="Input parameters")
 parser.add_argument("-Ns", "--num_nodes_list", dest="num_nodes_list", nargs="+", required=True,
                     help="num_nodes values for exp_param-dist", type=int)
@@ -33,6 +28,13 @@ num_nodes_list = args.num_nodes_list
 #num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 
 num_reps = args.num_reps#100 # number of times to repeat a test
+
+
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}".format(num_reps))
+if not os.path.exists(path_results):
+    os.mkdir(path_results)
+
+
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
