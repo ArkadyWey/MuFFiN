@@ -6,6 +6,6 @@
     "v"              : 0.5,  
     "mean"           : 0.5, 
     "sd"             : 0.3,
-    "initialisation" : "6-reg",
+    "initialisation" : "4-reg",
     "_comments"      : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822"
 }
