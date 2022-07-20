@@ -35,11 +35,11 @@ path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}".f
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 
-if not os.path.exists(os.path.join(path_results,"cond")):
-    os.makedirs(os.path.join(path_results,"cond"))
-
-if not os.path.exists(os.path.join(path_results,"adhe")):
-    os.makedirs(os.path.join(path_results,"adhe"))
+#if not os.path.exists(os.path.join(path_results,"cond")):
+#    os.makedirs(os.path.join(path_results,"cond"))
+#
+#if not os.path.exists(os.path.join(path_results,"adhe")):
+#    os.makedirs(os.path.join(path_results,"adhe"))
 
 
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
