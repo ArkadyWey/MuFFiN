@@ -2,10 +2,10 @@
     "max_ref_dist"   : 1,
     "num_dims"       : 2,
     "num_concs"      : 11,
-    "alpha"          : 0.1,
+    "alpha"          : 0.579841,
     "v"              : 0.5,  
     "mean"           : 0.5, 
     "sd"             : 0.3,
-    "initialisation" : "6-ireg",
-    "_comments"      : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822"
+    "initialisation" : "4-reg",
+    "_comments"      : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822, alpha: 1.0/1.72461=0.579841"
 }
