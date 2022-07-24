@@ -29,10 +29,10 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                             cond_init_4=cond_init_4, 
                                                                             adhe_init_4=adhe_init_4, 
                                                                             alpha=alpha)
-    r = 0
-    m = 0
+    #r = 0
+    #m = 0
     
-    print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,r,0]))
+    #print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,r,0]))
     #print("adhe_tabl_5[0,:,:,0,0]: \n{}".format(adhe_tabl_5[0,:,:,0,0]))
     
     
@@ -48,14 +48,14 @@ def main(num_nodes: int, l1: int, l2: int):
     
     csol_3 = preprocess_2D.get_cell_solution(lhs_3=lhs_3, 
                                              rhs_4=rhs_4)
-    print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
+    #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
 
 
 
     delt_5 = preprocess_2D.get_delta(csol_3=csol_3, 
                                      refs_2=refs_2, 
                                      leng_1=leng_1)
-    print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[-1,:,:,r,m]))
+    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[-1,:,:,r,m]))
 
 
 
@@ -76,8 +76,8 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                    heav_5=heav_5,
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
-    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
     return (perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5)
     
