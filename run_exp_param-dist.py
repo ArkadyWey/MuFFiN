@@ -74,7 +74,7 @@ for t in range(num_tests):
         
         # Get effective permeability in 0,0 direction and adhesivity in 0 diresction
         # -----
-        perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
+        perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
                                                                                                    l1=l1,
                                                                                                    l2=l2)
         # Get right direction
@@ -90,7 +90,7 @@ for t in range(num_tests):
         #numpy.save(file=os.path.join(path_results+"/cond","cond_init_4_N-{}_R-{}.npy".format(num_nodes, r)), arr=cond_init_4, allow_pickle=True, fix_imports=True)
         #numpy.save(file=os.path.join(path_results+"/adhe","adhe_tabl_5_N-{}_R-{}.npy".format(num_nodes, r)), arr=adhe_tabl_5, allow_pickle=True, fix_imports=True)
 
-        count_adhe = utils_preprocess_2D.count_num_edges_blocked(adhe_tabl_5=adhe_tabl_5, heav_5=heav_5)
+        count_adhe = utils_preprocess_2D.count_num_edges_blocked(adhe_tabl_5=adhe_tabl_5, heav_5=heav_5, delt_5=delt_5, cond_init_4=cond_init_4)
         count_adhe_2[t,r] = count_adhe
 
     mean_perm = numpy.mean(perm_effe_2[t,:])

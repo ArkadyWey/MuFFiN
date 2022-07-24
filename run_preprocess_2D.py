@@ -29,7 +29,10 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                             cond_init_4=cond_init_4, 
                                                                             adhe_init_4=adhe_init_4, 
                                                                             alpha=alpha)
-    #print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,0,1]))
+    r = 0
+    m = 0
+    
+    print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,r,0]))
     #print("adhe_tabl_5[0,:,:,0,0]: \n{}".format(adhe_tabl_5[0,:,:,0,0]))
     
     
@@ -41,25 +44,30 @@ def main(num_nodes: int, l1: int, l2: int):
     #print("rhs_4[0,:,:,0]: \n{}".format(rhs_4[0,:,:,0]))
     #print("lhs_3[0,:,:]: \n{}".format(lhs_3[0,:,:]))
     
-    
+
     
     csol_3 = preprocess_2D.get_cell_solution(lhs_3=lhs_3, 
                                              rhs_4=rhs_4)
-    #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
+    print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
 
 
 
     delt_5 = preprocess_2D.get_delta(csol_3=csol_3, 
                                      refs_2=refs_2, 
                                      leng_1=leng_1)
-    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[0,:,:,0,0]))
+    print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[-1,:,:,r,m]))
 
 
 
     heav_5 = preprocess_2D.get_heaviside(delt_5=delt_5)
     #print("heav_5[0,:,:,0,0]: \n{}".format(heav_5[0,:,:,0,0]))
     
-    print(-numpy.mean( a=(-delt_5), axis=None))
+    #print(-numpy.mean( a=(-delt_5[-1,:,:,0,0]), axis=None))
+
+
+
+    #print(-numpy.mean( a=-delt_5[-1,:,:,r,m]*(heav_5[-1,:,:,r,m]), axis=None))
+    #print(-delt_5[-1,:,:,r,m]*(heav_5[-1,:,:,r,m]))
 
     perm_3, depo_2 = preprocess_2D.get_permeability_and_deposition(refs_2=refs_2,
                                                                    cond_tabl_5=cond_tabl_5,
@@ -71,7 +79,7 @@ def main(num_nodes: int, l1: int, l2: int):
     print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
 
-    return (perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5)
+    return (perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5)
     
 if __name__ == "__main__":
 
@@ -87,7 +95,7 @@ if __name__ == "__main__":
     
     # Get permeability and deposition parameter
     # -----
-    perm_prep_3, depo_prep_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5 = main(num_nodes=num_nodes, 
+    perm_prep_3, depo_prep_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5 = main(num_nodes=num_nodes, 
                                                                                        l1=l1, 
                                                                                        l2=l2)
 
@@ -105,3 +113,5 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"cond_init_4.npy"),     arr=cond_init_4,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_tabl_5.npy"),     arr=adhe_tabl_5,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"heav_5.npy"),          arr=heav_5,          allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"delt_5.npy"),          arr=delt_5,          allow_pickle=True, fix_imports=True)
