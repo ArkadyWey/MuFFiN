@@ -2,6 +2,7 @@ import numpy
 import os
 import datetime
 import argparse
+import json 
 
 import run_preprocess_2D
 import utils_preprocess_2D
@@ -15,6 +16,9 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
+file_parameters = open("parameters.json")
+parameters      = json.load(file_parameters)
+
 parser = argparse.ArgumentParser(description="Input parameters")
 parser.add_argument("-Ns", "--num_nodes_list", dest="num_nodes_list", nargs="+", required=True,
                     help="num_nodes values for exp_param-dist", type=int)
@@ -31,7 +35,7 @@ num_nodes_list = args.num_nodes_list
 num_reps = args.num_reps#100 # number of times to repeat a test
 
 
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}".format(num_reps))
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}_sd-{}".format(num_reps,parameters["sd"]))
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 
