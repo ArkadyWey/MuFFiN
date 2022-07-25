@@ -29,10 +29,9 @@ class Configure():
         self.max_ref_dist   = parameters["max_ref_dist"]
         self.num_dims       = parameters["num_dims"]
         self.num_concs      = parameters["num_concs"]
-        self.alpha          = parameters["alpha"]
         self.v              = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
-        self.mean           = parameters["mean"] 
-        self.sd             = parameters["sd"]
+        self.mu             = parameters["mu"] 
+        self.sigma          = parameters["sigma"]
         self.initialisation = parameters["initialisation"]
 
 
@@ -52,8 +51,27 @@ class Configure():
         self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
 
         self.cond_init_4 = self.get_initial_conductance()
+    
+        # Get alpha
+        # -----------
+        self.alpha = self.get_alpha()
+        print(self.alpha)
+    
+    def get_alpha(self):
+        """
+        Given the conductance distribution's mu and sigma variables, 
+        get alpha. 
+        At the moment, we calculate alpha such that the incominig concentration, 
+        which is 1, blocks an edge with 50% chance. 
+        """
+        # Parameters 
+        # -----------
+        # Get actual mean of distribution
+        mean = numpy.exp(self.mu+(self.sigma**2)/2)
 
+        alpha = 1.0/mean
 
+        return alpha
     def get_initial_conductance(self):
         """
         The initial conductance depends on the parameter 
@@ -62,21 +80,21 @@ class Configure():
         """
         if self.initialisation == "4-reg_prescribed":
             cond_init_4 = initial_conditions_2D.four_reg_prescribed(num_nodes=self.num_nodes,
-                                                                     num_refs=self.num_refs)
+                                                                    num_refs=self.num_refs)
         elif self.initialisation == "4-reg":
             cond_init_4 = initial_conditions_2D.four_reg(num_nodes=self.num_nodes, 
-                                                                     num_refs=self.num_refs, 
-                                                                     mean=self.mean,
-                                                                     sd=self.sd)
+                                                         num_refs=self.num_refs, 
+                                                         mu=self.mu,
+                                                         sigma=self.sigma)
         elif self.initialisation == "6-ireg":
             cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
-                                                                         num_refs=self.num_refs)
+                                                         num_refs=self.num_refs)
 
         elif self.initialisation == "6-reg":
             cond_init_4 = initial_conditions_2D.six_reg(num_nodes=self.num_nodes, 
-                                                            num_refs=self.num_refs, 
-                                                            mean=self.mean, 
-                                                            sd=self.sd)
+                                                        num_refs=self.num_refs, 
+                                                        mu=self.mu, 
+                                                        sigma=self.sigma)
 
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \

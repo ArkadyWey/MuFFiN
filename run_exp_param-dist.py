@@ -35,7 +35,7 @@ num_nodes_list = args.num_nodes_list
 num_reps = args.num_reps#100 # number of times to repeat a test
 
 
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}_sd-{}".format(num_reps,parameters["sd"]))
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}_sigma-{}".format(num_reps,parameters["sigma"]))
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 

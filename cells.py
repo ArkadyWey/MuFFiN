@@ -369,16 +369,16 @@ class Cell_2D_six_reg():
     def __init__(self, num_nodes: int,
                        num_refs: int, 
                        num_dims: int, 
-                       mean: float, 
-                       sd: float):
+                       mu: float, 
+                       sigma: float):
         """
         """
         # Parameters
         self.num_nodes = num_nodes
         self.num_refs  = num_refs
         self.num_dims  = num_dims
-        self.mean      = mean
-        self.sd        = sd
+        self.mu        = mu
+        self.sigma     = sigma
 
         (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
 
@@ -662,12 +662,12 @@ class Cell_2D_six_reg():
             # Either i or j is in unit cell, such that r==0==s.
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
-                sample = numpy.random.lognormal(mean=self.mean, sigma=self.sd)
+                sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
                 cond_init_4[i_i,i_j,r_j,s_j]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
                 cond_init_4[i_j,i_i,-r_j,-s_j] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
-                sample = numpy.random.lognormal(mean=self.mean, sigma=self.sd)
+                sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
                 cond_init_4[i_j,i_i,r_i,s_i]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
                 cond_init_4[i_i,i_j,-r_i,-s_i] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
             else: 
