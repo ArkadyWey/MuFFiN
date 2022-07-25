@@ -55,8 +55,7 @@ class Configure():
         # Get alpha
         # -----------
         self.alpha = self.get_alpha()
-        print(self.alpha)
-    
+        
     def get_alpha(self):
         """
         Given the conductance distribution's mu and sigma variables, 
@@ -101,6 +100,7 @@ class Configure():
                                4-reg or 6-ireg or 6-reg.""")
 
         return cond_init_4
+
 
 
 if __name__ == "__main__":
