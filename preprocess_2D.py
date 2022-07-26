@@ -317,8 +317,8 @@ def get_heaviside(delt_5: numpy.ndarray):
         reference references[r] in direction directions[m] at concentration max-concentrations[k].
 
     """
-    
-    heav_5 = (delt_5>0).astype(int)
+    tol = 1E-5
+    heav_5 = (delt_5>tol).astype(int)
     
     # NOTE:
     # Use delta to make heaviside
