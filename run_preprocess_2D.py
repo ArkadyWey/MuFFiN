@@ -55,7 +55,7 @@ def main(num_nodes: int, l1: int, l2: int):
     delt_5 = preprocess_2D.get_delta(csol_3=csol_3, 
                                      refs_2=refs_2, 
                                      leng_1=leng_1)
-    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[-1,:,:,r,m]))
+    #print("delt_5[0,:,:,0,0]: \n{}".format(delt_5[-1,:,:,-1,0]))
 
 
 
@@ -77,9 +77,10 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
+    #print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
+    #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
 
-    return (perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5)
+    return (perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5)
     
 if __name__ == "__main__":
 
@@ -95,9 +96,9 @@ if __name__ == "__main__":
     
     # Get permeability and deposition parameter
     # -----
-    perm_prep_3, depo_prep_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5 = main(num_nodes=num_nodes, 
-                                                                                       l1=l1, 
-                                                                                       l2=l2)
+    perm_prep_3, depo_prep_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = main(num_nodes=num_nodes, 
+                                                                                     l1=l1, 
+                                                                                     l2=l2)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),     arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),     arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"cond_init_4.npy"),     arr=cond_init_4,     allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"cond_tabl_5.npy"),     arr=cond_tabl_5,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_tabl_5.npy"),     arr=adhe_tabl_5,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"heav_5.npy"),          arr=heav_5,          allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"delt_5.npy"),          arr=delt_5,          allow_pickle=True, fix_imports=True)
