@@ -8,8 +8,11 @@ import run_preprocess_2D
 import utils_preprocess_2D
 
 """
+To run in series:
+python3 run_exp_param-dist.py --num_reps 1000 -num_nodes 4
+
 To run in parallel: 
-parallel python3 run_exp_param-dist.py -Ns ::: 2 8 18 etc...
+parallel python3 run_exp_param-dist.py --num_nodes ::: 2 8 18...
 """
 
 begin_time = datetime.datetime.now()
@@ -29,13 +32,18 @@ parser.add_argument("-r", "--num_reps", dest="num_reps", required=True,
 args = parser.parse_args()
 
 num_nodes_list = args.num_nodes_list
-#num_nodes_list = [2,8,18]
-#num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
+# or... 
+# num_nodes_list = [2,8,18]
+# num_nodes_list = numpy.linspace(1,10,10,dtype=int)**2 # List of num nodes in cells to get distribution for
 
-num_reps = args.num_reps#100 # number of times to repeat a test
-
+num_reps = args.num_reps # number of times to repeat a test
+#  or ...
+# 100
 
 path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}_sigma-{}".format(num_reps,parameters["sigma"]))
+
+# Make results directories 
+# --------
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 
@@ -64,6 +72,10 @@ depo_effe_2 = numpy.zeros(shape=(num_tests, num_reps)) # place to store result
 
 count_adhe_2 = numpy.zeros(shape=(num_tests, num_reps))
 # count_adhe_2[t,r] = number of edges blocked for repeat repeats[r] of test tests[t]
+count_adhe_hori_2 = numpy.zeros(shape=(num_tests, num_reps))
+# count_adhe_2[t,r] = number of horizontal edges blocked for repeat repeats[r] of test tests[t]
+count_adhe_vert_2 = numpy.zeros(shape=(num_tests, num_reps))
+# count_adhe_2[t,r] = number of vertical edges blocked for repeat repeats[r] of test tests[t]
 
 for t in range(num_tests):
     num_nodes = num_nodes_list[t]
@@ -78,9 +90,9 @@ for t in range(num_tests):
         
         # Get effective permeability in 0,0 direction and adhesivity in 0 diresction
         # -----
-        perm_3, depo_2, conc_max_disc_1, cond_init_4, adhe_tabl_5, heav_5, delt_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
-                                                                                                   l1=l1,
-                                                                                                   l2=l2)
+        perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
+                                                                                                           l1=l1,
+                                                                                                           l2=l2)
         # Get right direction
         perm_effe = perm_3[0,0,0]
         depo_effe = depo_2[-1,0]
@@ -94,8 +106,11 @@ for t in range(num_tests):
         #numpy.save(file=os.path.join(path_results+"/cond","cond_init_4_N-{}_R-{}.npy".format(num_nodes, r)), arr=cond_init_4, allow_pickle=True, fix_imports=True)
         #numpy.save(file=os.path.join(path_results+"/adhe","adhe_tabl_5_N-{}_R-{}.npy".format(num_nodes, r)), arr=adhe_tabl_5, allow_pickle=True, fix_imports=True)
 
-        count_adhe = utils_preprocess_2D.count_num_edges_blocked(adhe_tabl_5=adhe_tabl_5, heav_5=heav_5, delt_5=delt_5, cond_init_4=cond_init_4)
-        count_adhe_2[t,r] = count_adhe
+        count_adhe, count_adhe_hori, count_adhe_vert = utils_preprocess_2D.count_num_edges_blocked(cond_tabl_5=cond_tabl_5, adhe_tabl_5=adhe_tabl_5, delt_5=delt_5, heav_5=heav_5)
+        count_adhe_2[t,r]      = count_adhe
+        count_adhe_hori_2[t,r] = count_adhe_hori
+        count_adhe_vert_2[t,r] = count_adhe_vert
+        #print(count_adhe)
 
     mean_perm = numpy.mean(perm_effe_2[t,:])
     mean_depo = numpy.mean(depo_effe_2[t,:])
@@ -108,6 +123,9 @@ for t in range(num_tests):
     depo_effe_1 = depo_effe_2[t,:]
 
     count_adhe_1 = count_adhe_2[t,:]
+    count_adhe_hori_1 = count_adhe_hori_2[t,:]
+    count_adhe_vert_1 = count_adhe_vert_2[t,:]
+    
 
     # Save results at current N
     # -----   
@@ -115,6 +133,8 @@ for t in range(num_tests):
     numpy.save(file=os.path.join(path_results,"depo_effe_1_N-{}.npy".format(num_nodes)), arr=depo_effe_1, allow_pickle=True, fix_imports=True)
     
     numpy.save(file=os.path.join(path_results,"count_adhe_1_N-{}.npy".format(num_nodes)), arr=count_adhe_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"count_adhe_hori_1_N-{}.npy".format(num_nodes)), arr=count_adhe_hori_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"count_adhe_vert_1_N-{}.npy".format(num_nodes)), arr=count_adhe_vert_1, allow_pickle=True, fix_imports=True)
 
 end_time = datetime.datetime.now()
 print("sim_time:\n {}".format(end_time-begin_time))
