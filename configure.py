@@ -51,11 +51,22 @@ class Configure():
         self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
 
         self.cond_init_4 = self.get_initial_conductance()
-    
+
+        # Get mean
+        # -----
+        self.mean = self.get_mean()
+
         # Get alpha
         # -----------
         self.alpha = self.get_alpha()
-        
+
+    def get_mean(self):
+        """
+        Get mean of resulting log-normal distribution.
+        """
+        mean = numpy.exp(self.mu+(self.sigma**2)/2)
+        return mean
+
     def get_alpha(self):
         """
         Given the conductance distribution's mu and sigma variables, 
@@ -65,10 +76,7 @@ class Configure():
         """
         # Parameters 
         # -----------
-        # Get actual mean of distribution
-        mean = numpy.exp(self.mu+(self.sigma**2)/2)
-
-        alpha = 1.0/mean
+        alpha = 1.0/self.mean
 
         return alpha
     def get_initial_conductance(self):

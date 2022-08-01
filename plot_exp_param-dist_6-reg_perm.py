@@ -7,7 +7,8 @@ import utils_plot_exp_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_experiment_param-dist_hexag-structure_reps-5k_new")
+path_results = os.path.join(".","results/results_exp_param-dist_6-reg_reps-5000")
+
 #path_results = os.path.join(".","results_experiment_permdist_reps-50k")
 
 #num_nodes_list = [2,8,18,32,50,72,98,128,162,200]
@@ -54,10 +55,10 @@ sd_1 = numpy.zeros(shape=num_tests)
 for t in range(num_tests):
     N = num_nodes_list[t]
 
-    perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
-    mean_1[t] = numpy.mean(a=perm_effe_2, axis=1)
+    perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
+    mean_1[t] = numpy.mean(a=perm_effe_2, axis=0)
     
-    sd_1[t]   = numpy.std(a=perm_effe_2, axis=1)
+    sd_1[t]   = numpy.std(a=perm_effe_2, axis=0)
 
 print(mean_1)
 

@@ -6,10 +6,12 @@ import utils_plot_exp_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_experiment_param-dist_square-structure_reps-50k")
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
 
 #num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list = [4,16,36,64,100]
+#num_nodes_list = [4,16,36,64,100]
+#num_nodes_list = [4,16,36,64]
+num_nodes_list = [1,4,16,36,64,100]
 num_tests = len(num_nodes_list)
 
 
@@ -39,7 +41,9 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+#num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+#num_nodes_list = [1,4,9,16,25,36,49,64,81]
+num_nodes_list = [1,25,100]
 num_tests = len(num_nodes_list)
 
 fig, ax = plt.subplots(1,1)
@@ -50,9 +54,9 @@ sd_1 = numpy.zeros(shape=num_tests)
 for t in range(num_tests):
     N = num_nodes_list[t]
 
-    perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
-    mean_1[t] = numpy.mean(a=perm_effe_2, axis=1)
-    sd_1[t]   = numpy.std(a=perm_effe_2, axis=1)
+    perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
+    mean_1[t] = numpy.mean(a=perm_effe_2, axis=0)
+    sd_1[t]   = numpy.std(a=perm_effe_2, axis=0)
 
 
 # Plot scatter for distribution means
@@ -106,15 +110,15 @@ plt.savefig(fname=os.path.join(path_results,"logmean-k_and_logstd-k__v__logN.svg
 # Plot histogram for N=1 (outside to get bins for pdf)
 # -----
 fig, ax = plt.subplots(1,1)
-perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-1.npy"))
-count, bins_1, ignored = ax.hist(x=perm_effe_2[0,:], bins=75, density=True, align='mid', label=r"$N=1$", alpha=0.4)
+perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-1.npy"))
+count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align='mid', label=r"$N=1$", alpha=0.4)
 
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
 import configure
-mu = configure.Configure(num_nodes=1).mean
-sigma = configure.Configure(num_nodes=1).sd
+mu = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).mean
+sigma = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).sd
 x = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi))) 
 ax.plot(x, pdf, linewidth=2, color='r', label=r"pdf")

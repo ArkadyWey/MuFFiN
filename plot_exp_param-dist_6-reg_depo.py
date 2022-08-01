@@ -8,10 +8,10 @@ import utils_plot_exp_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_experiment_param-dist_hexag-structure_reps-5k_new")
+path_results = os.path.join(".","results_old/results_experiment_param-dist_hexag-structure_reps-5k_new")
 
-#num_nodes_list = [2,8,18,32,50,72,98,128,162,200]
-num_nodes_list = [2,18,50,98]
+num_nodes_list = [2,8,18,32,50,72,98,128,162,200]
+#num_nodes_list = [2,18,50,98]
 num_tests = len(num_nodes_list)
 
 
@@ -55,10 +55,10 @@ sd_1 = numpy.zeros(shape=num_tests)
 for t in range(num_tests):
     N = num_nodes_list[t]
 
-    depo_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))
+    depo_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N)))
 
-    mean_1[t] = numpy.mean(a=depo_effe_2/numpy.sqrt(N), axis=1)
-    sd_1[t]   = numpy.std(a=depo_effe_2/numpy.sqrt(N), axis=1)
+    mean_1[t] = numpy.mean(a=depo_effe_2, axis=0)
+    sd_1[t]   =  numpy.std(a=depo_effe_2, axis=0)
 
 # Plot scatter of means and SDs
 fig, ax = plt.subplots(1,1)
