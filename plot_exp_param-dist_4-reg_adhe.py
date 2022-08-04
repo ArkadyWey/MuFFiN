@@ -6,6 +6,13 @@ from scipy import interpolate
 import configure
 import utils_plot_exp_param_dist
 
+import sys
+sys.path.append("/home/user/utils_python")
+import plotting
+
+#fm = matplotlib.font_manager.json_load(os.path.expanduser("~/.cache/matplotlib/fontlist-v310.json"))
+#fm.findfont("serif", rebuild_if_missing=False)
+
 # Parameters 
 # -----
 path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
@@ -18,8 +25,10 @@ path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000
 Density plot of number of edges blocked where each bar has width 1. 
 Then over the top of each histogram we fit a normal distribution.
 """
-num_nodes_list = [4,16,36,64,100]
+plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
+
+num_nodes_list = [4,16,36,64,100]
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -73,14 +82,14 @@ for i,N in enumerate(num_nodes_list):
     pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
     ax.plot(x, pdf, linewidth=2, label=r"$\sigma={}$".format(sigma))
 
-# Cleanup graph 
-# -------------
-ax.set_xlabel(r"$b^{0}_{H}$")
-ax.set_ylabel(r"Probability density")
-ax.set_xlim(left=-1.0,right=70.0)
-ax.set_ylim(bottom=0.0)
 
-ax.legend()
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$b^{0}_{H}$",
+                             y_label=r"Probability density",
+                             x_left=-1.0,
+                             x_right=70.0,
+                             y_bottom=0.0,
+                             y_top=None)
 
 fig.savefig(fname=os.path.join(path_results,"prob_density__v__adhe.svg"), format="svg")
 
@@ -100,6 +109,7 @@ are that we fit the distributions above to.
 num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
 num_tests = len(num_nodes_list)
 
+plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 # Get mean and standard deviation for each N
@@ -121,11 +131,13 @@ N_smooth = numpy.linspace(1,max(num_nodes_list),500)
 ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls="--", label=r"$\frac{N}{2}$")
 ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls="--", label=r"$\frac{\sqrt{N}}{2}$")
 
-# Cleanup graph
-ax.set_xlabel(r"$N$")
-ax.set_xlim(left=0,right=102.0)
-ax.set_ylim(bottom=0.0,top=52.0)
-ax.legend()
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$N$",
+                             y_label=r"Probability density",
+                             x_left=0.0,
+                             x_right=102.0,
+                             y_bottom=0.0,
+                             y_top=52.0)
 
 plt.savefig(fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")
 
