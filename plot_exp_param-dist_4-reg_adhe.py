@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import os 
 import numpy
 from scipy import interpolate
+import math
 
 import configure
 import utils_plot_exp_param_dist
@@ -82,6 +83,17 @@ for i,N in enumerate(num_nodes_list):
     pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
     ax.plot(x, pdf, linewidth=2, label=r"$\sigma={}$".format(sigma))
 
+# Fit binomial distribution
+# --------------------
+for i,N in enumerate(num_nodes_list):
+    ks = list(range(N+1))
+    p = 0.5
+    bs = []
+    for k in ks:
+        b = (math.comb(N, k) * p**k * (1-p)**(N-k))
+        bs.append(b)
+
+    ax.scatter(ks,bs, marker=".")
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$b^{0}_{H}$",
@@ -91,7 +103,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0.0,
                              y_top=None)
 
-fig.savefig(fname=os.path.join(path_results,"prob_density__v__adhe.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__adhe.svg"), format="svg")
 
 
 
@@ -133,12 +145,12 @@ ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls="--", label=r"$
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
-                             y_label=r"Probability density",
+                             y_label=None,
                              x_left=0.0,
                              x_right=102.0,
                              y_bottom=0.0,
                              y_top=52.0)
 
-plt.savefig(fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")
 
 
