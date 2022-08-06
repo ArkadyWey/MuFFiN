@@ -425,3 +425,87 @@ class Plot_DepoAprx_vs_Density():
         width = (max_val-min_val)/num_nodes
         return width
 
+
+
+
+class Plot_Perm_vs_Density():
+    """
+    Get parameters for probability distribution of 
+    the deposition parameter.
+    
+    Parameters 
+    ------
+    num_bins: int
+        - Number of bins we want the histogram to have.
+    conf: configure.Congfigure
+        - Configuration class holding parameters.
+    """
+    def __init__(self, num_bins,
+                       conf):
+        """
+        """
+        self.left_bin_edge, self.right_bin_edge = self.get_bin_edge_limits(min_val=0.0,
+                                                                           max_val=2*conf.mean,
+                                                                           num_bins=num_bins)
+
+        self.bin_edges = self.get_bin_edges(left_bin_edge=self.left_bin_edge,
+                                            right_bin_edge=self.right_bin_edge,
+                                            num_bins=num_bins)
+
+
+    def get_bin_edge_limits(self, min_val, max_val, num_bins):
+        """
+        Get bin edge limits so that we can define bins in next function. 
+
+        Parameters
+        -------
+        - min_val: float 
+            Min value that the distribution can achieve. This is  zero. 
+        - max_val: float 
+            Max value the histogram can achieve. 
+            This is the mean of the undferlying conductance distribution.
+        
+        Returns 
+        ------
+        left_bin_edge: float 
+            - Left side of first bin. Use zero minus half the width of a bin, so that
+            first bin is centred about zero. 
+        right_bin_edge: float 
+            - Right edge of last bin. We use the mean of the conductance distribution plus 
+            half the width, so that the last bin is centred about the mean, since we know that 
+            is the maximal value that the histogram can achieve.
+        """
+        # Get bin width
+        # ----------
+        dx = (max_val-min_val)/num_bins
+        left_bin_edge  = min_val-dx/2.0
+        right_bin_edge = max_val+dx/2.0
+
+        return (left_bin_edge, right_bin_edge)
+
+    def get_bin_edges(self, left_bin_edge, right_bin_edge, num_bins):
+        """
+        Get an array of the limits of the bins, 
+        in the form bin_edges = [left-side-of-first bin, right-side-of-first-bin, 
+            .... right-side-of-last-bin], 
+        so that len(bin_edges) = num_bins + 1.
+
+        Parameters 
+        -------
+        left_bin_edge: float 
+            - Left side of first bin. Use zero minus half the width of a bin, so that
+            first bin is centred about zero. 
+        right_bin_edge: float 
+            - Right edge of last bin. We use the mean of the conductance distribution plus 
+            half the width, so that the last bin is centred about the mean, since we know that 
+            is the maximal value that the histogram can achieve.
+
+        Returns 
+        # -----
+        - bin_edges: numpy.ndarray
+            List of values at which bin edges occur.
+            bin_edges = [left-side-of-first bin, right-side-of-first-bin, 
+                .... right-side-of-last-bin], 
+        """
+        bin_edges = numpy.linspace(start=left_bin_edge, stop=right_bin_edge, num=num_bins+1, endpoint=True)
+        return bin_edges
