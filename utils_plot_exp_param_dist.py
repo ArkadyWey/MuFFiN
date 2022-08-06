@@ -355,6 +355,7 @@ class GetBinEdges():
 
 
 
+
 class Plot_DepoAprx_vs_Density():
     """
     """
