@@ -364,7 +364,8 @@ class Plot_DepoAprx_vs_Density():
 
 
         self.x_adhe_1, self.height_adhe_1 = self.get_x_and_y(count_adhe_1=count_adhe_1, 
-                                                             max_height=max_height)
+                                                             mean=conf.mean,
+                                                             num_nodes=num_nodes)
 
         self.x_j_aprx_1 = self.get_scaled_x_for_j(x_adhe_1=self.x_adhe_1, 
                                                   mean=conf.mean, 
@@ -372,9 +373,9 @@ class Plot_DepoAprx_vs_Density():
 
         self.width = self.get_bin_width(min_val=0.0, 
                                         max_val=conf.mean, 
-                                        num_bins=num_bins)
+                                        num_nodes=num_nodes)
 
-    def get_x_and_y(self,count_adhe_1, max_height):
+    def get_x_and_y(self,count_adhe_1, mean, num_nodes):
         """
         - Take the a 1-d variable that is the count of 
         either number of edges blocoed, number of horizontal edges blocked, 
@@ -394,7 +395,7 @@ class Plot_DepoAprx_vs_Density():
 
         # Get probability density of each bin
         # --------
-        height_adhe = self.bincount_adhe/max(self.bincount_adhe)*max_height  #sum(bincount_adhe_hori)  #/width_approx
+        height_adhe = self.bincount_adhe/max(self.bincount_adhe)*num_nodes/mean#*max_height  #sum(bincount_adhe_hori)  #/width_approx
 
         # Get number of bins 
         # ------
@@ -418,13 +419,9 @@ class Plot_DepoAprx_vs_Density():
         return x_j_aprx_1
 
 
-    def get_bin_width(self, min_val, max_val, num_bins):
+    def get_bin_width(self, min_val, max_val, num_nodes):
         # Get bin width
         # ----------
-        dx = (max_val-min_val)/num_bins
-        left_bin_edge  = min_val-dx/2.0
-        right_bin_edge = max_val+dx/2.0
-        #width = dx
-        width = (right_bin_edge-left_bin_edge)/num_bins
+        width = (max_val-min_val)/num_nodes
         return width
 
