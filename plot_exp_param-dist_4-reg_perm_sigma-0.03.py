@@ -13,7 +13,7 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
 
 
 
@@ -21,6 +21,7 @@ path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000
 # ----------------------------------------
 num_nodes_list = [1,4,16,36,64,100]
 num_tests = len(num_nodes_list)
+plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 num_bins_in_range = 100
@@ -33,11 +34,15 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
-ax.set_xlabel(r"$k^{00}$")
-ax.set_ylabel(r"Probability density")
-ax.set_xlim(left=0.5,right=3.0)
-ax.set_ylim(bottom=0.0)
-ax.legend()
+# Cleanup graph 
+# ----
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$k^{00}$",
+                             y_label=r"Probability density",
+                             x_left=1.5,
+                             x_right=1.8,
+                             y_bottom=0.0,
+                             y_top=None)
 
 plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format="svg")
 
@@ -64,8 +69,8 @@ for t, N in enumerate(num_nodes_list):
 
 
     num_bins = 500
-    min_val = 0.0
-    max_val = conf.mean*2
+    min_val = 1.5
+    max_val = 1.8
 
     # Get parameter to histogram
     # ------
@@ -104,8 +109,8 @@ for t, N in enumerate(num_nodes_list):
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$k^{00}$",
                              y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=2*conf.mean,
+                             x_left=1.5,
+                             x_right=1.8,
                              y_bottom=0.0,
                              y_top=None)
 
@@ -145,7 +150,7 @@ ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
 # Plot guide lines
 # ------
 N_smooth = numpy.linspace(1,100,500)
-ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
+ax.plot(N_smooth, 0.0498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.0498N^{-\frac{1}{2}}$",ls="-")
 ax.plot(N_smooth, (mean_1[-1]-conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
 
 
@@ -174,10 +179,10 @@ fig, ax = plt.subplots(1,1)
 N_smoother = numpy.linspace(0.01,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{00}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{00}$$)$")
-ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
+ax.plot(N_smoother, -0.5*N_smoother + (-3.000*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-3$")
 
 # Cleanup graph 
-# -------------
+# ------
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"log$(N)$",
                              y_label=None,
@@ -215,19 +220,18 @@ ax.plot(x, pdf, linewidth=2, color='r', label=r"$G$")
 x   = conf.mean
 cdf = conf.get_cdf(x=x) # proportion up to mean
 
-
 ax.vlines(x=conf.mean, 
           ymin=0.0, 
-          ymax=1.0, 
+          ymax=10.0, 
           color="tab:red", 
           linewidth=2.0, 
           linestyle="--", 
           alpha=1.0, 
           label="mean")
 
-ax.vlines(x=conf.median, 
+ax.vlines(x=numpy.exp(conf.mu), 
           ymin=0.0, 
-          ymax=1.0, 
+          ymax=10.0, 
           color="black", 
           linewidth=2.0, 
           linestyle=":", 
@@ -239,8 +243,8 @@ ax.vlines(x=conf.median,
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$k^{00}$",
                              y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=3.0,
+                             x_left=1.45,
+                             x_right=1.85,
                              y_bottom=0.0,
                              y_top=None)
 
