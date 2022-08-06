@@ -14,7 +14,7 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
 
 
 
@@ -138,7 +138,8 @@ ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{H}$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
-ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls="--", label=r"$\frac{N}{2}$")
+ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls=":", label=r"$\frac{N}{2}$")
+ax.plot(N_smooth, conf.get_cdf(x=conf.mean)*N_smooth, color="tab:blue", ls="--", label=r"$N$cdf($\bar{G}$)")
 ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls="--", label=r"$\frac{\sqrt{N}}{2}$")
 
 plotting.thesisify_post_plot(ax=ax,
@@ -150,5 +151,3 @@ plotting.thesisify_post_plot(ax=ax,
                              y_top=52.0)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")
-
-
