@@ -68,7 +68,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 num_nodes_list = [16]
-colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]
+colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
+
 for t, N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
@@ -77,28 +78,30 @@ for t, N in enumerate(num_nodes_list):
 
     # Plot real j distribution
     # -----------------------
-    depo_effe_1     = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N)))
+    param_effe_1     = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N)))
 
-    num_bins_depo = 1000
-    plot_depo_v_density = utils_plot_exp_param_dist.Plot_Depo_vs_Density(num_bins=num_bins_depo,
-                                                                             conf=conf)
+    num_bins_depo = 500
+    min_val = 0.0
+    max_val = conf.mean*2
+    bin_edges = utils_plot_exp_param_dist.GetBinEdges(num_bins=num_bins_depo,
+                                                      min_val=min_val, 
+                                                      max_val=max_val)
     
-    count_depo_1, bins_depo, _ignored = ax.hist(x=depo_effe_1, 
-                                                bins=plot_depo_v_density.bin_edges, 
-                                                density=True, 
-                                                align='mid', 
-                                                label=r"$N={}$".format(num_nodes_list[t]), 
-                                                alpha=0.4, color=colors[t])
+    count_param_1, bins_param, _ignored = ax.hist(x=param_effe_1, 
+                                                  bins=bin_edges.bin_edges, 
+                                                  density=True, 
+                                                  align='mid', 
+                                                  label=r"$N={}$".format(num_nodes_list[t]), 
+                                                  alpha=0.4, color=colors[t])
    
     
-
-    # Interpolate j histograms
-    bin_centres = numpy.linspace(start=0.0, stop=conf.mean, num=num_bins_depo, endpoint=True)
-    spl = interpolate.splrep(bin_centres, count_depo_1, k=3)
+    # Interpolate histogram
+    bin_centres = numpy.linspace(start=min_val, stop=max_val, num=num_bins_depo, endpoint=True)
+    spl = interpolate.splrep(bin_centres, count_param_1, k=3)
     x2 = numpy.linspace(bin_centres[0], bin_centres[-1], 10*num_bins_depo)
     y2 = interpolate.splev(x2, spl)
     ax.plot(x2,y2,color=colors[t], 
-                  linewidth=1.0, 
+                  linewidth=2.0, 
                   linestyle="-", 
                   alpha=1.0)
 
