@@ -13,7 +13,7 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
+path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
 
 
 
@@ -67,7 +67,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [16]
+num_nodes_list = [4]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -262,10 +262,3 @@ ax.plot(x, -0.5*x + (-0.2*numpy.ones_like(x)), color="tab:orange", label=r"$-\fr
 plotting.thesisify_post_plot(ax=ax,x_label=r"log$(N)$")
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-j_and_logstd-j__v__logN.svg"), format="svg")
-
-
-
-
-
-# TODO: 
-# Consider checking what distribution the final gistogram is similar too?
