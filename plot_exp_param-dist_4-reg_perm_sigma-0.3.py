@@ -1,8 +1,14 @@
 from matplotlib import pyplot as plt
 import os 
 import numpy
+from scipy import interpolate
 
+import configure
 import utils_plot_exp_param_dist
+
+import sys
+sys.path.append("/home/user/utils_python")
+import plotting
 
 # Parameters 
 # -----
@@ -36,6 +42,64 @@ ax.set_ylim(bottom=0.0)
 ax.legend()
 
 plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format="svg")
+
+
+
+
+# Plot deposition parameter (new plotter)
+# -----------------------    
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+num_nodes_list = [1,4,16,36,64,100]
+colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
+for t, N in enumerate(num_nodes_list):
+
+    conf = configure.Configure(num_nodes=N,
+                               l1=numpy.sqrt(N),
+                               l2=numpy.sqrt(N))
+
+    # Plot real j distribution
+    # -----------------------
+    param_effe_1     = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
+
+    num_bins_depo = 500
+    min_val = 0.0
+    max_val = conf.mean*2
+    bin_edges = utils_plot_exp_param_dist.GetBinEdges(num_bins=num_bins_depo,
+                                                      min_val=min_val, 
+                                                      max_val=max_val)
+    
+    count_param_1, bins_param, _ignored = ax.hist(x=param_effe_1, 
+                                                  bins=bin_edges.bin_edges, 
+                                                  density=True, 
+                                                  align='mid', 
+                                                  label=r"$N={}$".format(num_nodes_list[t]), 
+                                                  alpha=0.4, color=colors[t])
+   
+    
+    # Interpolate histogram
+    bin_centres = numpy.linspace(start=min_val, stop=max_val, num=num_bins_depo, endpoint=True)
+    spl = interpolate.splrep(bin_centres, count_param_1, k=3)
+    x2 = numpy.linspace(bin_centres[0], bin_centres[-1], 10*num_bins_depo)
+    y2 = interpolate.splev(x2, spl)
+    ax.plot(x2,y2,color=colors[t], 
+                  linewidth=2.0, 
+                  linestyle="-", 
+                  alpha=1.0)
+
+
+# Cleanup graph 
+# -------------
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$k^{00}$",
+                             y_label=r"Probability density",
+                             x_left=0.0,
+                             x_right=2*conf.mean,
+                             y_bottom=0.0,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm__with_approx.svg"))
+
 
 
 
@@ -117,8 +181,8 @@ count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align=
 # # -----
 
 import configure
-mu = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).mean
-sigma = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).sd
+mu = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).mu
+sigma = configure.Configure(num_nodes=1,l1=1.0,l2=1.0).sigma
 x = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi))) 
 ax.plot(x, pdf, linewidth=2, color='r', label=r"pdf")
