@@ -1,6 +1,7 @@
 from inspect import Parameter
 import numpy
 import json
+import math
 
 import preprocess_2D
 import initial_conditions_2D
@@ -52,12 +53,11 @@ class Configure():
 
         self.cond_init_4 = self.get_initial_conductance()
 
-        # Get mean
+        # Get params
         # -----
         self.mean = self.get_mean()
-
-        # Get alpha
-        # -----------
+        self.median = self.get_median()
+        
         self.alpha = self.get_alpha()
 
     def get_mean(self):
@@ -66,6 +66,25 @@ class Configure():
         """
         mean = numpy.exp(self.mu+(self.sigma**2)/2)
         return mean
+
+    def get_median(self):
+        """
+        Get mean of resulting log-normal distribution.
+        """
+        median = numpy.exp(self.mu)
+        return median
+
+    def get_pdf(self,x):
+        """
+        """
+        pdf = (numpy.exp(-(numpy.log(x) - self.mu)**2 / (2 * self.sigma**2))  / (x * self.sigma * numpy.sqrt(2 * numpy.pi))) 
+        return pdf
+
+    def get_cdf(self,x):
+        """
+        """
+        cdf = 0.5*(1 + math.erf( (numpy.log(x) - self.mu)/(self.sigma*numpy.sqrt(2))  ))
+        return cdf
 
     def get_alpha(self):
         """
