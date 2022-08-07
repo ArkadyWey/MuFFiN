@@ -89,9 +89,9 @@ if __name__ == "__main__":
 
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 4
-    l1        = numpy.sqrt(num_nodes) #1.07456993183*
-    l2        = numpy.sqrt(num_nodes) #1.86120971822*
+    num_nodes = 2
+    l1        = 1.0            #numpy.sqrt(num_nodes) #1.07456993183*
+    l2        = numpy.sqrt(3.0)#numpy.sqrt(num_nodes) #1.86120971822*
     leng_1    = numpy.array([l1,l2])
     
     # Get permeability and deposition parameter

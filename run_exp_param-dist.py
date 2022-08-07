@@ -40,7 +40,7 @@ num_reps = args.num_reps # number of times to repeat a test
 #  or ...
 # 100
 
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-{}_sigma-{}".format(num_reps,parameters["sigma"]))
+path_results = os.path.join(".","results/results_exp_param-dist_6-reg_reps-{}_sigma-{}".format(num_reps,parameters["sigma"]))
 
 # Make results directories 
 # --------
@@ -74,7 +74,7 @@ count_adhe_2 = numpy.zeros(shape=(num_tests, num_reps))
 # count_adhe_2[t,r] = number of edges blocked for repeat repeats[r] of test tests[t]
 count_adhe_hori_2 = numpy.zeros(shape=(num_tests, num_reps))
 # count_adhe_2[t,r] = number of horizontal edges blocked for repeat repeats[r] of test tests[t]
-count_adhe_vert_2 = numpy.zeros(shape=(num_tests, num_reps))
+count_adhe_not_hori_2 = numpy.zeros(shape=(num_tests, num_reps))
 # count_adhe_2[t,r] = number of vertical edges blocked for repeat repeats[r] of test tests[t]
 
 for t in range(num_tests):
@@ -106,10 +106,14 @@ for t in range(num_tests):
         #numpy.save(file=os.path.join(path_results+"/cond","cond_init_4_N-{}_R-{}.npy".format(num_nodes, r)), arr=cond_init_4, allow_pickle=True, fix_imports=True)
         #numpy.save(file=os.path.join(path_results+"/adhe","adhe_tabl_5_N-{}_R-{}.npy".format(num_nodes, r)), arr=adhe_tabl_5, allow_pickle=True, fix_imports=True)
 
-        count_adhe, count_adhe_hori, count_adhe_vert = utils_preprocess_2D.count_num_edges_blocked(cond_tabl_5=cond_tabl_5, adhe_tabl_5=adhe_tabl_5, delt_5=delt_5, heav_5=heav_5)
-        count_adhe_2[t,r]      = count_adhe
-        count_adhe_hori_2[t,r] = count_adhe_hori
-        count_adhe_vert_2[t,r] = count_adhe_vert
+        count_adhe, count_adhe_hori, count_adhe_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-reg",
+                                                                                                       cond_tabl_5=cond_tabl_5, 
+                                                                                                       adhe_tabl_5=adhe_tabl_5, 
+                                                                                                       delt_5=delt_5, 
+                                                                                                       heav_5=heav_5)
+        count_adhe_2[t,r]          = count_adhe
+        count_adhe_hori_2[t,r]     = count_adhe_hori
+        count_adhe_not_hori_2[t,r] = count_adhe_not_hori
         #print(count_adhe)
 
     mean_perm = numpy.mean(perm_effe_2[t,:])
@@ -124,7 +128,7 @@ for t in range(num_tests):
 
     count_adhe_1 = count_adhe_2[t,:]
     count_adhe_hori_1 = count_adhe_hori_2[t,:]
-    count_adhe_vert_1 = count_adhe_vert_2[t,:]
+    count_adhe_not_hori_1 = count_adhe_not_hori_2[t,:]
     
 
     # Save results at current N
@@ -134,7 +138,7 @@ for t in range(num_tests):
     
     numpy.save(file=os.path.join(path_results,"count_adhe_1_N-{}.npy".format(num_nodes)), arr=count_adhe_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"count_adhe_hori_1_N-{}.npy".format(num_nodes)), arr=count_adhe_hori_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"count_adhe_vert_1_N-{}.npy".format(num_nodes)), arr=count_adhe_vert_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"count_adhe_not_hori_1_N-{}.npy".format(num_nodes)), arr=count_adhe_not_hori_1, allow_pickle=True, fix_imports=True)
 
 end_time = datetime.datetime.now()
 print("sim_time:\n {}".format(end_time-begin_time))
