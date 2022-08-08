@@ -18,6 +18,7 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
 
     count_adhe = 0
     count_adhe_hori = 0
+    #sum_a = 0
     for r in range(num_refs):
         for s in range(num_refs):
             
@@ -25,11 +26,15 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
             # ---------
             # Get integrand of adhesivity
             a = cond_tabl_5[0,:,:,r,s]*(-delt_5[0,:,:,r,m])*adhe_tabl_5[-1,:,:,r,s]*heav_5[0,:,:,r,m]
+            #sum_a = sum_a + numpy.sum(a)
             
             # Count number of unique edges where adhesivity is 1
             count_adhe = count_adhe + numpy.count_nonzero(a=a, axis=None, keepdims=False)
 
-            #print("r={},s={},a=\n{}".format(r,s,a))
+            #print("r={},s={}".format(r,s))
+            #print("a:\n{}".format(a))
+            #print("delt:\n{}".format((-delt_5[0,:,:,r,m])*adhe_tabl_5[-1,:,:,r,s]*heav_5[0,:,:,r,m]))
+            #print("cond:\n{}".format(cond_tabl_5[0,:,:,r,s]))
 
             if initialisation=="4-reg":
                 """
@@ -92,6 +97,11 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
         pass 
     else:
         raise Exception("Initialisation must be 4-reg,6-reg, or 6-ireg.")
+
+    #print(count_adhe, count_adhe_hori, count_adhe_not_hori)
+    #print(sum_a/numpy.sqrt(3))
+    #if -sum_a/numpy.sqrt(3) > 4.0:
+    #    exit()
 
     return count_adhe, count_adhe_hori, count_adhe_not_hori
 
