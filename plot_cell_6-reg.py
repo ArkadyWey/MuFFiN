@@ -8,8 +8,8 @@ from matplotlib.lines import Line2D
 import configure
 
 # Parameters 
-# ---------
-path_results = "results/results_hexag"
+# -----
+path_results = os.path.join(".","results/results_6-reg")
 
 
 # Arrays for first plot:
@@ -28,7 +28,8 @@ pts_4       = numpy.load(os.path.join(path_results,"pts_4.npy"))
 
 # Get the run's configuration parameters (needed for lengths etc in plot)
 #  -------------------------------------
-conf = configure.Configure(num_nodes=num_nodes)
+conf = configure.Configure(num_nodes=num_nodes, 
+                           initialisation="6-reg")
 num_rows_or_cols = int(numpy.sqrt(num_nodes/2.0))
 
 

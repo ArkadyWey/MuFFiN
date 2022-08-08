@@ -58,9 +58,7 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,
-                               l1=numpy.sqrt(N),
-                               l2=numpy.sqrt(N))
+    conf = configure.Configure(num_nodes=N,initialisation="4-reg")
 
 
     num_bins = 500
@@ -138,7 +136,7 @@ for t in range(num_tests):
 
 # Plot scatter for distribution means
 # -------
-conf = configure.Configure(num_nodes=1,l1=1,l2=1)
+conf = configure.Configure(num_nodes=1,initialisation="4-reg")
 ax.scatter(num_nodes_list,mean_1-conf.mean, label=r"mean $k^{00}-\bar{G}$")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
 
@@ -204,7 +202,7 @@ count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align=
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
-conf  = configure.Configure(num_nodes=1,l1=1.0,l2=1.0)
+conf  = configure.Configure(num_nodes=1,initialisation="4-reg")
 mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(min(bins_1), max(bins_1), 1_000)
@@ -240,7 +238,7 @@ plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$k^{00}$",
                              y_label=r"Probability density",
                              x_left=0.0,
-                             x_right=3.0,
+                             x_right=4.0,
                              y_bottom=0.0,
                              y_top=None)
 

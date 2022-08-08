@@ -43,9 +43,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         ax=ax)
 
 
-conf = configure.Configure(num_nodes=1,
-                           l1=numpy.sqrt(1),
-                           l2=numpy.sqrt(1))
+conf = configure.Configure(num_nodes=1,initialisation="4-reg")
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
@@ -75,9 +73,7 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,
-                               l1=numpy.sqrt(N),
-                               l2=numpy.sqrt(N))
+    conf = configure.Configure(num_nodes=N,initialisation="4-reg")
 
 
     num_bins = 500
@@ -211,19 +207,18 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=1,l1=1,l2=1)
+conf = configure.Configure(num_nodes=1,initialisation="4-reg")
 
-ax.scatter(num_nodes_list,mean_1-conf.mean/2, label=r"mean $j^{0}-\frac{\bar{G}}{2}$")
+ax.scatter(num_nodes_list,mean_1-conf.mean*conf.get_cdf(x=conf.mean), label=r"mean $j^{0}-\bar{G}$cdf($\bar{G}$)")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
 
 # Plot guide lines
 N_smooth =  numpy.linspace(1,100,500)
 #ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
 
-ax.plot(N_smooth, (mean_1[-1]-conf.mean/2)*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
-
-ax.plot(N_smooth, 0.81873075307*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.819N^{-\frac{1}{2}}$",ls="-")
-# exp(-0.2)= 0.81873075307
+ax.plot(N_smooth, (mean_1[-1]-conf.mean*conf.get_cdf(x=conf.mean))*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
+ax.plot(N_smooth, 0.6703200460356393*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.670N^{-\frac{1}{2}}$",ls="-")
+#print(numpy.exp(-0.40)) = 0.6703200460356393
 # Cleanup plot
 # Cleanup graph 
 # -------------
@@ -256,7 +251,7 @@ fig, ax = plt.subplots(1,1)
 x = numpy.linspace(0,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{0}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{0}$$)$")
-ax.plot(x, -0.5*x + (-0.2*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.2$")
+ax.plot(x, -0.5*x + (-0.40*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.40$")
 
 # Cleanup plot
 plotting.thesisify_post_plot(ax=ax,x_label=r"log$(N)$")

@@ -43,8 +43,7 @@ for t,N in enumerate(num_nodes_list):
     height_adhe_hori_1 = bincount_adhe_hori_1/sum(bincount_adhe_hori_1)/width
 
     conf = configure.Configure(num_nodes=N,
-                               l1=numpy.sqrt(N),
-                               l2=numpy.sqrt(N))
+                               initialisation="4-reg")
 
     num_bins_adhe = N+1
     plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,
