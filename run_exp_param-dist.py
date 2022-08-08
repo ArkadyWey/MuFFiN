@@ -9,7 +9,7 @@ import utils_preprocess_2D
 
 """
 To run in series:
-python3 run_exp_param-dist.py --num_reps 1000 -num_nodes 4
+python3 run_exp_param-dist.py --num_reps 1000 --num_nodes 4
 
 To run in parallel: 
 parallel python3 run_exp_param-dist.py --num_nodes ::: 2 8 18...
@@ -19,15 +19,18 @@ begin_time = datetime.datetime.now()
 
 # Parameters 
 # ------
-file_parameters = open("parameters.json")
-parameters      = json.load(file_parameters)
-
 parser = argparse.ArgumentParser(description="Input parameters")
 parser.add_argument("-Ns", "--num_nodes_list", dest="num_nodes_list", nargs="+", required=True,
                     help="num_nodes values for exp_param-dist", type=int)
 
 parser.add_argument("-r", "--num_reps", dest="num_reps", required=True,
                     help="number of repeats at each N", type=int)
+
+parser.add_argument("-i", "--initialisation", dest="initialisation", required=True,
+                    help="structure of cell", type=str)
+
+parser.add_argument("-s", "--sigma", dest="sigma", required=True,
+                    help="sigma for lognormal disribution that conductance drawn from", type=float)
 
 args = parser.parse_args()
 
@@ -39,30 +42,20 @@ num_nodes_list = args.num_nodes_list
 num_reps = args.num_reps # number of times to repeat a test
 #  or ...
 # 100
+initialisation = args.initialisation
+sigma          = args.sigma
 
-path_results = os.path.join(".","results/results_exp_param-dist_6-reg_reps-{}_sigma-{}".format(num_reps,parameters["sigma"]))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 # Make results directories 
 # --------
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 
-#if not os.path.exists(os.path.join(path_results,"cond")):
-#    os.makedirs(os.path.join(path_results,"cond"))
-#
-#if not os.path.exists(os.path.join(path_results,"adhe")):
-#    os.makedirs(os.path.join(path_results,"adhe"))
-
-
 num_tests = len(num_nodes_list) # Number of different cell sizes to test
 
-l1_list = []
-l2_list = []
-for N in num_nodes_list:
-    l1_list.append(numpy.sqrt(N)) #1.07456993183*
-    l2_list.append(numpy.sqrt(N)) #1.86120971822* 
 
-num_tests = len(num_nodes_list) # Number of different cell sizes to test
+
 # Main
 # -----
 perm_effe_2 = numpy.zeros(shape=(num_tests, num_reps)) # place to store result
@@ -80,8 +73,17 @@ count_adhe_not_hori_2 = numpy.zeros(shape=(num_tests, num_reps))
 for t in range(num_tests):
     num_nodes = num_nodes_list[t]
     print("Running for N={}.".format(num_nodes))
-    l1 = l1_list[t]
-    l2 = l2_list[t]
+
+    if initialisation == "4-reg":
+        n = int(numpy.sqrt(num_nodes))
+        l1 = n*1.0
+        l2 = n*1.0
+    elif initialisation == "6-reg":
+        n  = int(numpy.sqrt(num_nodes/2))    
+        l1 = n*1.0
+        l2 = n*numpy.sqrt(3.0)
+    else: 
+        raise Exception("Haven't decided what l1 l2 should be for 6-ireg yet.")
 
     for r in range(num_reps):  
         print("Running for N={}. Repeat {} of {}.".format(num_nodes,r,num_reps))
@@ -91,8 +93,7 @@ for t in range(num_tests):
         # Get effective permeability in 0,0 direction and adhesivity in 0 diresction
         # -----
         perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
-                                                                                                           l1=l1,
-                                                                                                           l2=l2)
+                                                                                                           initialisation=initialisation)
         # Get right direction
         perm_effe = perm_3[0,0,0]
         depo_effe = depo_2[-1,0]

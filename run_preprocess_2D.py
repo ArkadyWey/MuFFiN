@@ -7,14 +7,13 @@ import preprocess_2D
 
 
 
-def main(num_nodes: int, l1: int, l2: int):
+def main(num_nodes: int, initialisation: str):
     """
     """
     # Get parameters needed to find perm and depo
     # -----
     conf = configure.Configure(num_nodes=num_nodes, 
-                               l1=l1,
-                               l2=l2)
+                               initialisation=initialisation)
     
     conc_max_disc_1 = conf.conc_max_disc_1 
     cond_init_4     = conf.cond_init_4 
@@ -77,9 +76,11 @@ def main(num_nodes: int, l1: int, l2: int):
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    #print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
+    print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
     #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
 
+    #if depo_2[-1,0] > 4.0:
+    #    exit()
     return (perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5)
     
 if __name__ == "__main__":
@@ -90,15 +91,12 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 2
-    l1        = 1.0            #numpy.sqrt(num_nodes) #1.07456993183*
-    l2        = numpy.sqrt(3.0)#numpy.sqrt(num_nodes) #1.86120971822*
-    leng_1    = numpy.array([l1,l2])
+    initialisation = "6-reg"
     
     # Get permeability and deposition parameter
     # -----
     perm_prep_3, depo_prep_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = main(num_nodes=num_nodes, 
-                                                                                     l1=l1, 
-                                                                                     l2=l2)
+                                                                                               initialisation=initialisation)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))
