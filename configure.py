@@ -11,17 +11,15 @@ class Configure():
     """
     """ 
     def __init__(self, num_nodes: int, 
-                       l1: float, 
-                       l2: float):
+                       initialisation):
         """
         """      
 
         # Get class parameters 
         # -----
-        self.num_nodes    = num_nodes
-        self.l1           = l1
-        self.l2           = l2
-        
+        self.num_nodes      = num_nodes
+        self.initialisation = initialisation
+
         # Get input parameters from parameters dictionary or class parameters
         # -----
         file = open("parameters.json", "r")
@@ -33,11 +31,11 @@ class Configure():
         self.v              = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
         self.mu             = parameters["mu"] 
         self.sigma          = parameters["sigma"]
-        self.initialisation = parameters["initialisation"]
 
 
         # Do secondary configuration 
         # -----
+        self.l1, self.l2    = self.get_lengths()        
         self.leng_1          = numpy.array([self.l1, self.l2])
         self.conc_max_disc_1 = numpy.linspace(0, 1.0, self.num_concs)
         self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
@@ -58,7 +56,29 @@ class Configure():
         self.mean = self.get_mean()
         self.median = self.get_median()
         
+        self.scaled_mean = self.get_scaled_mean()
         self.alpha = self.get_alpha()
+
+    def get_lengths(self):
+        """
+        The length of the cell depends on the initialisation and the 
+        number of nodes in the cell, because of scalings.
+        """
+        num_nodes = self.num_nodes
+        initialisation = self.initialisation
+
+        if initialisation == "4-reg":
+            n = int(numpy.sqrt(num_nodes))
+            l1 = n*1.0
+            l2 = n*1.0
+        elif initialisation == "6-reg":
+            n  = int(numpy.sqrt(num_nodes/2))    
+            l1 = n*1.0
+            l2 = n*numpy.sqrt(3.0)
+        else: 
+            raise Exception("Haven't decided what l1 l2 should be for 6-ireg yet.")
+
+        return (l1, l2)
 
     def get_mean(self):
         """
@@ -86,6 +106,24 @@ class Configure():
         cdf = 0.5*(1 + math.erf( (numpy.log(x) - self.mu)/(self.sigma*numpy.sqrt(2))  ))
         return cdf
 
+    def get_scaled_mean(self):
+        """
+        The mean above is not the mean unless the structure is 4-reg, 
+        since otherwise the conductances are scaled for a fair test. 
+        Here we scale the mean by the correct scale factor.
+        """
+        if self.initialisation == "4-reg_prescribed":
+            scaled_mean = self.mean
+        elif self.initialisation == "4-reg":
+            scaled_mean = self.mean
+        elif self.initialisation == "6-reg":
+            scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            scaled_mean = self.mean*scale_factor
+        else: 
+            raise Exception("Haven't checked what correct alpha is for this initialisation is yet. Check scale factor in cell.")
+
+        return scaled_mean
+
     def get_alpha(self):
         """
         Given the conductance distribution's mu and sigma variables, 
@@ -95,16 +133,10 @@ class Configure():
         """
         # Parameters 
         # -----------
-        if self.initialisation == "4-reg_prescribed":
-            alpha = 1.0/self.mean
-        elif self.initialisation == "4-reg":
-            alpha = 1.0/self.mean
-        elif self.initialisation == "6-reg":
-            alpha = (1.0/self.mean)*(numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0)))
-        else: 
-            raise Exception("Haven't checked what correct alpha is for this initialisation is yet. Check scale factor in cell.")
+        alpha = 1.0/self.scaled_mean
 
         return alpha
+
     def get_initial_conductance(self):
         """
         The initial conductance depends on the parameter 
