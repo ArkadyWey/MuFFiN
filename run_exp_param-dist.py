@@ -93,7 +93,8 @@ for t in range(num_tests):
         # Get effective permeability in 0,0 direction and adhesivity in 0 diresction
         # -----
         perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
-                                                                                                           initialisation=initialisation)
+                                                                                                           initialisation=initialisation,
+                                                                                                           sigma=sigma)
         # Get right direction
         perm_effe = perm_3[0,0,0]
         depo_effe = depo_2[-1,0]

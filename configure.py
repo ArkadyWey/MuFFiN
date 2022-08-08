@@ -11,7 +11,8 @@ class Configure():
     """
     """ 
     def __init__(self, num_nodes: int, 
-                       initialisation):
+                       initialisation: str,
+                       sigma: float):
         """
         """      
 
@@ -19,6 +20,7 @@ class Configure():
         # -----
         self.num_nodes      = num_nodes
         self.initialisation = initialisation
+        self.sigma          = sigma
 
         # Get input parameters from parameters dictionary or class parameters
         # -----
@@ -30,7 +32,6 @@ class Configure():
         self.num_concs      = parameters["num_concs"]
         self.v              = parameters["v"]    # 2.0 # Sum of volumes of nodes in cell
         self.mu             = parameters["mu"] 
-        self.sigma          = parameters["sigma"]
 
 
         # Do secondary configuration 

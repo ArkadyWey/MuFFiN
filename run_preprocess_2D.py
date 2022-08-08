@@ -7,13 +7,14 @@ import preprocess_2D
 
 
 
-def main(num_nodes: int, initialisation: str):
+def main(num_nodes: int, initialisation: str, sigma: float):
     """
     """
     # Get parameters needed to find perm and depo
     # -----
     conf = configure.Configure(num_nodes=num_nodes, 
-                               initialisation=initialisation)
+                               initialisation=initialisation, 
+                               sigma=sigma)
     
     conc_max_disc_1 = conf.conc_max_disc_1 
     cond_init_4     = conf.cond_init_4 
@@ -92,11 +93,13 @@ if __name__ == "__main__":
     # -----   
     num_nodes = 2
     initialisation = "6-reg"
+    sigma = 0.3
     
     # Get permeability and deposition parameter
     # -----
     perm_prep_3, depo_prep_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = main(num_nodes=num_nodes, 
-                                                                                               initialisation=initialisation)
+                                                                                               initialisation=initialisation,
+                                                                                               sigma=sigma)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))
