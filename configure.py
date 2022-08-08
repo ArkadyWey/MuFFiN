@@ -95,7 +95,14 @@ class Configure():
         """
         # Parameters 
         # -----------
-        alpha = 1.0/self.mean
+        if self.initialisation == "4-reg_prescribed":
+            alpha = 1.0/self.mean
+        elif self.initialisation == "4-reg":
+            alpha = 1.0/self.mean
+        elif self.initialisation == "6-reg":
+            alpha = (1.0/self.mean)*(numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0)))
+        else: 
+            raise Exception("Haven't checked what correct alpha is for this initialisation is yet. Check scale factor in cell.")
 
         return alpha
     def get_initial_conductance(self):
