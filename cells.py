@@ -70,13 +70,21 @@ class Cell_2D_six_ireg():
     """ 
     def __init__(self, num_nodes: int,
                        num_refs: int, 
-                       num_dims: int):
+                       num_dims: int,
+                       mean: float):
         """
+        Parameters 
+        # -------
+        - mean: float 
+            The mean of the lognormal distribution from which the conductance is drawn. 
+            This is the conductance per unit length of the edges in the resulting cell. 
+
         """
         # Parameters
         self.num_nodes = num_nodes
         self.num_refs  = num_refs
         self.num_dims  = num_dims
+        self.mean      = mean
 
         (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
 
@@ -347,12 +355,12 @@ class Cell_2D_six_ireg():
             # Either i or j is in unit cell, such that r==0==s.
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
-                cond_init_4[i_i,i_j,r_j,s_j]   = (1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = (1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                cond_init_4[i_i,i_j,r_j,s_j]   = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                cond_init_4[i_j,i_i,-r_j,-s_j] = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
-                cond_init_4[i_j,i_i,r_i,s_i]   = (1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = (1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_j,i_i,r_i,s_i]   = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_i,i_j,-r_i,-s_i] = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass
