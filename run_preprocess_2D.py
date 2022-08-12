@@ -91,9 +91,9 @@ if __name__ == "__main__":
 
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 32
-    initialisation = "6-reg"
-    sigma = 0.03
+    num_nodes = 2
+    initialisation = "6-ireg"
+    sigma = 1.0
     
     # Get permeability and deposition parameter
     # -----
