@@ -44,14 +44,6 @@ class Configure():
         self.phi             = self.v/(numpy.prod(self.leng_1))
 
 
-        # Get initial conditions: conductance and adhesivity 
-        # -----
-        self.num_refs = len(self.refs_2[:,0])
-
-        self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
-
-        self.cond_init_4 = self.get_initial_conductance()
-
         # Get params
         # -----
         self.mean = self.get_mean()
@@ -59,6 +51,14 @@ class Configure():
         
         self.scaled_mean = self.get_scaled_mean()
         self.alpha = self.get_alpha()
+
+        # Get initial conditions: conductance and adhesivity 
+        # -----
+        self.num_refs = len(self.refs_2[:,0])
+
+        self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
+
+        self.cond_init_4 = self.get_initial_conductance()
 
     def get_lengths(self):
         """
@@ -76,8 +76,12 @@ class Configure():
             n  = int(numpy.sqrt(num_nodes/2))    
             l1 = n*1.0
             l2 = n*numpy.sqrt(3.0)
+        elif initialisation == "6-ireg":
+            n = int(numpy.sqrt(num_nodes))
+            l1 = n*1.0
+            l2 = n*1.0
         else: 
-            raise Exception("Haven't decided what l1 l2 should be for 6-ireg yet.")
+            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
         return (l1, l2)
 
@@ -120,8 +124,12 @@ class Configure():
         elif self.initialisation == "6-reg":
             scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
             scaled_mean = self.mean*scale_factor
+        elif self.initialisation == "6-ireg":
+            scale_factor = 2.0 # mean 1/length for length uniformly distributed
+            scaled_mean = self.mean*scale_factor
         else: 
-            raise Exception("Haven't checked what correct alpha is for this initialisation is yet. Check scale factor in cell.")
+            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+
 
         return scaled_mean
 
@@ -152,15 +160,15 @@ class Configure():
                                                          num_refs=self.num_refs, 
                                                          mu=self.mu,
                                                          sigma=self.sigma)
-        elif self.initialisation == "6-ireg":
-            cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
-                                                         num_refs=self.num_refs)
-
         elif self.initialisation == "6-reg":
             cond_init_4 = initial_conditions_2D.six_reg(num_nodes=self.num_nodes, 
                                                         num_refs=self.num_refs, 
                                                         mu=self.mu, 
                                                         sigma=self.sigma)
+        elif self.initialisation == "6-ireg":
+            cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
+                                                         num_refs=self.num_refs,
+                                                         mean=self.mean)
 
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \
