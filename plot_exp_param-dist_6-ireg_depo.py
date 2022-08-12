@@ -6,11 +6,15 @@ import utils_plot_exp_param_dist
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_experiment_param-dist_random-structure_reps-50k")
+initialisation = "6-ireg"
+num_reps       = 1000
+sigma          = 0.3
+
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 #num_nodes_list = [16,25,36,49,64,81,100]
 #num_nodes_list = [4,9,16,25,36,49,64,81,100]
-num_nodes_list = [4,16,36,64,100]
+num_nodes_list = [16]#[4,16,36,64,100]
 num_tests = len(num_nodes_list)
 
 
@@ -45,7 +49,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__depo.svg"), format
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [4,9,16,25,36,49,64,81,100]
+num_nodes_list = [16]#[4,9,16,25,36,49,64,81,100]
 num_tests = len( num_nodes_list)
 
 # Get mean and standard deviation at each N
@@ -54,10 +58,10 @@ sd_1 = numpy.zeros(shape=num_tests)
 for t in range(num_tests):
     N = num_nodes_list[t]
 
-    depo_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))
+    depo_effe_2 = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N)))
 
-    mean_1[t] = numpy.mean(a=depo_effe_2/numpy.sqrt(N), axis=1)
-    sd_1[t]   = numpy.std(a=depo_effe_2/numpy.sqrt(N), axis=1)
+    mean_1[t] = numpy.mean(a=depo_effe_2, axis=0)
+    sd_1[t]   = numpy.std(a=depo_effe_2, axis=0)
 
 # Plot scatter of means and SDs
 fig, ax = plt.subplots(1,1)
