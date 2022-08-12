@@ -11,11 +11,16 @@ path_results = os.path.join(".","results/results_6-reg")
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
 
-num_nodes = 32
+num_nodes = 18
 num_refs  = 3
 num_dims  = 2
 
-conf = configure.Configure(num_nodes=num_nodes,initialisation="6-reg")
+initialisation = "6-reg"
+sigma          = 0.3
+
+conf = configure.Configure(num_nodes=N,
+                           initialisation=initialisation,
+                           sigma=sigma)
 
 cell = cells.Cell_2D_six_reg(num_nodes=num_nodes,
                              num_refs=num_refs, 
