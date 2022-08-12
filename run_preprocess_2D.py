@@ -77,7 +77,7 @@ def main(num_nodes: int, initialisation: str, sigma: float):
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
-    print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
+    #print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
     #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
 
     #if depo_2[-1,0] > 4.0:
