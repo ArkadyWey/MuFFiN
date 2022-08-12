@@ -82,8 +82,12 @@ for t in range(num_tests):
         n  = int(numpy.sqrt(num_nodes/2))    
         l1 = n*1.0
         l2 = n*numpy.sqrt(3.0)
+    elif initialisation == "6-ireg":
+        n = int(numpy.sqrt(num_nodes))
+        l1 = n*1.0
+        l2 = n*1.0
     else: 
-        raise Exception("Haven't decided what l1 l2 should be for 6-ireg yet.")
+        raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
     for r in range(num_reps):  
         print("Running for N={}. Repeat {} of {}.".format(num_nodes,r,num_reps))
