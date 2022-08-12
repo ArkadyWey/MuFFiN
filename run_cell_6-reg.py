@@ -6,7 +6,10 @@ import configure
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_6-reg")
+initialisation = "6-reg"
+sigma          = 0.3
+
+path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
@@ -15,10 +18,9 @@ num_nodes = 18
 num_refs  = 3
 num_dims  = 2
 
-initialisation = "6-reg"
-sigma          = 0.3
 
-conf = configure.Configure(num_nodes=N,
+
+conf = configure.Configure(num_nodes=num_nodes,
                            initialisation=initialisation,
                            sigma=sigma)
 

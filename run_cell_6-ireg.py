@@ -4,12 +4,15 @@ from scipy import spatial
 import os
 
 # Parameters 
-path_results = "results_delaun"
+# -----
+initialisation = "6-ireg"
+
+path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
 
-num_nodes = 4
+num_nodes = 2
 num_refs  = 3
 num_dims  = 2
 

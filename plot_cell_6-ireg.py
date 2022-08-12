@@ -8,8 +8,10 @@ from matplotlib.lines import Line2D
 
 
 # Parameters 
-# ---------
-path_results = "results/results_delaun"
+# -----
+initialisation = "6-ireg"
+
+path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
 
 # Arrays for first plot:
