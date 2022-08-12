@@ -31,8 +31,8 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
             # Count number of unique edges where adhesivity is 1
             count_adhe = count_adhe + numpy.count_nonzero(a=a, axis=None, keepdims=False)
 
-            print("r={},s={}".format(r,s))
-            print("a:\n{}".format(a))
+            #print("r={},s={}".format(r,s))
+            #print("a:\n{}".format(a))
             #print("delt:\n{}".format((-delt_5[0,:,:,r,m])*adhe_tabl_5[-1,:,:,r,s]*heav_5[0,:,:,r,m]))
             #print("cond:\n{}".format(cond_tabl_5[0,:,:,r,s]))
 
@@ -65,7 +65,7 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
                 for pair in horizontal_edge_pairs:
                     left_index = pair[0]
                     right_index = pair[1]
-                    print(a[left_index,right_index])
+                    #print(a[left_index,right_index])
                     if a[left_index,right_index] != 0.0:
                         count_adhe_hori = count_adhe_hori + 1
                     else: 
