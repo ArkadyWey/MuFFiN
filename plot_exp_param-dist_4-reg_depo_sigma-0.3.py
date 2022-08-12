@@ -47,7 +47,9 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         ax=ax)
 
 
-conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=1,
+                           initialisation=initialisation,
+                           sigma=sigma)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
@@ -77,7 +79,9 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
+    conf = configure.Configure(num_nodes=1,
+                               initialisation=initialisation,
+                               sigma=sigma)
 
 
     num_bins = 500
@@ -211,7 +215,9 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=1,
+                           initialisation=initialisation,
+                           sigma=sigma)
 
 ax.scatter(num_nodes_list,mean_1-conf.mean*conf.get_cdf(x=conf.mean), label=r"mean $j^{0}-\bar{G}$cdf($\bar{G}$)")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")

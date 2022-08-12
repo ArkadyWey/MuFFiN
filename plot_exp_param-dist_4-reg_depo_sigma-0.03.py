@@ -48,7 +48,8 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
 
 
 conf = configure.Configure(num_nodes=1,
-                           initialisation="4-reg")
+                           initialisation=initialisation,
+                           sigma=sigma)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
@@ -214,7 +215,9 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=1,initialisation="4-reg")
+conf = configure.Configure(num_nodes=1,
+                           initialisation=initialisation,
+                           sigma=sigma)
 
 ax.scatter(num_nodes_list,mean_1-conf.mean/2, label=r"mean $j^{0}-\frac{\bar{G}}{2}$")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
