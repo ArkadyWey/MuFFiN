@@ -13,7 +13,11 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
+initialisation = "4-reg"
+num_reps       = 10000
+sigma          = 0.3
+
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 
 
@@ -43,7 +47,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         ax=ax)
 
 
-conf = configure.Configure(num_nodes=1,initialisation="4-reg")
+conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
@@ -73,7 +77,7 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,initialisation="4-reg")
+    conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
 
 
     num_bins = 500
@@ -207,7 +211,7 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=1,initialisation="4-reg")
+conf = configure.Configure(num_nodes=1,initialisation=initialisation,sigma=sigma)
 
 ax.scatter(num_nodes_list,mean_1-conf.mean*conf.get_cdf(x=conf.mean), label=r"mean $j^{0}-\bar{G}$cdf($\bar{G}$)")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")

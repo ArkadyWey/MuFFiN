@@ -13,7 +13,11 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
+initialisation = "4-reg"
+num_reps       = 10000
+sigma          = 0.03
+
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 
 
@@ -63,7 +67,9 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,initialisation="4-reg")
+    conf = configure.Configure(num_nodes=N,
+                               initialisation=initialisation,
+                               sigma=sigma)
 
 
     num_bins = 500

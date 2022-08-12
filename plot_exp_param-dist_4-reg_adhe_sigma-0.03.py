@@ -14,7 +14,11 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.03")
+initialisation = "4-reg"
+num_reps       = 10000
+sigma          = 0.03
+
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 
 
@@ -43,7 +47,8 @@ for t,N in enumerate(num_nodes_list):
     height_adhe_hori_1 = bincount_adhe_hori_1/sum(bincount_adhe_hori_1)/width
 
     conf = configure.Configure(num_nodes=N,
-                               initialisation="4-reg")
+                               initialisation=initialisation,
+                               sigma=sigma)
 
     num_bins_adhe = N+1
     plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,

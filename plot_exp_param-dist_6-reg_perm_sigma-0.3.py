@@ -62,7 +62,9 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,initialisation=initialisation,sigma=sigma)
+    conf = configure.Configure(num_nodes=N,
+                               initialisation=initialisation,
+                               sigma=sigma)
 
 
     num_bins = 500

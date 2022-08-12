@@ -13,7 +13,11 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3")
+initialisation = "4-reg"
+num_reps       = 10000
+sigma          = 0.3
+
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
 
 
@@ -58,7 +62,9 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=N,initialisation="4-reg")
+    conf = configure.Configure(num_nodes=N,
+                               initialisation=initialisation,
+                               sigma=sigma)
 
 
     num_bins = 500
@@ -136,7 +142,9 @@ for t in range(num_tests):
 
 # Plot scatter for distribution means
 # -------
-conf = configure.Configure(num_nodes=1,initialisation="4-reg")
+conf = configure.Configure(num_nodes=N,
+                           initialisation=initialisation,
+                           sigma=sigma)
 ax.scatter(num_nodes_list,mean_1-conf.mean, label=r"mean $k^{00}-\bar{G}$")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
 
@@ -202,7 +210,9 @@ count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align=
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
-conf  = configure.Configure(num_nodes=1,initialisation="4-reg")
+conf = configure.Configure(num_nodes=N,
+                           initialisation=initialisation,
+                           sigma=sigma)
 mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(min(bins_1), max(bins_1), 1_000)
