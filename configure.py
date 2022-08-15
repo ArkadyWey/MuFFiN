@@ -77,9 +77,12 @@ class Configure():
             l1 = n*1.0
             l2 = n*numpy.sqrt(3.0)
         elif initialisation == "6-ireg":
-            n = int(numpy.sqrt(num_nodes))
+            #n = int(numpy.sqrt(num_nodes))
+            #l1 = n*1.0
+            #l2 = n*1.0
+            n  = int(numpy.sqrt(num_nodes/2))    
             l1 = n*1.0
-            l2 = n*1.0
+            l2 = n*numpy.sqrt(3.0)
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
@@ -125,8 +128,9 @@ class Configure():
             scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
             scaled_mean = self.mean*scale_factor
         elif self.initialisation == "6-ireg":
-            scale_factor = 2.0 # mean 1/length for length uniformly distributed
-            scaled_mean = self.mean*scale_factor
+            #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
+            scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            scaled_mean = self.mean*scale_factor # mean/length for length uniformly distributed
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
@@ -143,6 +147,7 @@ class Configure():
         # Parameters 
         # -----------
         alpha = 1.0/self.scaled_mean
+        #print("threshold:",1.0/alpha)
 
         return alpha
 
