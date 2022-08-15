@@ -242,7 +242,7 @@ def four_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
 
 
 
-def six_ireg(num_nodes: int, num_refs: int, mean: float):
+def six_ireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray):
     """
     - Get specified number of (x,y) points within a unit cell. 
     - Calculate simplices of delauney triangulation. 
@@ -256,7 +256,8 @@ def six_ireg(num_nodes: int, num_refs: int, mean: float):
     cell = cells.Cell_2D_six_ireg(num_nodes=num_nodes,
                                   num_refs=num_refs,
                                   num_dims=num_dims,
-                                  mean=mean)
+                                  mean=mean, 
+                                  leng_1=leng_1)
 
     #cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
     cond_init_4 = cell.cond_init_4

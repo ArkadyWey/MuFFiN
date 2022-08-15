@@ -71,7 +71,8 @@ class Cell_2D_six_ireg():
     def __init__(self, num_nodes: int,
                        num_refs: int, 
                        num_dims: int,
-                       mean: float):
+                       mean: float,
+                       leng_1: numpy.ndarray):
         """
         Parameters 
         # -------
@@ -85,6 +86,11 @@ class Cell_2D_six_ireg():
         self.num_refs  = num_refs
         self.num_dims  = num_dims
         self.mean      = mean
+        self.leng_1    = leng_1
+        
+        self.l1 = leng_1[0]
+        self.l2 = leng_1[1]
+
 
         (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
 
@@ -110,7 +116,7 @@ class Cell_2D_six_ireg():
         - pts_y_0: numpy.ndarray
             pts_y_0[i] is y coordinate of node i in cell with s = 0.
         - pts_x_1: numpy.ndarray
-            pts_x_1[i] is x coordinate of node i in cell with r = 1.
+            pts_x                                                                                                                                                       _1[i] is x coordinate of node i in cell with r = 1.
         - pts_y_1: numpy.ndarray
             pts_y_1[i] is y coordinate of node i in cell with s = 1.
         - pts_x_m1: numpy.ndarray
@@ -120,18 +126,21 @@ class Cell_2D_six_ireg():
         """
         # Parameters 
         num_nodes = self.num_nodes
+        l1        = self.l1
+        l2        = self.l2
+
 
         # Get unit cell points
-        pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) 
-        pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes) 
+        pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes)*l1 
+        pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes)*l2 
 
         # Right and up components
-        pts_x_1 = 1.0*numpy.ones_like(pts_x_0) + pts_x_0 
-        pts_y_1 = 1.0*numpy.ones_like(pts_y_0) + pts_y_0
+        pts_x_1 = l1*numpy.ones_like(pts_x_0) + pts_x_0 
+        pts_y_1 = l2*numpy.ones_like(pts_y_0) + pts_y_0
 
         ## Left and down components
-        pts_x_m1 = -1.0*numpy.ones_like(pts_x_0) + pts_x_0
-        pts_y_m1 = -1.0*numpy.ones_like(pts_y_0) + pts_y_0
+        pts_x_m1 = -l1*numpy.ones_like(pts_x_0) + pts_x_0
+        pts_y_m1 = -l2*numpy.ones_like(pts_y_0) + pts_y_0
 
         return (pts_x_0, 
                 pts_y_0,

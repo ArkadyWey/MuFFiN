@@ -168,7 +168,8 @@ class Configure():
         elif self.initialisation == "6-ireg":
             cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
                                                          num_refs=self.num_refs,
-                                                         mean=self.mean)
+                                                         mean=self.mean, 
+                                                         leng_1=self.leng_1)
 
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \
