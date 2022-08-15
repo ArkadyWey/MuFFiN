@@ -351,6 +351,8 @@ class Cell_2D_six_ireg():
 
         cond_init_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
 
+        #d = []
+        #g = []
         for edge in edges:
             # Get points that edge involves
             p_i = edge[0]
@@ -364,16 +366,28 @@ class Cell_2D_six_ireg():
             # Either i or j is in unit cell, such that r==0==s.
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
-                cond_init_4[i_i,i_j,r_j,s_j]   = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                cond_init_4[i_i,i_j,r_j,s_j]   = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                cond_init_4[i_j,i_i,-r_j,-s_j] = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                #g.append(cond_init_4[i_i,i_j,r_j,s_j])
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
-                cond_init_4[i_j,i_i,r_i,s_i]   = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = (self.mean)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_j,i_i,r_i,s_i]   = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_i,i_j,-r_i,-s_i] = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                #g.append(cond_init_4[i_i,i_j,r_j,s_j])
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass
-
+        
+        #l = 3*self.l1
+        #dd = numpy.sqrt(2*l**2)
+        #ll = (1.0/15.0)*(l**3/l**2 + l**3/l**2 + dd*(3.0-1-1) + (5.0/2.0)*(l*numpy.log((l+dd)/l) + l*numpy.log((l+dd)/l)) )
+        #print("ll:",ll)
+        #print("average_cond:",numpy.mean(numpy.array(g)))
+        #print("average_dist:",numpy.mean(numpy.array(d)))
+        #print("avdist:",numpy.mean(dist_6[:,:,:,:,:,:]))
+        #print("mean/average_dist:",self.mean/numpy.mean(numpy.array(d)))
         return cond_init_4
 
 
