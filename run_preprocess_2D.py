@@ -31,7 +31,7 @@ def main(num_nodes: int, initialisation: str, sigma: float):
                                                                             alpha=alpha)
     #r = 0
     #m = 0
-    
+    #print("avrg cond:",numpy.mean(cond_tabl_5))
     #print("cond_tabl_5[0,:,:,0,0]: \n{}".format(cond_tabl_5[0,:,:,r,0]))
     #print("adhe_tabl_5[0,:,:,0,0]: \n{}".format(adhe_tabl_5[0,:,:,0,0]))
     
@@ -92,8 +92,8 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 2
-    initialisation = "6-ireg"
-    sigma = 1.0
+    initialisation = "6-reg"
+    sigma = 0.3
     
     # Get permeability and deposition parameter
     # -----

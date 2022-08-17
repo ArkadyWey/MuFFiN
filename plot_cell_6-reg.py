@@ -9,7 +9,7 @@ import configure
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_6-reg")
+path_results = os.path.join(".","results/results_cell_6-reg")
 
 sigma = 0.3
 initialisation = "6-reg"

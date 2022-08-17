@@ -14,7 +14,7 @@ path_results = os.path.join(".","results/results_cell_{}".format(initialisation)
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
 
-num_nodes = 18
+num_nodes = 8
 num_refs  = 3
 num_dims  = 2
 
