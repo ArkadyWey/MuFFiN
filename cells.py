@@ -410,6 +410,7 @@ class Cell_2D_six_reg():
         self.num_dims  = num_dims
         self.mu        = mu
         self.sigma     = sigma
+        self.scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
 
         (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
 
@@ -433,8 +434,8 @@ class Cell_2D_six_reg():
 
         
         # Get constructing points
-        pts_x_constr = numpy.array([0.0,0.5]) 
-        pts_y_constr = numpy.array([0.0,numpy.sqrt(3.0)/2.0]) 
+        pts_x_constr = numpy.array([0.0,0.5])*self.scale_factor 
+        pts_y_constr = numpy.array([0.0,numpy.sqrt(3.0)/2.0])*self.scale_factor 
 
 
         # Get unit cell points
@@ -454,7 +455,7 @@ class Cell_2D_six_reg():
         pts_y_0 = []
         for i in range(num_rows_or_cols):
             for el in pts_y_0_tile:
-                pts_y_0.append(el+i*numpy.sqrt(3.0)) # get y coord of all 0,1 points above
+                pts_y_0.append(el+i*numpy.sqrt(3.0)*self.scale_factor) # get y coord of all 0,1 points above
         
         #print(pts_y_0)
 
@@ -463,15 +464,14 @@ class Cell_2D_six_reg():
         
 
         # Right and up components
-        pts_x_1 = num_rows_or_cols*numpy.ones_like(pts_x_0) + pts_x_0 
-        pts_y_1 = num_rows_or_cols*numpy.sqrt(3.0)*numpy.ones_like(pts_y_0) + pts_y_0
+        pts_x_1 = num_rows_or_cols*numpy.ones_like(pts_x_0)*self.scale_factor + pts_x_0 
+        pts_y_1 = num_rows_or_cols*numpy.sqrt(3.0)*self.scale_factor*numpy.ones_like(pts_y_0) + pts_y_0
 
         ## Left and down components
-        pts_x_m1 = -num_rows_or_cols*numpy.ones_like(pts_x_0) + pts_x_0
-        pts_y_m1 = -num_rows_or_cols*numpy.sqrt(3.0)*numpy.ones_like(pts_y_0) + pts_y_0
+        pts_x_m1 = -num_rows_or_cols*numpy.ones_like(pts_x_0)*self.scale_factor + pts_x_0
+        pts_y_m1 = -num_rows_or_cols*numpy.sqrt(3.0)*self.scale_factor*numpy.ones_like(pts_y_0) + pts_y_0
 
         #print(pts_y_m1)
-
 
         return (pts_x_0, 
                 pts_y_0,
@@ -524,7 +524,7 @@ class Cell_2D_six_reg():
 
                     pts_4[i,0,r,s] = pts_x[i]
                     pts_4[i,1,r,s] = pts_y[i]      
-        
+
         return pts_4
 
     def get_distance_between_points(self):
@@ -694,13 +694,13 @@ class Cell_2D_six_reg():
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
                 sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
-                cond_init_4[i_i,i_j,r_j,s_j]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                cond_init_4[i_i,i_j,r_j,s_j]   = sample/self.scale_factor#numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                cond_init_4[i_j,i_i,-r_j,-s_j] = sample/self.scale_factor#numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
                 sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
-                cond_init_4[i_j,i_i,r_i,s_i]   = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_j,i_i,r_i,s_i]   = sample/self.scale_factor#numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_i,i_j,-r_i,-s_i] = sample/self.scale_factor#numpy.sqrt(numpy.sqrt(3.0))*sample/numpy.sqrt(2.0)#numpy.sqrt(numpy.sqrt(3.0))*1.72461/numpy.sqrt(2.0)#1.72461/1.07456993182#sample#(1.72461)*1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass
