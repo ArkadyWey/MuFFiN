@@ -74,8 +74,11 @@ class Configure():
             l2 = n*1.0
         elif initialisation == "6-reg":
             n  = int(numpy.sqrt(num_nodes/2))    
-            l1 = n*1.0
-            l2 = n*numpy.sqrt(3.0)
+            #l1 = n*1.0
+            #l2 = n*numpy.sqrt(3.0)
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            l1 = n*scale_factor
+            l2 = n*numpy.sqrt(3.0)*scale_factor
         elif initialisation == "6-ireg":
             #n = int(numpy.sqrt(num_nodes))
             #l1 = n*1.0
@@ -125,8 +128,9 @@ class Configure():
         elif self.initialisation == "4-reg":
             scaled_mean = self.mean
         elif self.initialisation == "6-reg":
-            scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
-            scaled_mean = self.mean*scale_factor
+            #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scaled_mean = self.mean/scale_factor
         elif self.initialisation == "6-ireg":
             #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
             scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
