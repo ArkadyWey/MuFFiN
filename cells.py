@@ -91,7 +91,6 @@ class Cell_2D_six_ireg():
         self.l1 = leng_1[0]
         self.l2 = leng_1[1]
 
-
         (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
 
         self.pts_4 = self.get_points_tensor()
@@ -131,8 +130,8 @@ class Cell_2D_six_ireg():
 
 
         # Get unit cell points
-        pts_x_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes)*l1 
-        pts_y_0 = numpy.random.uniform(low=0.0, high=1.0, size=num_nodes)*l2 
+        pts_x_0 = numpy.random.uniform(low=0.0, high=l1, size=num_nodes) #*l1 
+        pts_y_0 = numpy.random.uniform(low=0.0, high=l2, size=num_nodes) #*l2 
 
         # Right and up components
         pts_x_1 = l1*numpy.ones_like(pts_x_0) + pts_x_0 
@@ -141,6 +140,13 @@ class Cell_2D_six_ireg():
         ## Left and down components
         pts_x_m1 = -l1*numpy.ones_like(pts_x_0) + pts_x_0
         pts_y_m1 = -l2*numpy.ones_like(pts_y_0) + pts_y_0
+
+        #print(pts_x_0) 
+        #print(pts_y_0)
+        #print(pts_x_1)
+        #print(pts_y_1)
+        #print(pts_x_m1)
+        #print(pts_y_m1)
 
         return (pts_x_0, 
                 pts_y_0,
@@ -281,6 +287,9 @@ class Cell_2D_six_ireg():
         simplices = tri.simplices
         # simplices[s] = [p_s_1,p_s_2,p_s_3] where p_s_i is the ith point on the s^th simplex.
 
+        self.key = key
+        self.simplices = simplices
+        self.pts_to_tri_2 = pts_to_tri_2
         return (simplices, key)
 
 
@@ -366,14 +375,14 @@ class Cell_2D_six_ireg():
             # Either i or j is in unit cell, such that r==0==s.
             if (r_i == 0 and s_i == 0):
                 # i is in unit cell
-                cond_init_4[i_i,i_j,r_j,s_j]   = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                cond_init_4[i_i,i_j,r_j,s_j]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                cond_init_4[i_j,i_i,-r_j,-s_j] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
                 #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
                 #g.append(cond_init_4[i_i,i_j,r_j,s_j])
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
-                cond_init_4[i_j,i_i,r_i,s_i]   = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = (numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0))*(self.mean)/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_j,i_i,r_i,s_i]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                cond_init_4[i_i,i_j,-r_i,-s_i] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
                 #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
                 #g.append(cond_init_4[i_i,i_j,r_j,s_j])
             else: 

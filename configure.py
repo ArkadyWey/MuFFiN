@@ -80,12 +80,13 @@ class Configure():
             l1 = n*scale_factor
             l2 = n*numpy.sqrt(3.0)*scale_factor
         elif initialisation == "6-ireg":
-            #n = int(numpy.sqrt(num_nodes))
-            #l1 = n*1.0
-            #l2 = n*1.0
-            n  = int(numpy.sqrt(num_nodes/2))    
+            n = int(numpy.sqrt(num_nodes))
             l1 = n*1.0
-            l2 = n*numpy.sqrt(3.0)
+            l2 = n*1.0
+            #n  = int(numpy.sqrt(num_nodes/2))    
+            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            #l1 = n*scale_factor
+            #l2 = n*numpy.sqrt(3.0)*scale_factor
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
@@ -128,13 +129,26 @@ class Configure():
         elif self.initialisation == "4-reg":
             scaled_mean = self.mean
         elif self.initialisation == "6-reg":
-            #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            # Scale factor is length of edge
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_mean = self.mean/scale_factor
         elif self.initialisation == "6-ireg":
             #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
-            scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
-            scaled_mean = self.mean*scale_factor # mean/length for length uniformly distributed
+            #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            # Scale factor is average length of edge
+            # See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle
+            
+            lw = 3*self.l1
+            lh = 3*self.l2
+            
+            d = numpy.sqrt(lw**2+lh**2)
+            t1 = (lw**3)/(lh**2) + (lh**3)/(lw**2)
+            t2 = d*(3.0 - (lw**2)/(lh**2) - (lh**2)/(lw**2) )
+            t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
+            scale_factor = (1.0/15.0)*(t1+t2+t3)
+            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scale_factor = 1.0
+            scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
