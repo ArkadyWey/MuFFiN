@@ -151,7 +151,6 @@ def get_horizontal_index_pairs(num_nodes):
         pairs = []
         for k in range(n): # [0,...,n-1]
             for i in range(n): # [0,...,n-1]
-
                 index_left = index_list[i]
                 index_right = index_list[i+1]
 
@@ -164,12 +163,6 @@ def get_horizontal_index_pairs(num_nodes):
 
                 pairs.append(even_pair)
                 
-                # Consider pair in opposite direction
-                # ------
-                even_pair_reversed = [even_right_node_index,even_left_node_index]
-                pairs.append(even_pair_reversed)
-
-
 
                 # Odd pair
                 # -----
@@ -182,11 +175,6 @@ def get_horizontal_index_pairs(num_nodes):
 
                 pairs.append(odd_pair)
     
-                # Consider pair in opposite direction
-                # ------
-                odd_pair_reversed = [odd_right_node_index,odd_left_node_index]
-                pairs.append(odd_pair_reversed)
-
     return pairs
         
 
