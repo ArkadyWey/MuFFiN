@@ -147,7 +147,7 @@ class Configure():
             t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
             scale_factor = (1.0/15.0)*(t1+t2+t3)
             #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-            scale_factor = 1.0
+            scale_factor = 1.2
             scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
