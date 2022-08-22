@@ -360,8 +360,8 @@ class Cell_2D_six_ireg():
 
         cond_init_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
 
-        #d = []
-        #g = []
+        edge_lengs = []
+        edge_conds   = []
         for edge in edges:
             # Get points that edge involves
             p_i = edge[0]
@@ -374,17 +374,23 @@ class Cell_2D_six_ireg():
             # Keep edge if involves unit cell
             # Either i or j is in unit cell, such that r==0==s.
             if (r_i == 0 and s_i == 0):
+                #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
                 # i is in unit cell
                 cond_init_4[i_i,i_j,r_j,s_j]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
                 cond_init_4[i_j,i_i,-r_j,-s_j] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
-                #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                #g.append(cond_init_4[i_i,i_j,r_j,s_j])
+                #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
+                edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                edge_conds.append(cond_init_4[i_i,i_j,r_j,s_j])
+                #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
             elif (r_j == 0 and s_j == 0):
                 # j is in unit cell
+                #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
                 cond_init_4[i_j,i_i,r_i,s_i]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
                 cond_init_4[i_i,i_j,-r_i,-s_i] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                #d.append(dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                #g.append(cond_init_4[i_i,i_j,r_j,s_j])
+                #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
+                edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                edge_conds.append(cond_init_4[i_j,i_i,r_i,s_i])
+                #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass
@@ -397,6 +403,10 @@ class Cell_2D_six_ireg():
         #print("average_dist:",numpy.mean(numpy.array(d)))
         #print("avdist:",numpy.mean(dist_6[:,:,:,:,:,:]))
         #print("mean/average_dist:",self.mean/numpy.mean(numpy.array(d)))
+        self.edge_lengs = edge_lengs
+        #print(d)
+        self.edge_conds = edge_conds
+        #print(g)
         return cond_init_4
 
 
