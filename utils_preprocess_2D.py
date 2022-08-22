@@ -18,7 +18,8 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
 
     count_adhe = 0
     count_adhe_hori = 0
-    #sum_a = 0
+    #sum_a = 0]
+    cnt = 0
     for r in range(num_refs):
         for s in range(num_refs):
             
@@ -26,7 +27,10 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
             # ---------
             # Get integrand of adhesivity
             a = cond_tabl_5[0,:,:,r,s]*(-delt_5[0,:,:,r,m])*adhe_tabl_5[-1,:,:,r,s]*heav_5[0,:,:,r,m]
+            b = cond_tabl_5[0,:,:,r,s]*(-delt_5[0,:,:,r,m])
             #sum_a = sum_a + numpy.sum(a)
+            #print(b)
+            cnt = cnt + numpy.count_nonzero(a=b, axis=None, keepdims=False)
             
             # Count number of unique edges where adhesivity is 1
             count_adhe = count_adhe + numpy.count_nonzero(a=a, axis=None, keepdims=False)
@@ -72,7 +76,7 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
                         pass
 
             elif initialisation == "6-ireg":
-                pass 
+                count_adhe_hori = None 
             
             else: 
                 raise Exception("initilisation must be 4-reg, 6-reg, or 6-ireg.")
@@ -95,7 +99,7 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
         # Count diagonal edges 
         count_adhe_not_hori = count_adhe-count_adhe_hori
     elif initialisation=="6-ireg":
-        pass 
+        count_adhe_not_hori = None 
     else:
         raise Exception("Initialisation must be 4-reg,6-reg, or 6-ireg.")
 
@@ -103,7 +107,7 @@ def count_num_edges_blocked(initialisation, cond_tabl_5, adhe_tabl_5, delt_5, he
     #print(sum_a/numpy.sqrt(3))
     #if -sum_a/numpy.sqrt(3) > 4.0:
     #    exit()
-
+    print("cnt: {}".format(cnt))
     return count_adhe, count_adhe_hori, count_adhe_not_hori
 
 

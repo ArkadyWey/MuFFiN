@@ -49,7 +49,7 @@ initialisation = args.initialisation
 sigma          = args.sigma
 type_alpha     = args.type_alpha
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 # Make results directories 
 # --------
