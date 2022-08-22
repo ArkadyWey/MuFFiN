@@ -53,7 +53,7 @@ class Configure():
         
         self.scaled_mean = self.get_scaled_mean()
         self.scaled_median = self.get_scaled_median()
-        
+
         self.alpha = self.get_alpha()
 
         # Get initial conditions: conductance and adhesivity 
@@ -154,8 +154,17 @@ class Configure():
             scale_factor = 1.2
             scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
             
-            scaled_mean = 1.3685051642169532
-            
+            if self.num_nodes == 4:               
+                scaled_mean = 1.860735761075145
+            elif self.num_nodes == 9:
+                scaled_mean = 1.9881984119055531
+            elif self.num_nodes == 16:
+                scaled_mean = 2.058295978362256
+            elif self.num_nodes == 25:
+                scaled_mean = 2.1074102358844433
+            else: 
+                raise Exception("There is no scaled_mean for this num_nodes.")       
+
             # Known scaled means:
             # --------------
             # means: 
@@ -185,8 +194,16 @@ class Configure():
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_median = self.median/scale_factor
         elif self.initialisation == "6-ireg":
-            scaled_median = 1.3685051642169532
-
+            if self.num_nodes == 4:
+                scaled_median = 1.3685051642169532
+            elif self.num_nodes == 9:
+                scaled_median = 1.4405736904829807
+            elif self.num_nodes == 16:
+                1.4754933748364056
+            elif self.num_nodes == 25:
+                1.492219494084712
+            else: 
+                raise Exception("There is no scaled_median for this num_nodes.")    
             # Known scaled medians:
             # --------------
             # N=4: 1.3685051642169532
