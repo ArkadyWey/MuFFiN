@@ -32,6 +32,9 @@ parser.add_argument("-i", "--initialisation", dest="initialisation", required=Tr
 parser.add_argument("-s", "--sigma", dest="sigma", required=True,
                     help="sigma for lognormal disribution that conductance drawn from", type=float)
 
+parser.add_argument("-a", "--type_alpha", dest="type_alpha", required=True,
+                    help="type of alpha blocking rule, either mean or median", type=str)
+
 args = parser.parse_args()
 
 num_nodes_list = args.num_nodes_list
@@ -44,6 +47,7 @@ num_reps = args.num_reps # number of times to repeat a test
 # 100
 initialisation = args.initialisation
 sigma          = args.sigma
+type_alpha     = args.type_alpha
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
 
@@ -84,7 +88,8 @@ for t in range(num_tests):
         # -----
         perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
                                                                                                            initialisation=initialisation,
-                                                                                                           sigma=sigma)
+                                                                                                           sigma=sigma,
+                                                                                                           type_alpha=type_alpha)
         # Get right direction
         perm_effe = perm_3[0,0,0]
         depo_effe = depo_2[-1,0]

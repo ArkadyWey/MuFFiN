@@ -12,7 +12,8 @@ class Configure():
     """ 
     def __init__(self, num_nodes: int, 
                        initialisation: str,
-                       sigma: float):
+                       sigma: float,
+                       type_alpha: str):
         """
         """      
 
@@ -21,6 +22,7 @@ class Configure():
         self.num_nodes      = num_nodes
         self.initialisation = initialisation
         self.sigma          = sigma
+        self.type_alpha     = type_alpha
 
         # Get input parameters from parameters dictionary or class parameters
         # -----
@@ -50,6 +52,8 @@ class Configure():
         self.median = self.get_median()
         
         self.scaled_mean = self.get_scaled_mean()
+        self.scaled_median = self.get_scaled_median()
+        
         self.alpha = self.get_alpha()
 
         # Get initial conditions: conductance and adhesivity 
@@ -149,11 +153,52 @@ class Configure():
             #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scale_factor = 1.2
             scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
+            
+            scaled_mean = 1.3685051642169532
+            
+            # Known scaled means:
+            # --------------
+            # means: 
+            # N=4: 1.860735761075145
+            # N=9: 1.9881984119055531
+            # N=16: 2.058295978362256
+            # N=25: 2.1074102358844433
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
 
         return scaled_mean
+
+
+    def get_scaled_median(self):
+        """
+        The mean above is not the mean unless the structure is 4-reg, 
+        since otherwise the conductances are scaled for a fair test. 
+        Here we scale the mean by the correct scale factor.
+        """
+        if self.initialisation == "4-reg_prescribed":
+            scaled_median = self.median
+        elif self.initialisation == "4-reg":
+            scaled_median = self.median
+        elif self.initialisation == "6-reg":
+            # Scale factor is length of edge
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scaled_median = self.median/scale_factor
+        elif self.initialisation == "6-ireg":
+            scaled_median = 1.3685051642169532
+
+            # Known scaled medians:
+            # --------------
+            # N=4: 1.3685051642169532
+            # N=9: 1.4405736904829807
+            # N=16: 1.4754933748364056
+            # N=25: 1.492219494084712
+        else: 
+            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+
+
+        return scaled_median
+
 
     def get_alpha(self):
         """
@@ -164,9 +209,12 @@ class Configure():
         """
         # Parameters 
         # -----------
-        alpha = 1.0/self.scaled_mean
-        #print("threshold:",1.0/alpha)
-
+        if self.type_alpha == "mean":
+            alpha = 1.0/self.scaled_mean
+        elif self.type_alpha == "median":
+            alpha = 1.0/self.scaled_median
+        else: 
+            raise Exception("type_alpha must be 'mean' or 'median'.")
         return alpha
 
     def get_initial_conductance(self):
