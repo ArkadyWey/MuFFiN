@@ -199,9 +199,9 @@ class Configure():
             elif self.num_nodes == 9:
                 scaled_median = 1.4405736904829807
             elif self.num_nodes == 16:
-                1.4754933748364056
+                scaled_median = 1.4754933748364056
             elif self.num_nodes == 25:
-                1.492219494084712
+                scaled_median = 1.492219494084712
             else: 
                 raise Exception("There is no scaled_median for this num_nodes.")    
             # Known scaled medians:
