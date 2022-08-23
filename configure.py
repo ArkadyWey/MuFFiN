@@ -51,10 +51,15 @@ class Configure():
         self.mean = self.get_mean()
         self.median = self.get_median()
         
-        self.scaled_mean = self.get_scaled_mean()
-        self.scaled_median = self.get_scaled_median()
+        if type_alpha != "none":
+            """
+            Can turn off so that can find mean and median of unscaled conductnace 
+            distribution without needing scaled mean.
+            """
+            self.scaled_mean = self.get_scaled_mean()
+            self.scaled_median = self.get_scaled_median()
 
-        self.alpha = self.get_alpha()
+            self.alpha = self.get_alpha()
 
         # Get initial conditions: conductance and adhesivity 
         # -----

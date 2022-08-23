@@ -29,7 +29,7 @@ num_reps  = args.num_reps
 conf = configure.Configure(num_nodes=num_nodes,
                            initialisation=initialisation,
                            sigma=sigma,
-                           type_alpha="mean")
+                           type_alpha="none")
 edge_lengs = []
 edge_conds = []
 for r in range(num_reps):
