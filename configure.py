@@ -162,6 +162,8 @@ class Configure():
                 scaled_mean = 2.058295978362256
             elif self.num_nodes == 25:
                 scaled_mean = 2.1074102358844433
+            elif self.num_nodes == 36:
+                scaled_mean = 2.1429503946956117
             else: 
                 raise Exception("There is no scaled_mean for this num_nodes.")       
 
@@ -202,6 +204,8 @@ class Configure():
                 scaled_median = 1.4754933748364056
             elif self.num_nodes == 25:
                 scaled_median = 1.492219494084712
+            elif self.num_nodes == 36:
+                scaled_median = 1.5108972950503017
             else: 
                 raise Exception("There is no scaled_median for this num_nodes.")    
             # Known scaled medians:
