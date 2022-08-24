@@ -5,14 +5,18 @@ import numpy
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D  
 
-
+import configure
 
 # Parameters 
 # -----
+num_nodes      = 4
+sigma          = 0.3
 initialisation = "6-ireg"
 
 path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
+conf = configure.Configure(num_nodes=num_nodes,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
+n = int(numpy.sqrt(num_nodes/2))
 
 # Arrays for first plot:
 pts_to_tri_2 = numpy.load(os.path.join(path_results,"pts_to_tri_2.npy"))
@@ -52,9 +56,9 @@ for p in range(len(pts_x)):
 for x in [-1,0,1]:
     for y in [-1,0,1]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
-            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 # Clean up plot
 ax.set_xlim(left=-1,right=+2)
@@ -118,17 +122,17 @@ for p in range(len(pts_to_tri_2[:,0])):
     ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 # Plot cell boundaries
-for x in [-1,0,1]:
-    for y in [-1,0,1]:
+for x in [-1*conf.l1,0,1*conf.l1]:
+    for y in [-1*conf.l2,0,1*conf.l2]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
             #pass
-            ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 # Clean up cell
-ax.set_xlim(left=-1,right=+2)
-ax.set_ylim(bottom=-1,top=+2)
+ax.set_xlim(left=-1*conf.l1,right=+2*conf.l1)
+ax.set_ylim(bottom=-1*conf.l2,top=+2*conf.l2)
 
 ax.set_aspect("equal")
 plt.axis('off')

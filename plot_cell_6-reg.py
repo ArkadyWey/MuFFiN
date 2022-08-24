@@ -30,7 +30,7 @@ pts_4       = numpy.load(os.path.join(path_results,"pts_4.npy"))
 
 # Get the run's configuration parameters (needed for lengths etc in plot)
 #  -------------------------------------
-conf = configure.Configure(num_nodes=num_nodes,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=num_nodes,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 num_rows_or_cols = int(numpy.sqrt(num_nodes/2.0))
 
 
