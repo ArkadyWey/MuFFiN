@@ -16,8 +16,10 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.3
+type_alpha     = "median"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
+
 
 
 
@@ -29,8 +31,8 @@ fig, ax = plt.subplots(1,1)
 num_nodes_list = [2]#2*[1,4,9,16,25,36,49,64,81,100]
 num_tests = len(num_nodes_list)
 
-num_bins_in_range = 2000
-num_pts_to_interp = 250
+num_bins_in_range = 100
+num_pts_to_interp = 100
 
 
 # Must divide by sqrt(N) and make psitive to generate this j, since wasn't done in simulation
@@ -42,20 +44,22 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                                  ax=ax)
 
 
-conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
                              y_label=r"Probability density",
                              x_left=0.0,
-                             x_right=(4.0/numpy.sqrt(3))*conf.mean+0.1,
+                             x_right=None,
                              y_bottom=0.0,
                              y_top=None)
 
 # max occurs at (4.0/numpy.sqrt(3))*conf.scaled_mean+conf.scaled_mean/2.0
+
+#(1.0/numpy.sqrt(3))*conf.scaled_mean/N
 N = num_nodes_list[0]
 for i in range(4*N+1):
-    ax.vlines(x=i*(1.0/numpy.sqrt(3))*conf.scaled_mean/N, 
+    ax.vlines(x=i*(1.0/2.0)*conf.scaled_mean/N, 
               ymin=0.0, 
               ymax=1.0, 
               color="black", 
@@ -64,6 +68,9 @@ for i in range(4*N+1):
               alpha=1.0,
               label="median")
 
+ax.vlines(x=4*conf.scaled_mean/N, 
+              ymin=0.0, 
+              ymax=2.0, color="red")
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo__old.svg"))
 
 
@@ -76,7 +83,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2]
+num_nodes_list = [2,8]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -84,10 +91,10 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma)
+    conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 
-    num_bins = 500
+    num_bins = 100
     min_val = 0.0
     max_val = (4.0/numpy.sqrt(3.0))*conf.mean
 
@@ -195,7 +202,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2*4,2*16,2*36,2*64,2*100]
+num_nodes_list = [2,8]#[2*4,2*16,2*36,2*64,2*100]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -203,10 +210,10 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma)
+    conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 
-    num_bins = 500
+    num_bins = 100
     min_val = 0.0
     max_val = 4*(1.0/numpy.sqrt(3))*conf.scaled_mean
 
@@ -261,7 +268,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = 2*numpy.linspace(1,10,10,dtype=int)**2
+num_nodes_list = [2,8] #2*numpy.linspace(1,10,10,dtype=int)**2
 num_tests = len(num_nodes_list)
 
 # Get mean and standard deviation at each N
@@ -280,7 +287,7 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 rel = 4.0*conf.mean*conf.get_cdf(x=conf.mean)/numpy.sqrt(3.0)
 

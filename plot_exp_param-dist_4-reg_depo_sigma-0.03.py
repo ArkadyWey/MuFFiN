@@ -16,8 +16,9 @@ import plotting
 initialisation = "4-reg"
 num_reps       = 10000
 sigma          = 0.03
+type_alpha     = "mean"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 
 
@@ -49,7 +50,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
 
 conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
-                           sigma=sigma)
+                           sigma=sigma, type_alpha=type_alpha)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
@@ -81,7 +82,7 @@ for t, N in enumerate(num_nodes_list):
     # --------
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
 
 
     num_bins = 500
@@ -217,7 +218,7 @@ fig, ax = plt.subplots(1,1)
 
 conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
-                           sigma=sigma)
+                           sigma=sigma, type_alpha=type_alpha)
 
 ax.scatter(num_nodes_list,mean_1-conf.mean/2, label=r"mean $j^{0}-\frac{\bar{G}}{2}$")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")

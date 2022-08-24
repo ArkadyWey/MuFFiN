@@ -17,8 +17,9 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.3
+type_alpha     = "median"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 
 
@@ -31,7 +32,7 @@ Then over the top of each histogram we fit a normal distribution.
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-num_nodes_list = [2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = [2,8,18]#[2,18,50]#2*numpy.array([4,16,36,64,100])
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -48,7 +49,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
 
     num_bins_adhe = 3*N+1
     plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,
@@ -134,7 +135,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
                             
 
     num_bins_adhe = N+1
@@ -220,7 +221,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
                             
 
     num_bins_adhe = N+1
@@ -289,7 +290,7 @@ Plot mean and standard deviation of the distributions above.
 Use this to inform what the parameters of the normal distributions 
 are that we fit the distributions above to.
 """
-num_nodes_list = 2*numpy.array([1,4,9,16,25,36,49,64,81,100])
+num_nodes_list = [2,8,18]#2*numpy.array([1,4,9,16,25,36,49,64,81,100])
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()

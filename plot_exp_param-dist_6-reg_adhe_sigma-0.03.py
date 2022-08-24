@@ -17,8 +17,9 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.03
+type_alpha     = "mean"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 
 
@@ -31,7 +32,7 @@ Then over the top of each histogram we fit a normal distribution.
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-num_nodes_list = [2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = [2,8,18,32]#[2,18,50]#2*numpy.array([4,16,36,64,100])
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -48,7 +49,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
 
     num_bins_adhe = 3*N+1
     plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,
@@ -117,7 +118,7 @@ Then over the top of each histogram we fit a normal distribution.
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-num_nodes_list = [2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = [2,8,18,32]#2*numpy.array([4,16,36,64,100])
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -134,7 +135,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
                             
 
     num_bins_adhe = N+1
@@ -203,7 +204,7 @@ Then over the top of each histogram we fit a normal distribution.
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-num_nodes_list = [2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = [2,8]#2*numpy.array([4,16,36,64,100])
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -220,7 +221,7 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
                             
 
     num_bins_adhe = N+1

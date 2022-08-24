@@ -17,8 +17,9 @@ import plotting
 initialisation = "4-reg"
 num_reps       = 10000
 sigma          = 0.03
+type_alpha     = "mean"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 
 
@@ -48,7 +49,8 @@ for t,N in enumerate(num_nodes_list):
 
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma,
+                               type_alpha=type_alpha)
 
     num_bins_adhe = N+1
     plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,

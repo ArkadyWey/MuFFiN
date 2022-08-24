@@ -16,14 +16,15 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.03
+type_alpha     = "median"
 
-path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}".format(initialisation,num_reps,sigma))
+path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 
 
 # Plot histograms with all bars same width
 # ----------------------------------------
-num_nodes_list = 2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = [2,8]#2*numpy.array([1,4,16,36,64,100])
 num_tests = len(num_nodes_list)
 fig, ax = plt.subplots(1,1)
 
@@ -54,7 +55,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = 2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = [2,8]#2*numpy.array([1,4,16,36,64,100])
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -64,10 +65,10 @@ for t, N in enumerate(num_nodes_list):
     # --------
     conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
-                               sigma=sigma)
+                               sigma=sigma, type_alpha=type_alpha)
 
 
-    num_bins = 500
+    num_bins = 100
     min_val = 2.5
     max_val = 2.8
 
@@ -122,7 +123,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm
 
 # Plot mean and standard deviation of each histogram 
 # ------------------------------------
-num_nodes_list = 2*numpy.array([1,4,9,16,25,36,49,64,81,100])
+num_nodes_list = [2,8]#2*numpy.array([1,4,9,16,25,36,49,64,81,100])
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()
@@ -206,7 +207,7 @@ count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align=
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
-conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma)
+conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(0.0,4.0, 1_000)

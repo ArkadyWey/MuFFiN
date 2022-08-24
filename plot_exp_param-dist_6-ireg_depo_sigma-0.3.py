@@ -10,36 +10,29 @@ import sys
 sys.path.append("/home/user/utils_python")
 import plotting
 
-
 # Parameters 
 # -----
-initialisation = "4-reg"
+initialisation = "6-ireg"
 num_reps       = 10000
 sigma          = 0.3
-type_alpha     = "mean"
+type_alpha     = "median"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
+#num_nodes_list = [16,25,36,49,64,81,100]
+#num_nodes_list = [4,9,16,25,36,49,64,81,100]
+num_nodes_list = [4,9,16,25]#[4,9,16,25,36,49]#[4,16,36,64,100]
+num_tests = len(num_nodes_list)
 
 
 # Plot deposition parameter histogram fo all N on same graph
-# -----------------------    
-plotting.thesisify_pre_ax_creation()
+# -----    
 fig, ax = plt.subplots(1,1)
 
-
-#num_nodes_list = [16,25,36,49,64,81,100]
-#num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list = [4,16,36,64,100]
-#num_nodes_list = [1,25,100].0
-#num_nodes_list = [9]
-num_tests = len(num_nodes_list)
-
-num_bins_in_range = 100
+num_bins_in_range = 100#201
 num_pts_to_interp = 250
 
-
-# Must divide by sqrt(N) and make psitive to generate this j, since wasn't done in simulation
+# MUST DIVIDE bY SQRT(N) and make psitive to generate this j, since wasn't done in simulation
 ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution(parameter_name="depo",
                                                                         num_nodes_list=num_nodes_list,
                                                                         num_bins_in_range=num_bins_in_range,
@@ -47,33 +40,23 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
+ax.set_xlabel(r"$j^{0}$")
+ax.set_ylabel(r"Probability density")
+#ax.set_xlim(left=0.0,right=2.0)
+ax.set_ylim(bottom=0.0)
 
-conf = configure.Configure(num_nodes=1,
-                           initialisation=initialisation,
-                           sigma=sigma,
-                           type_alpha=type_alpha)
+ax.legend()
 
-plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
-                             y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=conf.mean+0.1,
-                             y_bottom=0.0,
-                             y_top=None)
-
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo.svg"))
+plt.savefig(fname=os.path.join(path_results,"prob_density__v__depo__old.svg"), format="svg")
 
 
 
-
-
-
-
-# Plot deposition parameter with boxes
+# Plot deposition parameter with single N with boxes
+# Better neater plot
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [4]
+num_nodes_list = [4,9,16,25]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -81,14 +64,12 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=1,
-                               initialisation=initialisation,
-                               sigma=sigma, type_alpha=type_alpha)
+    conf = configure.Configure(num_nodes=4,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 
     num_bins = 100
     min_val = 0.0
-    max_val = conf.mean
+    max_val = 3.0
 
     # Get parameter to histogram
     # ------
@@ -122,68 +103,24 @@ for t, N in enumerate(num_nodes_list):
                   alpha=1.0)
 
 
+#N = num_nodes_list[0]
+#for i in range(4*N+1):
+#    ax.vlines(x=i*(1.0/2.0)*conf.scaled_mean/N, 
+#              ymin=0.0, 
+#              ymax=1.0, 
+#              color="black", 
+#              linewidth=2.0, 
+#              linestyle=":", 
+#              alpha=1.0)
 
-    # Plot a bar at each scaled B value 
-    # with width max distribution we expect from this 
-    # edge contribution
-    # Height is scaled with tallest bar in j distribution
-    # -----
-    count_adhe_hori_1 = numpy.load(os.path.join(path_results, "count_adhe_hori_1_N-{}.npy".format(N)))
-
-    num_bins_adhe = N+1
-    plot_depo_aprx_v_density = utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density(num_nodes=N,
-                                                                                  num_bins=num_bins_adhe,
-                                                                                  conf=conf, 
-                                                                                  count_adhe_1=count_adhe_hori_1, 
-                                                                                  max_height=max(y2))
-    
-    
-
-    ax.bar(x=plot_depo_aprx_v_density.x_j_aprx_1, 
-           height=plot_depo_aprx_v_density.height_adhe_1, 
-           width=plot_depo_aprx_v_density.width, 
-           bottom=None, 
-           align='center', 
-           alpha=1.0, 
-           data=None, 
-           label=r"$N={}$".format(N), 
-           fill=False,
-           edgecolor=colors[t], 
-           linewidth=1.0)
-
-
-    # Plot dashed line at mean
-    for i in range(len(plot_depo_aprx_v_density.x_j_aprx_1)):
-        ax.vlines(x=plot_depo_aprx_v_density.x_j_aprx_1[i], 
-                  ymin=0.0, 
-                  ymax=plot_depo_aprx_v_density.height_adhe_1[i], 
-                  color=colors[t], 
-                  linewidth=1.0, 
-                  linestyle="--", 
-                  alpha=1.0)
-
-
-# Attempt to fit a log-normal distribution
-# -------
-sigma = conf.sigma/numpy.sqrt(N)
-#for i,N in enumerate(num_nodes_list):
-#for mu in plot_depo_aprx_v_density.x_j_aprx_1:
-mu = numpy.log(conf.mean/2)-(sigma**2)/2
-#mu = conf.mu + numpy.log(conf.mean/2/N)
-x = numpy.linspace(mu-10, mu+10, 1_0000)
-# Normal
-# pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
-# lognormal
-pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi)))/numpy.sqrt(N)
-ax.plot(x, pdf, linewidth=1, linestyle="--", label=r"$\sigma={}$".format(sigma), color="tab:red")
 
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
                              y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=conf.mean,
+                             x_left=0.0-0.1,
+                             x_right=max_val+0.1,
                              y_bottom=0.0,
                              y_top=None)
 
@@ -193,12 +130,9 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 
 
 
-
-
-
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+num_nodes_list = [4,9,16,25] #2*numpy.linspace(1,10,10,dtype=int)**2
 num_tests = len(num_nodes_list)
 
 # Get mean and standard deviation at each N
@@ -217,21 +151,22 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=1,
-                           initialisation=initialisation,
-                           sigma=sigma, type_alpha=type_alpha)
+conf = configure.Configure(num_nodes=4,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
-ax.scatter(num_nodes_list,mean_1-conf.mean*conf.get_cdf(x=conf.mean), label=r"mean $j^{0}-\bar{G}$cdf($\bar{G}$)")
+rel = 4.0*conf.mean*conf.get_cdf(x=conf.mean)/numpy.sqrt(3.0)
+
+ax.scatter(num_nodes_list,mean_1-rel, label=r"mean $j^{0}-\frac{4}{\sqrt{3}}\bar{G}$cdf($\bar{G}$)")
 ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
 
 # Plot guide lines
-N_smooth =  numpy.linspace(1,100,500)
+N_smooth =  numpy.linspace(1,num_nodes_list[-1],500)
 #ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
 
-ax.plot(N_smooth, (mean_1[-1]-conf.mean*conf.get_cdf(x=conf.mean))*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
-ax.plot(N_smooth, 0.6703200460356393*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.670N^{-\frac{1}{2}}$",ls="-")
-#print(numpy.exp(-0.40)) = 0.6703200460356393
-# Cleanup plot
+ax.plot(N_smooth, (mean_1[-1]-rel*numpy.ones_like(N_smooth)), color="tab:blue",ls="--")
+ax.plot(N_smooth, numpy.exp(-0.1)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.905N^{-\frac{1}{2}}$",ls="-")
+print(numpy.exp(-0.1))
+
+
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
@@ -242,14 +177,9 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=None,
                              y_top=None)
 
-print(mean_1[-1])
-print(mean_1[0])
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-j_and_std-j__v__N.svg"), format="svg")
 
 
-#ax.plot(numpy.linspace(1,100,500), (mean_1[-1]-mean_1[0])*numpy.ones_like(numpy.linspace(1,100,500)), color="tab:blue", ls="--")
-#ax.plot(numpy.linspace(0,100,1000), 0.1*numpy.power(numpy.linspace(0,100,1000),-0.5)-0.1, color="tab:blue")
-#ax.plot(numpy.linspace(0,100,500), 0.498*numpy.power(numpy.linspace(0,100,500),-0.5), color="tab:blue")
 
 
 
@@ -263,9 +193,10 @@ fig, ax = plt.subplots(1,1)
 x = numpy.linspace(0,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{0}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{0}$$)$")
-ax.plot(x, -0.5*x + (-0.40*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.40$")
+ax.plot(x, -0.5*x + (-0.10*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.1$")
 
-# Cleanup plot
+# Cleanup graph
+# ----------
 plotting.thesisify_post_plot(ax=ax,x_label=r"log$(N)$")
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-j_and_logstd-j__v__logN.svg"), format="svg")
