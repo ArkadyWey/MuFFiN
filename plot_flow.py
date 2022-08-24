@@ -4,7 +4,7 @@ import numpy
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_flow")
+path_results = os.path.join(".","results/results_flow_1D")
 
 
 # Load variables 

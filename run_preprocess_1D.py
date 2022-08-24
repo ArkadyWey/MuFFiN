@@ -89,7 +89,7 @@ if __name__ == "__main__":
     
     num_refs  = len(refs_1)
     num_concs = 1_001
-    num_nodes = 1
+    num_nodes = 4
     alpha     = 0.1
     v         = 0.5 #2.0 # Sum of volumes of nodes in cell
     length    = 1.0
@@ -107,8 +107,8 @@ if __name__ == "__main__":
     # Line of one node:
     # -----
     # External edges
-    cond_init_3[0,0,1]  = 1.0
-    cond_init_3[0,0,-1] = 1.0
+    #cond_init_3[0,0,1]  = 1.0
+    #cond_init_3[0,0,-1] = 1.0
 
     # Line of two nodes:
     # -----
@@ -134,18 +134,18 @@ if __name__ == "__main__":
     #cond_init_3[0,2,-1] = 1.0
     
     # grid of four nodes (embedded in 1D)
-    #cond_init_3[0,1,0] = 0.8  #1.6  #1.0
-    #cond_init_3[1,0,0] = 0.8  #1.6  #1.0
-    #cond_init_3[1,3,0] = 0.2  #0.4  #1.0
-    #cond_init_3[3,1,0] = 0.2  #0.4  #1.0
-    #cond_init_3[2,3,0] = 0.4  #0.8  #1.0
-    #cond_init_3[3,2,0] = 0.4  #0.8  #1.0
-    #cond_init_3[0,2,0] = 0.6  #1.2  #1.0
-    #cond_init_3[2,0,0] = 0.6  #1.2  #1.0
-    #cond_init_3[1,0,1] = 1.0  #2.0 
-    #cond_init_3[0,1,2] = 1.0  #2.0 
-    #cond_init_3[3,2,1] = 1.0  #2.0 
-    #cond_init_3[2,3,2] = 1.0  #2.0 
+    cond_init_3[0,1,0] = 0.8  #1.6  #1.0
+    cond_init_3[1,0,0] = 0.8  #1.6  #1.0
+    cond_init_3[1,3,0] = 0.2  #0.4  #1.0
+    cond_init_3[3,1,0] = 0.2  #0.4  #1.0
+    cond_init_3[2,3,0] = 0.4  #0.8  #1.0
+    cond_init_3[3,2,0] = 0.4  #0.8  #1.0
+    cond_init_3[0,2,0] = 0.6  #1.2  #1.0
+    cond_init_3[2,0,0] = 0.6  #1.2  #1.0
+    cond_init_3[1,0,1] = 1.0  #2.0 
+    cond_init_3[0,1,2] = 1.0  #2.0 
+    cond_init_3[3,2,1] = 1.0  #2.0 
+    cond_init_3[2,3,2] = 1.0  #2.0 
 
     #cond_init_3[0,1,0] = 2.0 #1.0
     #cond_init_3[1,0,0] = 2.0 #1.0
