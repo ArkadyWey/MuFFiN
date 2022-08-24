@@ -107,7 +107,7 @@ count_adhe = count_num_edges_blocked(adhe_tabl_5, heav_5, delt_5, cond_tabl_5)
 print(count_adhe)
 
 
-count, count_hori, count_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-reg",
+count, count_hori, count_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-ireg",
                                                                                 cond_tabl_5=cond_tabl_5, 
                                                                                 adhe_tabl_5=adhe_tabl_5, 
                                                                                 delt_5=delt_5, 
@@ -118,10 +118,11 @@ r = -1
 s = 0
 m = 0
 #print("heav_5[0,:,:,r,m]:\n{}".format(heav_5[0,:,:,r,m]))
-print("-delt_5[0,:,:,r,m]:\n{}".format(-delt_5[0,:,:,r,m]))
-print("cond_tabl_5[-1,:,:,r,s]:\n{}".format(cond_tabl_5[0,:,:,r,s]))
+#print("-delt_5[0,:,:,r,m]:\n{}".format(-delt_5[0,:,:,r,m]))
+#print("cond_tabl_5[-1,:,:,r,s]:\n{}".format(cond_tabl_5[0,:,:,r,s]))
 #print("adhe_tabl_5[-1,:,:,r,s]:\n{}".format(adhe_tabl_5[-1,:,:,r,s]))
 
 conf = configure.Configure(num_nodes=2,initialisation="6-reg",sigma=0.3)
-print(conf.mean)
-print(conf.scaled_mean)
+#print(conf.mean)
+#print(conf.scaled_mean)
+#print()
