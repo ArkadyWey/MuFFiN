@@ -61,7 +61,7 @@ class Configure():
 
             self.alpha = self.get_alpha()
 
-        # Get initial conditions: conductance and adhesivity 
+        # Get initial conditions: conducta  nce and adhesivity 
         # -----
         self.num_refs = len(self.refs_2[:,0])
 
@@ -160,28 +160,27 @@ class Configure():
             scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
             
             if self.num_nodes == 4:               
-                scaled_mean = 1.860735761075145
+                scaled_mean = 1.871389085821546
             elif self.num_nodes == 9:
-                scaled_mean = 1.9881984119055531
+                scaled_mean = 2.018996118941066
             elif self.num_nodes == 16:
-                scaled_mean = 2.058295978362256
+                scaled_mean = 2.066710746623104
             elif self.num_nodes == 25:
-                scaled_mean = 2.1074102358844433
+                scaled_mean = 2.1118597827108325
             elif self.num_nodes == 36:
-                scaled_mean = 2.1429503946956117
+                scaled_mean = 2.14799194260467
+            elif self.num_nodes == 49:
+                scaled_mean = 2.161514899791776
+            elif self.num_nodes == 64:
+                scaled_mean = 2.1727393516346836
+            elif self.num_nodes == 81:
+                scaled_mean = 2.189568000338446
+            elif self.num_nodes == 100:
+                scaled_mean = 2.198423880031176
             else: 
                 raise Exception("There is no scaled_mean for this num_nodes.")       
-
-            # Known scaled means:
-            # --------------
-            # means: 
-            # N=4: 1.860735761075145
-            # N=9: 1.9881984119055531
-            # N=16: 2.058295978362256
-            # N=25: 2.1074102358844433
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
-
 
         return scaled_mean
 
@@ -202,26 +201,27 @@ class Configure():
             scaled_median = self.median/scale_factor
         elif self.initialisation == "6-ireg":
             if self.num_nodes == 4:
-                scaled_median = 1.3685051642169532
+                scaled_median = 1.3660568651646265
             elif self.num_nodes == 9:
-                scaled_median = 1.4405736904829807
+                scaled_median = 1.441922764619922
             elif self.num_nodes == 16:
-                scaled_median = 1.4754933748364056
+                scaled_median = 1.4752637571897684
             elif self.num_nodes == 25:
-                scaled_median = 1.492219494084712
+                scaled_median = 1.4959911760321492
             elif self.num_nodes == 36:
-                scaled_median = 1.5108972950503017
+                scaled_median = 1.5097381075644065
+            elif self.num_nodes == 49:
+                scaled_median = 1.5219542630185445
+            elif self.num_nodes == 64:
+                scaled_median = 1.5305661672129145
+            elif self.num_nodes == 81:
+                scaled_median = 1.5356810990598735
+            elif self.num_nodes == 100:
+                scaled_median = 1.5407607827960603
             else: 
                 raise Exception("There is no scaled_median for this num_nodes.")    
-            # Known scaled medians:
-            # --------------
-            # N=4: 1.3685051642169532
-            # N=9: 1.4405736904829807
-            # N=16: 1.4754933748364056
-            # N=25: 1.492219494084712
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
-
 
         return scaled_median
 
