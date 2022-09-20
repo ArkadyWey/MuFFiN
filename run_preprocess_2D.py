@@ -78,6 +78,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str):
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    #print("perm_3[:,1,0]: \n{}".format(perm_3[:,1,0]))
     #print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
     #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
 
@@ -93,7 +94,7 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 4
-    initialisation = "6-ireg"
+    initialisation = "4-reg_prescribed"
     sigma = 0.3
     type_alpha = "mean"
     
