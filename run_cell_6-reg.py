@@ -5,22 +5,30 @@ import os
 import configure
 
 # Parameters 
-path_results = "results_hexag"
+# -----
+initialisation = "6-reg"
+sigma          = 0.3
+
+path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
 
-num_nodes = 2
+num_nodes = 4
 num_refs  = 3
 num_dims  = 2
 
-conf = configure.Configure(num_nodes=num_nodes)
 
-cell = cells.Cell_2D_Hexagonal_Structure(num_nodes=num_nodes,
-                                         num_refs=num_refs, 
-                                         num_dims=num_dims, 
-                                         mean=conf.mean,
-                                         sd=conf.sd)
+
+conf = configure.Configure(num_nodes=num_nodes,
+                           initialisation=initialisation,
+                           sigma=sigma, type_alpha=type_alpha)
+
+cell = cells.Cell_2D_six_reg(num_nodes=num_nodes,
+                             num_refs=num_refs, 
+                             num_dims=num_dims, 
+                             mu=conf.mu,
+                             sigma=conf.sigma)
 
 
 

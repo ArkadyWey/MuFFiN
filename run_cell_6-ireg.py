@@ -4,12 +4,15 @@ from scipy import spatial
 import os
 
 # Parameters 
-path_results = "results_delaun"
+# -----
+initialisation = "6-ireg"
+
+path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
 if not os.path.exists(os.path.join(".",path_results)):
     os.mkdir(path_results)
 
-num_nodes = 4
+num_nodes = 2
 num_refs  = 3
 num_dims  = 2
 
@@ -162,6 +165,36 @@ for edge in edges:
         # neither i or j in unit cell so this edge is not in conductance
         pass
 
+
+
+import cells
+import configure
+num_nodes = 4
+sigma     = 0.3
+initialisation = "6-ireg"
+conf = configure.Configure(num_nodes=num_nodes,
+                           initialisation=initialisation,
+                           sigma=sigma, type_alpha=type_alpha) 
+cell = cells.Cell_2D_six_ireg(num_nodes=conf.num_nodes,
+                              num_refs=conf.num_refs, 
+                              num_dims=2,
+                              mean=conf.mean,
+                              leng_1=conf.leng_1)
+
+cond_init_4 = cell.cond_init_4
+pts_4       = cell.pts_4
+pts_to_tri_2 = cell.pts_to_tri_2
+simplices = cell.simplices
+key = cell.key
+
+# Save arrays for triangulation plot
+# -------------------------------
+# Send results to arrays for storage
+key = numpy.array(key)
+
+numpy.save(file=os.path.join(path_results,"pts_to_tri_2.npy"), arr=pts_to_tri_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_results,"simplices.npy"), arr=simplices, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_results,"key.npy"), arr=key, allow_pickle=True, fix_imports=True)
 
 # Save arrays for initial conductance plot
 # -------------------------------

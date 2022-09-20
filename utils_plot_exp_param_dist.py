@@ -81,16 +81,18 @@ class PlotParameterDistribution():
             N = num_nodes_list[t]
 
             if self.parameter_name == "perm":
-                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
+                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
             elif self.parameter_name == "depo":
                 # For square-struc
-                param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))/numpy.sqrt(N)
+                param_effe_2 = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N))) #/numpy.sqrt(N)
                 # for other strucs
                 #param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))
+            elif self.parameter_name == "adhe":
+                param_effe_2 = numpy.load(os.path.join(path_results, "count_adhe_1_N-{}.npy".format(N))) 
             else: 
-                raise Exception("parameter_name must be either perm or depo.")
+                raise Exception("parameter_name must be either perm or depo or adhe.")
             
-            param_effe_1 = param_effe_2[0,:]
+            param_effe_1 = param_effe_2[:]
 
             # Add this perm to list of perms
             list_of_perms.append(param_effe_1)
@@ -116,16 +118,18 @@ class PlotParameterDistribution():
 
             # Unpack perm for this N
             if self.parameter_name == "perm":
-                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
+                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
             elif self.parameter_name == "depo":
                 # For square-struc
-                param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))/numpy.sqrt(N)
+                param_effe_2 = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N))) #/numpy.sqrt(N)
                 # for other strucs
                 #param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))
+            elif self.parameter_name == "adhe":
+                param_effe_2 = numpy.load(os.path.join(path_results, "count_adhe_1_N-{}.npy".format(N))) 
             else: 
-                raise Exception("parameter_name must be either perm or depo.")
+                raise Exception("parameter_name must be either perm or depo or adhe.")
                 
-            param_effe_1 = param_effe_2[0,:]
+            param_effe_1 = param_effe_2[:]
 
             # Plot hist for this N (using histogram bins we found above)
             #count, bins, ignored = ax.hist(param_effe_1, bins_hist)
@@ -158,6 +162,7 @@ class PlotParameterDistribution():
             ax.plot(numpy.linspace(min(bins), max(bins), num_pts_to_interp), dist_interp_1)
 
         return ax
+
 
 
 
@@ -253,3 +258,175 @@ class PlotParameterMeanAndSD():
             ax_sd.plot(N_smooth, sd_constants_and_powers[i][0]*numpy.power(N_smooth,sd_constants_and_powers[i][1]), color=colors[i], label=labels_sd_fit[i],ls="-")
 
         return ax_mean, ax_sd
+
+
+
+
+
+
+class GetBinEdges():
+    """
+    Get parameters for probability distribution of 
+    the deposition parameter.
+    """
+    def __init__(self, num_bins,
+                       min_val,
+                       max_val):
+        """
+        Parameters 
+        ------
+        num_bins: int
+            - Number of bins we want the histogram to have.
+        min_val: float 
+            - Centre of the left-most bin. 
+        max_val: float 
+            - Centre of the right-most bin.
+        """
+
+        self.left_bin_edge, self.right_bin_edge = self.get_bin_edge_limits(min_val=min_val,
+                                                                           max_val=max_val,
+                                                                           num_bins=num_bins)
+
+        self.bin_edges = self.get_bin_edges(left_bin_edge=self.left_bin_edge,
+                                            right_bin_edge=self.right_bin_edge,
+                                            num_bins=num_bins)
+
+
+    def get_bin_edge_limits(self, min_val, max_val, num_bins):
+        """
+        Get bin edge limits so that we can define bins in next function. 
+
+        Parameters
+        -------
+        - min_val: float 
+            Min value that the distribution can achieve. 
+            For example, in the case of the depositiion parameter distriburion, this is  zero. 
+        - max_val: float 
+            Max value the histogram can achieve. 
+            For example, in the case of the deposition parameter distribution, this is
+            the mean of the undferlying conductance distribution.
+        
+        Returns 
+        ------
+        left_bin_edge: float 
+            - Left side of first bin. Use zero minus half the width of a bin, so that
+            first bin is centred about zero. 
+        right_bin_edge: float 
+            - Right edge of last bin. We use the mean of the conductance distribution plus 
+            half the width, so that the last bin is centred about the mean, since we know that 
+            is the maximal value that the histogram can achieve.
+        """
+        # Get bin width
+        # ----------
+        dx = (max_val-min_val)/num_bins
+        left_bin_edge  = min_val-dx/2.0
+        right_bin_edge = max_val+dx/2.0
+
+        return (left_bin_edge, right_bin_edge)
+
+    def get_bin_edges(self, left_bin_edge, right_bin_edge, num_bins):
+        """
+        Get an array of the limits of the bins, 
+        in the form bin_edges = [left-side-of-first bin, right-side-of-first-bin, 
+            .... right-side-of-last-bin], 
+        so that len(bin_edges) = num_bins + 1.
+
+        Parameters 
+        -------
+        left_bin_edge: float 
+            - Left side of first bin. Use zero minus half the width of a bin, so that
+            first bin is centred about zero. 
+        right_bin_edge: float 
+            - Right edge of last bin. We use the mean of the conductance distribution plus 
+            half the width, so that the last bin is centred about the mean, since we know that 
+            is the maximal value that the histogram can achieve.
+
+        Returns 
+        # -----
+        - bin_edges: numpy.ndarray
+            List of values at which bin edges occur.
+            bin_edges = [left-side-of-first bin, right-side-of-first-bin, 
+                .... right-side-of-last-bin], 
+        """
+        bin_edges = numpy.linspace(start=left_bin_edge, stop=right_bin_edge, num=num_bins+1, endpoint=True)
+        return bin_edges
+
+
+
+
+
+
+class Plot_DepoAprx_vs_Density():
+    """
+    """
+    def __init__(self, num_nodes,
+                       num_bins,
+                       conf, 
+                       count_adhe_1, 
+                       max_height):
+        """
+        """
+
+
+        self.x_adhe_1, self.height_adhe_1 = self.get_x_and_y(count_adhe_1=count_adhe_1, 
+                                                             mean=conf.mean,
+                                                             num_nodes=num_nodes)
+
+        self.x_j_aprx_1 = self.get_scaled_x_for_j(x_adhe_1=self.x_adhe_1, 
+                                                  mean=conf.mean, 
+                                                  num_nodes=num_nodes)
+
+        self.width = self.get_bin_width(min_val=0.0, 
+                                        max_val=conf.mean, 
+                                        num_nodes=num_nodes)
+
+    def get_x_and_y(self,count_adhe_1, mean, num_nodes):
+        """
+        - Take the a 1-d variable that is the count of 
+        either number of edges blocoed, number of horizontal edges blocked, 
+        or number of vertical edges blocked. 
+        - Bin these.
+        - Get correct density by dividing by number of samples. 
+        - Scale density to match j density. 
+        - Get number of bins and use this to get x values.
+
+        Return
+        - x values of density plot for number of edges blocked. 
+        - height values for density plot for number of edges blocked.
+        """
+        # Bin number of edges blocked 
+        # -----
+        self.bincount_adhe = numpy.bincount(list(count_adhe_1.astype(dtype=int)))
+
+        # Get probability density of each bin
+        # --------
+        height_adhe = self.bincount_adhe/max(self.bincount_adhe)*num_nodes/mean#*max_height  #sum(bincount_adhe_hori)  #/width_approx
+
+        # Get number of bins 
+        # ------
+        num_bins_adhe = len(self.bincount_adhe)
+
+        # Get x for density of blocked edges
+        x_adhe = range(num_bins_adhe)
+
+        return (x_adhe, height_adhe)
+
+    def get_scaled_x_for_j(self, x_adhe_1, mean, num_nodes):
+        """
+        Scale the values on x axis of density v number of edges 
+        blocked to make them fit to density v j plot.
+        """
+        # Get x for j approx
+        # x = B*mean/N
+        # -----
+        x_j_aprx_1 = list(numpy.array(list(x_adhe_1))/num_nodes*mean)
+
+        return x_j_aprx_1
+
+
+    def get_bin_width(self, min_val, max_val, num_nodes):
+        # Get bin width
+        # ----------
+        width = (max_val-min_val)/num_nodes
+        return width
+

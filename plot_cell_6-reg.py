@@ -8,9 +8,11 @@ from matplotlib.lines import Line2D
 import configure
 
 # Parameters 
-# ---------
-path_results = "results_hexag"
+# -----
+path_results = os.path.join(".","results/results_cell_6-reg")
 
+sigma = 0.3
+initialisation = "6-reg"
 
 # Arrays for first plot:
 pts_to_tri_2 = numpy.load(os.path.join(path_results,"pts_to_tri_2.npy"))
@@ -28,7 +30,7 @@ pts_4       = numpy.load(os.path.join(path_results,"pts_4.npy"))
 
 # Get the run's configuration parameters (needed for lengths etc in plot)
 #  -------------------------------------
-conf = configure.Configure(num_nodes=num_nodes)
+conf = configure.Configure(num_nodes=num_nodes,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 num_rows_or_cols = int(numpy.sqrt(num_nodes/2.0))
 
 
@@ -118,7 +120,7 @@ for r in range(num_refs):
 
 
 # Plot all nodes
-ax.plot(pts_x, pts_y, 'go', markersize=5.0)
+ax.plot(pts_x, pts_y, 'go', markersize=1.0)
 
 # Plot crosses at where construction nodes should be
 ax.plot(0.0,0.0,                 "+", color="black", markersize=5.0)
@@ -134,16 +136,16 @@ for p in range(len(pts_to_tri_2[:,0])):
     ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 # Plot cell boundaries
-for x in [-num_rows_or_cols*conf.l1,0,num_rows_or_cols*conf.l1]:
-    for y in [-num_rows_or_cols*conf.l2,0,num_rows_or_cols*conf.l2]:
+for x in [-conf.l1,0,conf.l1]:
+    for y in [-conf.l2,0,conf.l2]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
         else:
-            ax.add_patch(Rectangle(xy=(x, y), width=num_rows_or_cols*conf.l1, height=num_rows_or_cols*conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 # Clean up plot
-ax.set_xlim(left=-num_rows_or_cols*conf.l1-1,right=+2*num_rows_or_cols*conf.l1+1)
-ax.set_ylim(bottom=-num_rows_or_cols*conf.l2-1,top=+2*num_rows_or_cols*conf.l2+1)
+ax.set_xlim(left  =-conf.l1-1,right=+2*conf.l1+1)
+ax.set_ylim(bottom=-conf.l2-1,  top=+2*conf.l2+1)
 
 ax.set_aspect("equal")
 plt.axis('off')

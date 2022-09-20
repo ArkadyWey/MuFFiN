@@ -2,13 +2,7 @@
     "max_ref_dist"   : 1,
     "num_dims"       : 2,
     "num_concs"      : 11,
-    "num_nodes"      : 1,
-    "alpha"          : 1.0,
     "v"              : 0.5,  
-    "l1"             : 1.07456993183,
-    "l2"             : 1.86120971822, 
-    "mean"           : 0.5, 
-    "sd"             : 0.3,
-    "initialisation" : "hexag-struc",
-    "_comments"      : "l1 for hex: 1.07456993183, l2 for hex: 1.86120971822"
+    "mu"             : 0.5, 
+    "_comments"      : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822, sigma=0.3, then alpha: 1.0/1.72461=0.579841. sigma=0.01, then alpha=1/1.649=0.6065."
 }
