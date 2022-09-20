@@ -49,7 +49,7 @@ def main(time_1, posi_1, conc_max_discs_1, perm_prep_1, depo_prep_1, dt, dx, con
 
     for i_t in range(num_times):
     # predict values now using previous time step
-
+        print("Calculating conc at time step {} of {}".format(i_t, num_times))
         # Get concentration at this time using conc and parameters from previous step
         # -----
         conc_1 = numpy.zeros(shape=num_positions)
@@ -118,24 +118,25 @@ if __name__ == "__main__":
 
     # Preprocess
     # ----------
-    path_results_preprocess = os.path.join(".","results_preprocess")
-    conc_max_discs_1 = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_discs_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+    path_results_preprocess = os.path.join(".","results/results_preprocess_1D")
+
+    conc_max_discs_1      = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_discs_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
     perm_prep_1           = numpy.load(file=os.path.join(path_results_preprocess,"perm_prep_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
     depo_prep_1           = numpy.load(file=os.path.join(path_results_preprocess,"depo_prep_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
 
     # Parameters 
     # ----------
-    num_times = 1001
+    num_times = 1001 # 1001
     time_1 = numpy.linspace(0,1,num_times)
     dt = time_1[1] - time_1[0]
 
-    num_positions = 101
+    num_positions = 101 # 101
     posi_1 = numpy.linspace(0,1,num_positions)
     dx = posi_1[1]-posi_1[0]
 
-    conc_in = 0.8
+    conc_in = 0.7 # 0.8
 
-    phi = 0.50 # TODO: Define this properly
+    phi = 1.0 # TODO: Define this properly
 
 
     (conc_2, velo_1, psi_2, perm_2, depo_2, dpdx_2) = main(time_1=time_1, 
@@ -152,7 +153,9 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    path_results = os.path.join(".","results_flow")
+    path_results = os.path.join(".","results/results_flow_1D")
+    if not os.path.exists(path_results):
+        os.mkdir(path_results)
 
     numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
     numpy.save(file=os.path.join(path_results,"posi_1.npy"), arr=posi_1, allow_pickle=True, fix_imports=True)

@@ -258,7 +258,7 @@ def get_heaviside(delt_4):
 
 
 
-def get_permeability_and_deposition(cond_tabl_4, adhe_tabl_4, refs_1, delt_4, heav_4, cond_init_3, v):
+def get_permeability_and_deposition(cond_tabl_4, adhe_tabl_4, refs_1, delt_4, heav_4, cond_init_3, length):
     """
     Given a set of conductances, adhesivities, cell references, 
     deltas, heavisides, and initial conductances, 
@@ -331,6 +331,6 @@ def get_permeability_and_deposition(cond_tabl_4, adhe_tabl_4, refs_1, delt_4, he
             depo_2[k,l] = numpy.sum(a=numpy.sum(a=depo_inte_2,axis=0),axis=0) # sum over i then j
     
     perm_prep_1 = 0.5*numpy.sum(a=perm_2,axis=1) # sum over r,   perm_prep_1[k] is the permeability at concentration c[k]
-    depo_prep_1 = (1/v)*numpy.sum(a=depo_2,axis=1) # sum over r, depo_prep_1[k] is the deposition paramaeter at concentration c[k]
+    depo_prep_1 = -(1/length)*numpy.sum(a=depo_2,axis=1) # sum over r, depo_prep_1[k] is the deposition paramaeter at concentration c[k]
 
     return perm_prep_1, depo_prep_1

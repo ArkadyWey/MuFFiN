@@ -1,5 +1,12 @@
 scrap.py
+scrap2.py
+scrap3.py
+scrap4.py
 __pycache__
 .pytest_cache
-/results*
+results_old/*
+results/*
 password.txt
+scrap2.py
+*.svg
+*.npy

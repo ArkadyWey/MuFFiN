@@ -291,7 +291,8 @@ def get_delta(csol_3: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray
                 for r in range(num_refs):
                     for m in range(num_dims):
                         delt_5[k,i,j,r,m] = csol_3[k,i,m] - (csol_3[k,j,m] + refs_2[r,m]*leng_1[m])
-
+    
+    #delt_5 = numpy.rint(delt_5)
     return delt_5
 
 
@@ -311,16 +312,20 @@ def get_heaviside(delt_5: numpy.ndarray):
     Returns 
     -------
     - heav_5: numpy.ndarray
-        The parameter heaviside, which indicates whether there is flow from i to j, 
-        so that heav_5 = indictaion of flow from i to j with 
+        The parameter heaviside, which indicates whether there is flow from j to i, 
+        so that heav_5 = indictaion of flow from j to i with 
         reference references[r] in direction directions[m] at concentration max-concentrations[k].
 
     """
+    tol = 1E-5
+    heav_5 = (delt_5>tol).astype(int)
     
-    heav_5 = (-delt_5>0).astype(int)
+    # NOTE:
     # Use delta to make heaviside
     # NB! H_ij^r = heav(delt_ij^r*dpdx) = heav(-delt_ijr) = heav(delt_ji(-r)), 
     # since dpdx<0 when flow from left to right.
+    # So H_ji^{-r} = heav(delt_ji^{-r}*dpdx) = heav(-delt_ji^{-r}) = heav(delt_ij^r)
+    # and it's this one we need 
 
     return heav_5
 
@@ -331,8 +336,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                                     adhe_tabl_5: numpy.ndarray,
                                     delt_5: numpy.ndarray,
                                     heav_5: numpy.ndarray, 
-                                    leng_1: numpy.ndarray, 
-                                    v: float, 
+                                    leng_1: numpy.ndarray,
                                     cond_init_4: numpy.ndarray):
     """
     Given the working parameters, return the permeability as a spatial matrix, and
@@ -419,7 +423,7 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                         
                         # Get depo and perm
                         # -----
-                        depo_inte_6[k,:,:,r0,r1,m] = cond_init_4[:,:,r0,r1]*(-delt_5[k,:,:,rm,m])*adhe_tabl_5[k,:,:,r0,r1]*( numpy.ones_like(heav_5[k,:,:,rm,m]) - heav_5[k,:,:,rm,m] )
+                        depo_inte_6[k,:,:,r0,r1,m] = cond_init_4[:,:,r0,r1]*(-delt_5[0,:,:,rm,m])*adhe_tabl_5[k,:,:,r0,r1]*heav_5[0,:,:,rm,m]
                     
                         perm_inte_7[k,:,:,r0,r1,m,n] = refs_2[rm,m]*cond_tabl_5[k,:,:,r0,r1]*(-delt_5[k,:,:,rn,n])
 
@@ -440,13 +444,13 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
     depo_2 = numpy.sum(a=depo_3, axis=1) # sum over i
     # depo_2[k,m]
 
+
     # Multiply permeability and deposition-parameter by prefactors
     # -----
     for m in range(num_dims):
         for n in range(num_dims):
             perm_3[:,m,n] = 0.5*(leng_1[m]/numpy.prod(leng_1))*perm_3[:,m,n]
-
-    depo_2 = (1/v)*depo_2
-
+    
+    depo_2 = -(1/numpy.prod(leng_1))*depo_2
 
     return (perm_3, depo_2)
