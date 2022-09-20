@@ -81,6 +81,10 @@ class Configure():
             n = int(numpy.sqrt(num_nodes))
             l1 = n*1.0
             l2 = n*1.0
+        elif initialisation == "4-reg_prescribed":
+            n = int(numpy.sqrt(num_nodes))
+            l1 = n*1.0
+            l2 = n*1.0
         elif initialisation == "6-reg":
             n  = int(numpy.sqrt(num_nodes/2))    
             #l1 = n*1.0
