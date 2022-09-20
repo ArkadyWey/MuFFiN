@@ -151,14 +151,15 @@ for t in range(num_tests):
 conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
-ax.scatter(num_nodes_list,mean_1-conf.mean, label=r"mean $k^{00}-\bar{G}$")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[k^{00}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[k^{00}]$")
 
 # Plot guide lines
 # ------
 N_smooth = numpy.linspace(1,100,500)
 ax.plot(N_smooth, 0.0498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.0498N^{-\frac{1}{2}}$",ls="-")
-ax.plot(N_smooth, (mean_1[-1]-conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+ax.plot(N_smooth, (conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="-", label=r"$\bar{G}$")
 
 
 # Cleanup graph 

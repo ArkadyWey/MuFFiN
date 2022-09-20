@@ -80,11 +80,14 @@ plt.gca().set_prop_cycle(None)
 sigmas = [1,2,3,4,5]
 for i,N in enumerate(num_nodes_list):
 
-    mu = N/2
-    sigma = sigmas[i]
+    #mu = N/2
+    #sigma = sigmas[i]
+    mu = N*conf.get_cdf(conf.mean)
+    sigma = numpy.sqrt(N*conf.get_cdf(conf.mean)*(1-conf.get_cdf(conf.mean)))
     x = numpy.linspace(mu-30, mu+30, 1_000)
     pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
-    ax.plot(x, pdf, linewidth=2, label=r"$\sigma={}$".format(sigma))
+    #ax.plot(x, pdf, linewidth=2, label=r"$\sigma={}$".format(sigma))
+    ax.plot(x, pdf, linewidth=2)
 
 # Fit binomial distribution
 # --------------------
@@ -99,7 +102,7 @@ for i,N in enumerate(num_nodes_list):
     ax.scatter(ks,bs, marker=".")
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$b^{0}_{H}$",
+                             x_label=r"$b^{0\parallel}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
                              x_right=70.0,
@@ -138,14 +141,16 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_hori_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{H}$")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{H}$")
+ax.scatter(num_nodes_list, mean_1, label=r"$\mathbb{E}[b^{0\parallel}]$")
+ax.scatter(num_nodes_list, sd_1,   label=r"$\mathbb{S}[b^{0\parallel}]$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
-ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls=":", label=r"$\frac{N}{2}$")
-ax.plot(N_smooth, conf.get_cdf(x=conf.mean)*N_smooth, color="tab:blue", ls="--", label=r"$N$cdf($\bar{G}$)")
-ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls="--", label=r"$\frac{\sqrt{N}}{2}$")
+ax.plot(N_smooth, N_smooth*conf.get_cdf(x=conf.mean), color="tab:blue", ls="-", label=r"$N\mathrm{cdf}(\bar{G})$")
+ax.plot(N_smooth, numpy.sqrt(N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(x=conf.mean))), color="tab:orange", ls="-", label=r"$\sqrt{N\mathrm{cdf}(\bar{G})(1-\mathrm{cdf}(\bar{G}))}$")
+
+ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:green", ls=":", label=r"$\frac{\sqrt{N}}{2}$")
+ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls="--", label=r"$\frac{N}{2}$")
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",

@@ -105,8 +105,7 @@ for t, N in enumerate(num_nodes_list):
     count_param_1, bins_param, _ignored = ax.hist(x=param_effe_1, 
                                                   bins=bin_edges.bin_edges, 
                                                   density=True, 
-                                                  align='mid', 
-                                                  label=r"$N={}$".format(num_nodes_list[t]), 
+                                                  align='mid',
                                                   alpha=0.4, color=colors[t])
    
     
@@ -139,26 +138,26 @@ for t, N in enumerate(num_nodes_list):
     
     
 
-    ax.bar(x=plot_depo_aprx_v_density.x_j_aprx_1, 
-           height=plot_depo_aprx_v_density.height_adhe_1, 
-           width=plot_depo_aprx_v_density.width, 
-           bottom=None, 
-           align='center', 
-           alpha=1.0, 
-           data=None, 
-           label=r"$N={}$".format(N), 
-           fill=False,
-           edgecolor=colors[t], 
-           linewidth=1.0)
+    #ax.bar(x=plot_depo_aprx_v_density.x_j_aprx_1, 
+    #       height=plot_depo_aprx_v_density.height_adhe_1, 
+    #       width=plot_depo_aprx_v_density.width, 
+    #       bottom=None, 
+    #       align='center', 
+    #       alpha=1.0, 
+    #       data=None, 
+    #       label=r"$N={}$".format(N), 
+    #       fill=False,
+    #       edgecolor=colors[t], 
+    #       linewidth=1.0)
 
 
     # Plot dashed line at mean
     for i in range(len(plot_depo_aprx_v_density.x_j_aprx_1)):
         ax.vlines(x=plot_depo_aprx_v_density.x_j_aprx_1[i], 
                   ymin=0.0, 
-                  ymax=plot_depo_aprx_v_density.height_adhe_1[i], 
-                  color=colors[t], 
-                  linewidth=1.0, 
+                  ymax=2.7, 
+                  color=colors[1], 
+                  linewidth=2.0, 
                   linestyle="--", 
                   alpha=1.0)
 
@@ -175,15 +174,15 @@ x = numpy.linspace(mu-10, mu+10, 1_0000)
 # pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
 # lognormal
 pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi)))/numpy.sqrt(N)
-ax.plot(x, pdf, linewidth=1, linestyle="--", label=r"$\sigma={}$".format(sigma), color="tab:red")
+#ax.plot(x, pdf, linewidth=1, linestyle="--", label=r"$\sigma={}$".format(sigma), color="tab:red")
 
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{0}$",
                              y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=conf.mean,
+                             x_left=0.0-0.05,
+                             x_right=conf.mean+0.05,
                              y_bottom=0.0,
                              y_top=None)
 
@@ -221,15 +220,26 @@ conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
 
-ax.scatter(num_nodes_list,mean_1-conf.mean*conf.get_cdf(x=conf.mean), label=r"mean $j^{0}-\bar{G}$cdf($\bar{G}$)")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[j^{0}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[j^{0}]$")
 
 # Plot guide lines
 N_smooth =  numpy.linspace(1,100,500)
 #ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
 
-ax.plot(N_smooth, (mean_1[-1]-conf.mean*conf.get_cdf(x=conf.mean))*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
+ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
+ax.plot(N_smooth, (conf.mean*conf.get_cdf(conf.mean))*numpy.ones_like(N_smooth), color="tab:blue",ls="-",label=r"$\bar{G}\mathrm{cdf}(\bar{G})$")
+#ax.plot(N_smooth, (conf.mean/2)*numpy.ones_like(N_smooth), color="tab:blue",ls="-",label=r"$\frac{\bar{G}}{2}$")
 ax.plot(N_smooth, 0.6703200460356393*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.670N^{-\frac{1}{2}}$",ls="-")
+
+aprx = conf.mean*conf.get_cdf(conf.mean)
+rslt = mean_1[-1]
+pcnt = aprx/rslt*100
+print("pcnt:{}".format(pcnt))
+
+
+
+
 #print(numpy.exp(-0.40)) = 0.6703200460356393
 # Cleanup plot
 # Cleanup graph 

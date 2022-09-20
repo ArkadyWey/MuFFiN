@@ -16,7 +16,7 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.3
-type_alpha     = "median"
+type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
@@ -83,7 +83,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2,8]
+num_nodes_list = 2*numpy.array([4,16,36,64,100])
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -202,7 +202,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2,8]#[2*4,2*16,2*36,2*64,2*100]
+num_nodes_list = [2*4,2*16,2*36,2*64,2*100]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -268,7 +268,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [2,8] #2*numpy.linspace(1,10,10,dtype=int)**2
+num_nodes_list = 2*numpy.linspace(1,10,10,dtype=int)**2
 num_tests = len(num_nodes_list)
 
 # Get mean and standard deviation at each N

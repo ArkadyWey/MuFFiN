@@ -16,7 +16,7 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.3
-type_alpha     = "median"
+type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
@@ -24,7 +24,7 @@ path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma
 
 # Plot histograms with all bars same width
 # ----------------------------------------
-num_nodes_list = [2,8,18]#2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = 2*numpy.array([1,4,16,36,64,100])
 num_tests = len(num_nodes_list)
 fig, ax = plt.subplots(1,1)
 
@@ -55,7 +55,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2,8,18]#2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = 2*numpy.array([1,4,16,36,64,100])
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -123,7 +123,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm
 
 # Plot mean and standard deviation of each histogram 
 # ------------------------------------
-num_nodes_list = [2,8,18]#2*numpy.array([1,4,9,16,25,36,49,64,81,100])
+num_nodes_list = 2*numpy.array([1,4,9,16,25,36,49,64,81,100])
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()

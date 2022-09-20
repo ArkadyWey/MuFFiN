@@ -17,7 +17,7 @@ import plotting
 initialisation = "6-reg"
 num_reps       = 10000
 sigma          = 0.3
-type_alpha     = "median"
+type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
@@ -32,7 +32,7 @@ Then over the top of each histogram we fit a normal distribution.
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-num_nodes_list = [2,8,18]#[2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = 2*numpy.array([4,16])
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -99,7 +99,7 @@ plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$b^{0}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
-                             x_right=100.0,
+                             x_right=80.0,
                              y_bottom=0.0,
                              y_top=None)
 
@@ -290,7 +290,7 @@ Plot mean and standard deviation of the distributions above.
 Use this to inform what the parameters of the normal distributions 
 are that we fit the distributions above to.
 """
-num_nodes_list = [2,8,18]#2*numpy.array([1,4,9,16,25,36,49,64,81,100])
+num_nodes_list = 2*numpy.array([1,4,9,16,25,36,49,64,81,100])
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()
@@ -335,14 +335,14 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{H}$"     , marker="+")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{H}$", marker="+")
+#ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{H}$"     , marker="+")
+#ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{H}$", marker="+")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
 #ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls=":", label=r"$\frac{N}{2}$")
-ax.plot(N_smooth, N_smooth*conf.get_cdf(x=conf.mean), color="tab:green", ls="--", label=r"$N$cdf($\bar{G}$)")
-ax.plot(N_smooth, numpy.sqrt(N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(x=conf.mean))), color="tab:red", ls="--", label=r"$(N$cdf($\bar{G}$)($1-$cdf($\bar{G}$))$^{\frac{1}{2}}$")
+#ax.plot(N_smooth, N_smooth*conf.get_cdf(x=conf.mean), color="tab:green", ls="--", label=r"$N$cdf($\bar{G}$)")
+#ax.plot(N_smooth, numpy.sqrt(N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(x=conf.mean))), color="tab:red", ls="--", label=r"$(N$cdf($\bar{G}$)($1-$cdf($\bar{G}$))$^{\frac{1}{2}}$")
 
 
 # Diagonal edges
@@ -358,14 +358,14 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{D}$"     , marker="x")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{D}$", marker="x")
+#ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{D}$"     , marker="x")
+#ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{D}$", marker="x")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
 #ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls=":", label=r"$\frac{N}{2}$")
-ax.plot(N_smooth, 2*N_smooth*conf.get_cdf(x=conf.mean), color="tab:purple", ls="--", label=r"$2N$cdf($\bar{G}$)")
-ax.plot(N_smooth, numpy.sqrt(2*N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(x=conf.mean))), color="tab:brown", ls="--", label=r"$(2N$cdf($\bar{G}$)($1-$cdf($\bar{G}$))$^{\frac{1}{2}}$")
+#ax.plot(N_smooth, 2*N_smooth*conf.get_cdf(x=conf.mean), color="tab:purple", ls="--", label=r"$2N$cdf($\bar{G}$)")
+#ax.plot(N_smooth, numpy.sqrt(2*N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(x=conf.mean))), color="tab:brown", ls="--", label=r"$(2N$cdf($\bar{G}$)($1-$cdf($\bar{G}$))$^{\frac{1}{2}}$")
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",

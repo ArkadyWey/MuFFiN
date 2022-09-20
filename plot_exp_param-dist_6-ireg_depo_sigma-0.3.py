@@ -15,7 +15,7 @@ import plotting
 initialisation = "6-ireg"
 num_reps       = 10000
 sigma          = 0.3
-type_alpha     = "median"
+type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 

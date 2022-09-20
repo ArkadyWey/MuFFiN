@@ -146,14 +146,15 @@ for t in range(num_tests):
 conf = configure.Configure(num_nodes=N,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
-ax.scatter(num_nodes_list,mean_1-conf.mean, label=r"mean $k^{00}-\bar{G}$")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[k^{00}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[k^{00}]$")
 
 # Plot guide lines
 # ------
 N_smooth = numpy.linspace(1,100,500)
 ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
-ax.plot(N_smooth, (mean_1[-1]-conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+ax.plot(N_smooth, (conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="-", label=r"$\bar{G}$")
+ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
 
 
 # Cleanup graph 
@@ -206,7 +207,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-k_and_logstd-
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-1.npy"))
-count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align='mid', label=r"$N=1$", alpha=0.4)
+count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=50, density=True, align='mid', label=r"Permeability samples", alpha=0.4)
 
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
@@ -218,35 +219,35 @@ mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf   = conf.get_pdf(x=x) 
-ax.plot(x, pdf, linewidth=2, color='r', label=r"$G$")
+ax.plot(x, pdf, linewidth=2, color='r', label=r"Conductance pdf")
 
 # Find proportion of GF above mean
 x   = conf.mean
 cdf = conf.get_cdf(x=x) # proportion up to mean
 
 
-ax.vlines(x=conf.mean, 
-          ymin=0.0, 
-          ymax=1.0, 
-          color="tab:red", 
-          linewidth=2.0, 
-          linestyle="--", 
-          alpha=1.0, 
-          label="mean")
-
-ax.vlines(x=conf.median, 
-          ymin=0.0, 
-          ymax=1.0, 
-          color="black", 
-          linewidth=2.0, 
-          linestyle=":", 
-          alpha=1.0,
-          label="median")
+#ax.vlines(x=conf.mean, 
+#          ymin=0.0, 
+#          ymax=1.0, 
+#          color="tab:red", 
+#          linewidth=2.0, 
+#          linestyle="--", 
+#          alpha=1.0, 
+#          label="mean")
+#
+#ax.vlines(x=conf.median, 
+#          ymin=0.0, 
+#          ymax=1.0, 
+#          color="black", 
+#          linewidth=2.0, 
+#          linestyle=":", 
+#          alpha=1.0,
+#          label="median")
 
 # Cleanup graph 
 # ------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=None,
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=4.0,
