@@ -5,6 +5,12 @@ import copy
 
 import utils_preprocess_2D
 import configure
+import flow 
+
+
+import sys
+sys.path.append("/home/user/utils_python")
+import plotting
 
 # Parameters 
 # -----
@@ -24,19 +30,33 @@ delt_5          = numpy.load(os.path.join(path_results, "delt_5.npy"))
 
 # Plot permeability and deposition parameter values on one axis 
 # -----
+plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 # Choose dimensions to plot
 m = 0
 n = 0
 
+ax.scatter(conc_max_disc_1, perm_prep_3[:,m,n], label=r"$k^{00}$", color="red")
+ax.scatter(conc_max_disc_1, depo_prep_2[:,m],   label=r"$j^{0}$", color="blue")
 
-ax.plot(conc_max_disc_1, perm_prep_3[:,m,n], label=r"$k$", color="red")
-ax.plot(conc_max_disc_1, depo_prep_2[:,m],   label=r"$j$", color="blue")
+conc_max_1 = numpy.linspace(0.0,1.0,1000)
+
+ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=perm_prep_3[:,m,n],new_x_value=conc_max_1), label=r"$\hat{k}^{00}$", color="red")
+ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1), label=r"$\hat{j}^{0}$", color="blue")
+
 ax.set_xlabel("c")
 ax.legend()
-plt.savefig(fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_disc_1.svg"), format="svg")
 
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$c^{\mathrm{max}}$",
+                             y_label=None,
+                             x_left=None,
+                             x_right=None,
+                             y_bottom=None,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_disc_1.svg"), format="svg")
 
 
 # Plot adhe distribution
@@ -121,8 +141,3 @@ m = 0
 #print("-delt_5[0,:,:,r,m]:\n{}".format(-delt_5[0,:,:,r,m]))
 #print("cond_tabl_5[-1,:,:,r,s]:\n{}".format(cond_tabl_5[0,:,:,r,s]))
 #print("adhe_tabl_5[-1,:,:,r,s]:\n{}".format(adhe_tabl_5[-1,:,:,r,s]))
-
-conf = configure.Configure(num_nodes=2,initialisation="6-reg",sigma=0.3)
-#print(conf.mean)
-#print(conf.scaled_mean)
-#print()
