@@ -13,7 +13,7 @@ import os
 
 import preprocess_1D
 
-def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
+def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     """
     """
 
@@ -21,7 +21,7 @@ def main(conc_max_discs_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # ------------
     # Get conductance and adhesivity 
     # -----
-    cond_tabl_4, adhe_tabl_4 = preprocess_1D.get_conductance_and_adhesivity(conc_max_discs_1=conc_max_discs_1, 
+    cond_tabl_4, adhe_tabl_4 = preprocess_1D.get_conductance_and_adhesivity(conc_max_disc_1=conc_max_disc_1, 
                                                                          cond_init_3=cond_init_3, 
                                                                          adhe_init_3=adhe_init_3, 
                                                                          alpha=alpha)
@@ -96,8 +96,8 @@ if __name__ == "__main__":
     phi       = v/length # TODO: Define this properly
     
     # Concentrations to tabulate 
-    conc_max_discs_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
-    #print("conc_max_discs_1: \n {}".format(conc_max_discs_1))
+    conc_max_disc_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
+    #print("conc_max_disc_1: \n {}".format(conc_max_disc_1))
     
     # Conductance and adhesivity 
     cond_init_3 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs)) 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     # Get permeability and deposition parameter tables
     # -----
-    perm_prep_1, depo_prep_1 = main(conc_max_discs_1=conc_max_discs_1,
+    perm_prep_1, depo_prep_1 = main(conc_max_disc_1=conc_max_disc_1,
                                     cond_init_3=cond_init_3,
                                     adhe_init_3=adhe_init_3,
                                     alpha=alpha,
@@ -179,7 +179,7 @@ if __name__ == "__main__":
 
     numpy.save(file=os.path.join(path_results,"perm_prep_1.npy"), arr=perm_prep_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_prep_1.npy"), arr=depo_prep_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"conc_max_discs_1.npy"), arr=conc_max_discs_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
 
 
 

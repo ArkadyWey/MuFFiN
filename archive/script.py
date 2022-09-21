@@ -42,8 +42,8 @@ phi       = 0.5 # TODO: Define this properly
 
 # PREPROCESSING -------------------------------------------------------------------------------------
 
-conc_max_discs_1 = numpy.linspace(0,1,num_concs) # discrete list of possible concentrations
-#print("conc_max_discs_1: \n {}".format(conc_max_discs_1))
+conc_max_disc_1 = numpy.linspace(0,1,num_concs) # discrete list of possible concentrations
+#print("conc_max_disc_1: \n {}".format(conc_max_disc_1))
 
 # Conductance and adhesivity 
 cond_init_3 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs)) # initial condition should be random
@@ -78,7 +78,7 @@ adhe_tabl_4 = numpy.zeros(shape=(num_concs,num_nodes,num_nodes,num_refs))
 # adhe_tabl_4[k,i,j,r] = A_ij^r at c[k]
 
 for k in range(num_concs):
-    conc_disc = conc_max_discs_1[k] # discrete concentration
+    conc_disc = conc_max_disc_1[k] # discrete concentration
     # set conductance and adhesivity for each possible conc value
     for i in range(num_nodes):
         for j in range(num_nodes):
@@ -96,12 +96,12 @@ for k in range(num_concs):
 #print("cond_tabl_4[k,:,:,l]: \n",cond_tabl_4[0,:,:,0])
 #print("adhe_tabl_4[k,:,:,l]: \n",adhe_tabl_4[0,:,:,0])
 # line of three nodes
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,0,1,0])
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,1,0,0])
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,1,2,0])
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,2,1,0])
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,2,0,1])
-# plt.plot(conc_max_discs_1,cond_tabl_4[:,0,2,2])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,0,1,0])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,1,0,0])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,1,2,0])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,2,1,0])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,2,0,1])
+# plt.plot(conc_max_disc_1,cond_tabl_4[:,0,2,2])
 # plt.show()
 
 # Cell problem
@@ -221,51 +221,51 @@ depo_prep_1[:] = -(1/v)*numpy.sum(a=depo_2,axis=1) # sum over r
 
         
 
-#perm_prep_1 = 0.5*         # perm_prep_1[k] = permeability at conc_max_discs_1[k]
+#perm_prep_1 = 0.5*         # perm_prep_1[k] = permeability at conc_max_disc_1[k]
 
 
 
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,1,0,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,3,1,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,3,2,0])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,0,1,2])
-#plt.plot(conc_max_discs_1, cond_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
-##plt.plot(conc_max_discs_1, cond_tabl_4[:,2,3,2])
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,1,0,0])
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,3,1,0])
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,3,2,0])
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,0,1,2])
+#plt.plot(conc_max_disc_1, cond_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
+##plt.plot(conc_max_disc_1, cond_tabl_4[:,2,3,2])
 #plt.legend()
 #plt.show()
 #
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,0,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,1,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,2,0])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,0,1,2])
-#plt.plot(conc_max_discs_1, adhe_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
-##plt.plot(conc_max_discs_1, adhe_tabl_4[:,2,3,2])
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,0,1,0],label=r"$G_{01}^{0}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,1,0,0])
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,1,3,0],label=r"$G_{13}^{0}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,3,1,0])
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,2,3,0],label=r"$G_{23}^{0}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,3,2,0])
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,0,2,0],label=r"$G_{02}^{0}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,2,0,0],label=r"$G_{20}^{0}$")
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,1,0,1],label=r"$G_{10}^{1}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,0,1,2])
+#plt.plot(conc_max_disc_1, adhe_tabl_4[:,3,2,1],label=r"$G_{32}^{1}$")
+##plt.plot(conc_max_disc_1, adhe_tabl_4[:,2,3,2])
 #plt.legend()
 #plt.show()
 #
-#plt.plot(conc_max_discs_1,csol_2[:,0],label=r"$W_0$")
-#plt.plot(conc_max_discs_1,csol_2[:,1],label=r"$W_1$")
-#plt.plot(conc_max_discs_1,csol_2[:,2],label=r"$W_2$")
-#plt.plot(conc_max_discs_1,csol_2[:,3],label=r"$W_3$")
+#plt.plot(conc_max_disc_1,csol_2[:,0],label=r"$W_0$")
+#plt.plot(conc_max_disc_1,csol_2[:,1],label=r"$W_1$")
+#plt.plot(conc_max_disc_1,csol_2[:,2],label=r"$W_2$")
+#plt.plot(conc_max_disc_1,csol_2[:,3],label=r"$W_3$")
 #plt.legend()
 #plt.show()
 #
-#plt.plot(conc_max_discs_1,csol_2[:,0]-csol_2[:,1],label=r"$W_0-W_1$")
-#plt.plot(conc_max_discs_1,csol_2[:,2]-csol_2[:,3],label=r"$W_2-W_3$")
-#plt.plot(conc_max_discs_1,csol_2[:,2]-csol_2[:,0],label=r"$W_2-W_0$")
-#plt.plot(conc_max_discs_1,csol_2[:,1]-csol_2[:,3],label=r"$W_1-W_3$")
+#plt.plot(conc_max_disc_1,csol_2[:,0]-csol_2[:,1],label=r"$W_0-W_1$")
+#plt.plot(conc_max_disc_1,csol_2[:,2]-csol_2[:,3],label=r"$W_2-W_3$")
+#plt.plot(conc_max_disc_1,csol_2[:,2]-csol_2[:,0],label=r"$W_2-W_0$")
+#plt.plot(conc_max_disc_1,csol_2[:,1]-csol_2[:,3],label=r"$W_1-W_3$")
 #plt.legend()
 #plt.show()
 
@@ -321,8 +321,8 @@ for i_t in range(num_times-1):
         # get previous concentration
         conc = conc_1[i_x]
         # use spline to get k, j
-        perm = interp(table_x=conc_max_discs_1,table_y=perm_prep_1,new_point=conc)
-        depo = interp(table_x=conc_max_discs_1,table_y=depo_prep_1,new_point=conc)
+        perm = interp(table_x=conc_max_disc_1,table_y=perm_prep_1,new_point=conc)
+        depo = interp(table_x=conc_max_disc_1,table_y=depo_prep_1,new_point=conc)
         
         # 2. Stick all together. i.e. fill the functions of x
         perm_1[i_x] = perm
