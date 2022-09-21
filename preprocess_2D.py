@@ -101,15 +101,17 @@ def get_conductance_and_adhesivity(conc_max_disc_1: numpy.ndarray,
                 for r0 in range(num_refs):
                     for r1 in range(num_refs):            
                         cond = cond_tabl_5[k,i,j,r0,r1]
-                        if cond != 0: # we don't need to worry about G_ij==0
-                            if conc_disc < alpha*cond or numpy.allclose(a=conc_disc,b=alpha*cond,rtol=1e-5,atol=1e-8):
-                                pass
-                            elif conc_disc > alpha*cond:
+                        if cond != 0.0: # we don't need to worry about G_ij==0
+                            #if conc_disc < alpha*cond or numpy.allclose(a=conc_disc,b=alpha*cond,rtol=1e-5,atol=1e-8):
+                            #    pass
+                            if conc_disc > alpha*cond:
                                 #pass
-                                cond_tabl_5[k,i,j,r0,r1] = 0
-                                adhe_tabl_5[k,i,j,r0,r1] = 1
+                                cond_tabl_5[k,i,j,r0,r1] = 0.0
+                                adhe_tabl_5[k,i,j,r0,r1] = 1.0
                             else: 
-                                raise Exception
+                                pass
+                            #else: 
+                            #    raise Exception
     
     return (cond_tabl_5, adhe_tabl_5)
 
