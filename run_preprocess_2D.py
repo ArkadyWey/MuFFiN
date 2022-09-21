@@ -18,6 +18,15 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str):
                                type_alpha=type_alpha)
     
     conc_max_disc_1 = conf.conc_max_disc_1 
+    #a = numpy.linspace(0.0,0.85,11)
+    #b = numpy.linspace(0.85,0.95,101-10-10)
+    #c = numpy.linspace(0.95,1.0,11)
+    #a = numpy.arange(0.0,0.88,0.01)
+    #b = numpy.arange(0.88,0.92,0.0001)
+    #c = numpy.arange(0.92,1.01,0.01)
+    #conc_max_disc_1 = numpy.concatenate((a,b,c))
+    #print(len(conc_max_disc_1))
+    print(conc_max_disc_1)
     cond_init_4     = conf.cond_init_4 
     adhe_init_4     = conf.adhe_init_4 
     alpha           = conf.alpha 
@@ -77,9 +86,9 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str):
                                                                    heav_5=heav_5,
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
-    #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
+    print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     #print("perm_3[:,1,0]: \n{}".format(perm_3[:,1,0]))
-    #print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
+    print("depo_2[:,0]: \n{}".format(depo_2[-1,0]))
     #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
 
     #if depo_2[-1,0] > 4.0:
