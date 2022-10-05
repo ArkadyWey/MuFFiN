@@ -72,7 +72,9 @@ class Cell_2D_six_ireg():
                        num_refs: int, 
                        num_dims: int,
                        mean: float,
-                       leng_1: numpy.ndarray):
+                       leng_1: numpy.ndarray,
+                       mu: float, 
+                       sigma: float):
         """
         Parameters 
         # -------
@@ -87,6 +89,8 @@ class Cell_2D_six_ireg():
         self.num_dims  = num_dims
         self.mean      = mean
         self.leng_1    = leng_1
+        self.mu        = mu
+        self.sigma     = sigma
         
         self.l1 = leng_1[0]
         self.l2 = leng_1[1]
@@ -370,27 +374,43 @@ class Cell_2D_six_ireg():
             # Get i,r,s triples that edge involves, by using key
             [i_i, r_i, s_i] = key[p_i]
             [i_j, r_j, s_j] = key[p_j]
+            
+            ireg_like_reg = True
+            if ireg_like_reg == False:
+                # Keep edge if involves unit cell
+                # Either i or j is in unit cell, such that r==0==s.
+                if (r_i == 0 and s_i == 0):
+                    #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
+                    # i is in unit cell
+                    cond_init_4[i_i,i_j,r_j,s_j]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                    cond_init_4[i_j,i_i,-r_j,-s_j] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
+                    #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
+                    edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                    edge_conds.append(cond_init_4[i_i,i_j,r_j,s_j])
+                    #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
+                elif (r_j == 0 and s_j == 0):
+                    # j is in unit cell
+                    #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
+                    cond_init_4[i_j,i_i,r_i,s_i]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                    cond_init_4[i_i,i_j,-r_i,-s_i] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
+                    #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
+                    edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
+                    edge_conds.append(cond_init_4[i_j,i_i,r_i,s_i])
+                    #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
 
-            # Keep edge if involves unit cell
-            # Either i or j is in unit cell, such that r==0==s.
-            if (r_i == 0 and s_i == 0):
-                #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
-                # i is in unit cell
-                cond_init_4[i_i,i_j,r_j,s_j]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                cond_init_4[i_j,i_i,-r_j,-s_j] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_i,r_i,s_i,i_j,r_j,s_j]) 
-                #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
-                edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                edge_conds.append(cond_init_4[i_i,i_j,r_j,s_j])
-                #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
-            elif (r_j == 0 and s_j == 0):
-                # j is in unit cell
-                #print("i_i={},r_i={},s_i={},i_j={},r_j={},s_j={}".format(i_i,r_i,s_i,i_j,r_j,s_j))
-                cond_init_4[i_j,i_i,r_i,s_i]   = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                cond_init_4[i_i,i_j,-r_i,-s_i] = self.mean/dist_6[i_i,r_i,s_i,i_j,r_j,s_j] #(1.72461)*(1/numpy.sqrt(num_nodes))*(1/dist_6[i_j,r_j,s_j,i_i,r_i,s_i])
-                #print("d={}".format(dist_6[i_i,r_i,s_i,i_j,r_j,s_j]))
-                edge_lengs.append(1.0/dist_6[i_i,r_i,s_i,i_j,r_j,s_j])
-                edge_conds.append(cond_init_4[i_j,i_i,r_i,s_i])
-                #g.append(cond_init_4[i_j,i_i,-r_j,-s_j])
+            elif ireg_like_reg == True:
+                self.scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+                if (r_i == 0 and s_i == 0):
+                    # i is in unit cell
+                    sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
+                    cond_init_4[i_i,i_j,r_j,s_j]   = sample/self.scale_factor
+                    cond_init_4[i_j,i_i,-r_j,-s_j] = sample/self.scale_factor 
+                elif (r_j == 0 and s_j == 0):
+                    # j is in unit cell
+                    sample = numpy.random.lognormal(mean=self.mu, sigma=self.sigma)
+                    cond_init_4[i_j,i_i,r_i,s_i]   = sample/self.scale_factor
+                    cond_init_4[i_i,i_j,-r_i,-s_i] = sample/self.scale_factor
+
             else: 
                 # neither i or j in unit cell so this edge is not in conductance
                 pass

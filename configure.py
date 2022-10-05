@@ -284,7 +284,9 @@ class Configure():
             cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
                                                          num_refs=self.num_refs,
                                                          mean=self.mean, 
-                                                         leng_1=self.leng_1)
+                                                         leng_1=self.leng_1,
+                                                         mu=self.mu,
+                                                         sigma=self.sigma)
 
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \

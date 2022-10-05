@@ -45,8 +45,8 @@ def four_reg_prescribed(num_nodes: int, num_refs: int):
         #           0         1
 
         # Internal edges
-        cond_init_4[0,1,0,0] = 0.9#0.1#1.2#1.72461##0.8 #1.0
-        cond_init_4[1,0,0,0] = 0.9#0.1#1.2#1.72461##0.8 #1.0
+        cond_init_4[0,1,0,0] = 0.99#0.1#1.2#1.72461##0.8 #1.0
+        cond_init_4[1,0,0,0] = 0.99#0.1#1.2#1.72461##0.8 #1.0
 
         cond_init_4[1,3,0,0] = 1.0#0.2#1.2#1.72461#1.0#0.2 #1.0
         cond_init_4[3,1,0,0] = 1.0#0.2#1.2#1.72461#1.0#0.2 #1.0
@@ -242,7 +242,7 @@ def four_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
 
 
 
-def six_ireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray):
+def six_ireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, mu: float, sigma: float):
     """
     - Get specified number of (x,y) points within a unit cell. 
     - Calculate simplices of delauney triangulation. 
@@ -257,7 +257,9 @@ def six_ireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray):
                                   num_refs=num_refs,
                                   num_dims=num_dims,
                                   mean=mean, 
-                                  leng_1=leng_1)
+                                  leng_1=leng_1, 
+                                  mu=mu,
+                                  sigma=sigma)
 
     #cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
     cond_init_4 = cell.cond_init_4
