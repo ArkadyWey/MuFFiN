@@ -24,6 +24,8 @@ class Configure():
         self.sigma          = sigma
         self.type_alpha     = type_alpha
 
+        self.ireg_like_reg = True
+
         # Get input parameters from parameters dictionary or class parameters
         # -----
         file = open("parameters.json", "r")
@@ -146,43 +148,49 @@ class Configure():
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_mean = self.mean/scale_factor
         elif self.initialisation == "6-ireg":
-            #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
-            #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
-            # Scale factor is average length of edge
-            # See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle
-            
-            lw = 3*self.l1
-            lh = 3*self.l2
-            
-            d = numpy.sqrt(lw**2+lh**2)
-            t1 = (lw**3)/(lh**2) + (lh**3)/(lw**2)
-            t2 = d*(3.0 - (lw**2)/(lh**2) - (lh**2)/(lw**2) )
-            t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
-            scale_factor = (1.0/15.0)*(t1+t2+t3)
-            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-            scale_factor = 1.2
-            scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
-            
-            if self.num_nodes == 4:               
-                scaled_mean = 1.871389085821546
-            elif self.num_nodes == 9:
-                scaled_mean = 2.018996118941066
-            elif self.num_nodes == 16:
-                scaled_mean = 2.066710746623104
-            elif self.num_nodes == 25:
-                scaled_mean = 2.1118597827108325
-            elif self.num_nodes == 36:
-                scaled_mean = 2.14799194260467
-            elif self.num_nodes == 49:
-                scaled_mean = 2.161514899791776
-            elif self.num_nodes == 64:
-                scaled_mean = 2.1727393516346836
-            elif self.num_nodes == 81:
-                scaled_mean = 2.189568000338446
-            elif self.num_nodes == 100:
-                scaled_mean = 2.198423880031176
-            else: 
-                raise Exception("There is no scaled_mean for this num_nodes.")       
+            if self.ireg_like_reg == False:
+                #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
+                #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+                # Scale factor is average length of edge
+                # See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle
+
+                lw = 3*self.l1
+                lh = 3*self.l2
+
+                d = numpy.sqrt(lw**2+lh**2)
+                t1 = (lw**3)/(lh**2) + (lh**3)/(lw**2)
+                t2 = d*(3.0 - (lw**2)/(lh**2) - (lh**2)/(lw**2) )
+                t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
+                scale_factor = (1.0/15.0)*(t1+t2+t3)
+                #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+                scale_factor = 1.2
+                scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
+
+                if self.num_nodes == 4:               
+                    scaled_mean = 1.871389085821546
+                elif self.num_nodes == 9:
+                    scaled_mean = 2.018996118941066
+                elif self.num_nodes == 16:
+                    scaled_mean = 2.066710746623104
+                elif self.num_nodes == 25:
+                    scaled_mean = 2.1118597827108325
+                elif self.num_nodes == 36:
+                    scaled_mean = 2.14799194260467
+                elif self.num_nodes == 49:
+                    scaled_mean = 2.161514899791776
+                elif self.num_nodes == 64:
+                    scaled_mean = 2.1727393516346836
+                elif self.num_nodes == 81:
+                    scaled_mean = 2.189568000338446
+                elif self.num_nodes == 100:
+                    scaled_mean = 2.198423880031176
+                else: 
+                    raise Exception("There is no scaled_mean for this num_nodes.")  
+            elif self.ireg_like_reg == True:
+                # Scale factor is length of edge in reg case
+                scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+                scaled_mean = self.mean/scale_factor
+
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
@@ -204,26 +212,31 @@ class Configure():
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_median = self.median/scale_factor
         elif self.initialisation == "6-ireg":
-            if self.num_nodes == 4:
-                scaled_median = 1.3660568651646265
-            elif self.num_nodes == 9:
-                scaled_median = 1.441922764619922
-            elif self.num_nodes == 16:
-                scaled_median = 1.4752637571897684
-            elif self.num_nodes == 25:
-                scaled_median = 1.4959911760321492
-            elif self.num_nodes == 36:
-                scaled_median = 1.5097381075644065
-            elif self.num_nodes == 49:
-                scaled_median = 1.5219542630185445
-            elif self.num_nodes == 64:
-                scaled_median = 1.5305661672129145
-            elif self.num_nodes == 81:
-                scaled_median = 1.5356810990598735
-            elif self.num_nodes == 100:
-                scaled_median = 1.5407607827960603
-            else: 
-                raise Exception("There is no scaled_median for this num_nodes.")    
+            if self.ireg_like_reg == False:
+                if self.num_nodes == 4:
+                    scaled_median = 1.3660568651646265
+                elif self.num_nodes == 9:
+                    scaled_median = 1.441922764619922
+                elif self.num_nodes == 16:
+                    scaled_median = 1.4752637571897684
+                elif self.num_nodes == 25:
+                    scaled_median = 1.4959911760321492
+                elif self.num_nodes == 36:
+                    scaled_median = 1.5097381075644065
+                elif self.num_nodes == 49:
+                    scaled_median = 1.5219542630185445
+                elif self.num_nodes == 64:
+                    scaled_median = 1.5305661672129145
+                elif self.num_nodes == 81:
+                    scaled_median = 1.5356810990598735
+                elif self.num_nodes == 100:
+                    scaled_median = 1.5407607827960603
+                else: 
+                    raise Exception("There is no scaled_median for this num_nodes.")    
+            elif self.ireg_like_reg == True:
+                # Scale factor is length of edge
+                scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+                scaled_median = self.median/scale_factor
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
 
@@ -241,6 +254,7 @@ class Configure():
         # -----------
         if self.type_alpha == "mean":
             alpha = 1.0/self.scaled_mean
+            #alpha = 1.0
         elif self.type_alpha == "median":
             alpha = 1.0/self.scaled_median
         else: 
