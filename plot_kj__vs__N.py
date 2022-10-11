@@ -51,7 +51,7 @@ ax.plot(N_smooth,k_3,color="tab:green",ls="-",label=r"$N^{\frac{1}{3}}$")
 
 
 ax.legend()
-ax.set_ylabel(r"$k^{00}$")
+ax.set_ylabel(r"$k^{11}$")
 ax.set_xlabel(r"$N$")
 plt.savefig(fname=os.path.join(path_results,"k__vs__N.svg"), format="svg")
 
@@ -77,6 +77,6 @@ j_3 = get_j(N_smooth=N_smooth,D=3,l=l)
 ax.plot(N_smooth,j_3,color="tab:green",ls="-",label=r"$N^{\frac{2}{3}}$")
 
 ax.legend()
-ax.set_ylabel(r"$j^{0}$")
+ax.set_ylabel(r"$j^{1}$")
 ax.set_xlabel(r"$N$")
 plt.savefig(fname=os.path.join(path_results,"j__vs__N.svg"), format="svg")

@@ -54,7 +54,7 @@ conf = configure.Configure(num_nodes=1,
                            type_alpha=type_alpha)
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
+                             x_label=r"$j^{1}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=conf.mean+0.1,
@@ -179,7 +179,7 @@ pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
+                             x_label=r"$j^{1}$",
                              y_label=r"Probability density",
                              x_left=0.0-0.05,
                              x_right=conf.mean+0.05,
@@ -220,8 +220,8 @@ conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
 
-ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[j^{0}]$")
-ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[j^{0}]$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[j^{1}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[j^{1}]$")
 
 # Plot guide lines
 N_smooth =  numpy.linspace(1,100,500)
@@ -271,8 +271,8 @@ plotting.thesisify_pre_ax_creation
 fig, ax = plt.subplots(1,1)
 
 x = numpy.linspace(0,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{0}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{0}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{1}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{1}$$)$")
 ax.plot(x, -0.5*x + (-0.40*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.40$")
 
 # Cleanup plot

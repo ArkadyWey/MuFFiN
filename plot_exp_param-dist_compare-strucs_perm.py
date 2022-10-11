@@ -15,9 +15,9 @@ if not os.path.exists(path_results):
 parameter_name = "perm"
 
 # Paths to param experiment results for each structure
-path_results_square_struc = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
-path_results_hexag_struc = os.path.join(".","results_experiment_param-dist_hexag-structure_reps-5k")
-path_results_rand_struc = os.path.join(".","results_experiment_param-dist_random-structure_reps-50k")
+path_results_square_struc = os.path.join(".","results_experiment_param-dist_4-reg_reps-10000_sigma-0.3_alpha-mean")
+path_results_hexag_struc = os.path.join(".","results_experiment_param-dist_6-reg_reps-10000_sigma-0.3_alpha-mean")
+path_results_rand_struc = os.path.join(".","results_experiment_param-dist_6-ireg_reps-10000_sigma-0.3_alpha-mean")
 
 paths_results = [
     path_results_square_struc,
@@ -38,8 +38,8 @@ num_nodes_lists = [num_nodes_list_square_struc,
                    num_nodes_list_rand_struc]
 
 # Each structure needs its own labels in plot
-labels_mean = [r"mean $k^{00}$ - 4-lattice", r"mean $k^{00}$ - 6-lattice", r"mean $k^{00}$ - 6-random"]
-labels_sd = [r"std. dev. $k^{00}$ - 4-lattice", r"std. dev. $k^{00}$ - 6-lattice", r"std. dev. $k^{00}$ - 6-random"]
+labels_mean = [r"mean $k^{11}$ - 4-lattice", r"mean $k^{11}$ - 6-lattice", r"mean $k^{11}$ - 6-random"]
+labels_sd = [r"std. dev. $k^{11}$ - 4-lattice", r"std. dev. $k^{11}$ - 6-lattice", r"std. dev. $k^{11}$ - 6-random"]
 
 sd_constants_and_powers = [[0.498,-0.5],[0.577, -0.5],[1.1, -0.5]]  # first index is constant out front, second is power
 labels_sd_fit = [r"$0.498N^{-\frac{1}{2}}$", 

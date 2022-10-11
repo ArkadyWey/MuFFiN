@@ -96,7 +96,7 @@ for i,N in enumerate(num_nodes_list):
     ax.plot(x, pdf, linewidth=2)
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$b^{0}$",
+                             x_label=r"$b^{1}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
                              x_right=100.0,
@@ -183,7 +183,7 @@ for i,N in enumerate(num_nodes_list):
     ax.plot(x, pdf, linewidth=2)
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$b^{0}_{H}$",
+                             x_label=r"$b^{1}_{H}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
                              x_right=40.0,
@@ -269,7 +269,7 @@ for i,N in enumerate(num_nodes_list):
     ax.plot(x, pdf, linewidth=2)
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$b^{0}_{D}$",
+                             x_label=r"$b^{1}_{D}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
                              x_right=40.0,
@@ -311,8 +311,8 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}$")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}$")
+ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{1}$")
+ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{1}$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
@@ -335,8 +335,8 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{H}$"     , marker="+")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{H}$", marker="+")
+ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{1}_{H}$"     , marker="+")
+ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{1}_{H}$", marker="+")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
@@ -358,8 +358,8 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{0}_{D}$"     , marker="x")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{0}_{D}$", marker="x")
+ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{1}_{D}$"     , marker="x")
+ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{1}_{D}$", marker="x")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)

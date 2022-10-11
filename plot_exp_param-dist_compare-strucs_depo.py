@@ -38,8 +38,8 @@ num_nodes_lists = [num_nodes_list_square_struc,
                    num_nodes_list_rand_struc]
 
 # Each structure needs its own labels in plot
-labels_mean = [r"mean $j^{0}$ - 4-lattice", r"mean $j^{0}$ - 6-lattice", r"mean $j^{0}$ - 6-random"]
-labels_sd = [r"std. dev. $j^{0}$ - 4-lattice", r"std. dev. $j^{0}$ - 6-lattice", r"std. dev. $j^{0}$ - 6-random"]
+labels_mean = [r"mean $j^{1}$ - 4-lattice", r"mean $j^{1}$ - 6-lattice", r"mean $j^{1}$ - 6-random"]
+labels_sd = [r"std. dev. $j^{1}$ - 4-lattice", r"std. dev. $j^{1}$ - 6-lattice", r"std. dev. $j^{1}$ - 6-random"]
 
 sd_constants_and_powers = [[0.406,-0.5],[0.684, -0.5],[0.779, -1.0/3.0]]  # first index is constant out front, second is power
 labels_sd_fit = [r"$0.406N^{-\frac{1}{2}}$", 

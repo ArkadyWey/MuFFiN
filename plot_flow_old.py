@@ -129,13 +129,13 @@ plt.savefig(fname=os.path.join(path_results,"dpdx_2__v__posi_1.svg"), format="sv
 # -----
 fig, ax = plt.subplots(1,1)
 
-ax.plot(posi_1,perm_2[:,start], label=r"$k^{00}$", color="tab:red")
+ax.plot(posi_1,perm_2[:,start], label=r"$k^{11}$", color="tab:red")
 #ax.plot(posi_1,perm_2[:,first_quarter])
 #ax.plot(posi_1,perm_2[:,second_quarter])
 #ax.plot(posi_1,perm_2[:,third_quarter])
 #ax.plot(posi_1,perm_2[:,end])
 
-ax.plot(posi_1, -depo_2[:,start], label=r"$j^{0}$", color="tab:blue")
+ax.plot(posi_1, -depo_2[:,start], label=r"$j^{1}$", color="tab:blue")
 #ax.plot(posi_1, depo_2[:,first_quarter])
 #ax.plot(posi_1, depo_2[:,second_quarter])
 #ax.plot(posi_1, depo_2[:,third_quarter])

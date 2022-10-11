@@ -38,7 +38,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 ax.set_xlim(left=0.5,right=3.0)
 ax.set_ylim(bottom=0.0)
@@ -107,7 +107,7 @@ for t, N in enumerate(num_nodes_list):
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=min_val,
                              x_right=max_val,
@@ -143,8 +143,8 @@ for t in range(num_tests):
 
 # Plot scatter for distribution means
 # -------
-ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{00}-k_6$")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
+ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{11}-k_6$")
+ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{11}$")
 
 # Plot guide lines
 # ------
@@ -176,8 +176,8 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 N_smoother = numpy.linspace(0.01,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{00}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{00}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{11}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{11}$$)$")
 ax.plot(N_smoother, -0.5*N_smoother + (-2.9*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.29$")
 
 # Cleanup graph 
@@ -240,7 +240,7 @@ ax.vlines(x=conf.median,
 # Cleanup graph 
 # ------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=4.0,

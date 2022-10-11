@@ -37,13 +37,13 @@ fig, ax = plt.subplots(1,1)
 m = 0
 n = 0
 
-ax.scatter(conc_max_disc_1, perm_prep_3[:,m,n], label=r"$k^{00}$", color="red")
-ax.scatter(conc_max_disc_1, depo_prep_2[:,m],   label=r"$j^{0}$", color="blue")
+ax.scatter(conc_max_disc_1, perm_prep_3[:,m,n], label=r"$k^{11}$", color="red")
+ax.scatter(conc_max_disc_1, depo_prep_2[:,m],   label=r"$j^{1}$", color="blue")
 
 conc_max_1 = numpy.linspace(0.0,1.0,1000)
 
-ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=perm_prep_3[:,m,n],new_x_value=conc_max_1), label=r"$\hat{k}^{00}$", color="red")
-ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1), label=r"$\hat{j}^{0}$", color="blue")
+ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=perm_prep_3[:,m,n],new_x_value=conc_max_1), label=r"$\hat{k}^{11}$", color="red")
+ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_disc_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1), label=r"$\hat{j}^{1}$", color="blue")
 
 ax.set_xlabel("c")
 ax.legend()

@@ -14,15 +14,14 @@ import plotting
 # Parameters 
 # -----
 initialisation = "6-ireg"
-num_reps       = 10000
+num_reps       = 10001
 sigma          = 0.3
 type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
 
 #num_nodes_list = [4,9,16,25,36,49,64,81,100]
-#num_nodes_list = [1,4,9,16,25,36,49]
-num_nodes_list = [4,9,16]
+num_nodes_list = [4,9,16,25,36,49,64]
 num_tests = len(num_nodes_list)
 
 
@@ -40,7 +39,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 ax.set_xlim(left=1.0,right=4.0)
 ax.set_ylim(bottom=0.0,top=3.5)
@@ -56,7 +55,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm__old.svg"), f
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [4,9,16]
+num_nodes_list = [4,9,16,25,36,49,64]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -108,7 +107,7 @@ for t, N in enumerate(num_nodes_list):
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=1.0,
                              x_right=5.0,
@@ -125,7 +124,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [4,9,16]#[4,9,16,25,36,49,64,81,100]
+num_nodes_list = [4,9,16,25,36,49,64]#[4,9,16,25,36,49,64,81,100]
 num_tests = len( num_nodes_list)
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
@@ -144,9 +143,9 @@ for t in range(num_tests):
 print(mean_1)
 
 # Plot scatter for distribution means
-#ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean $k^{00}-k^{00}_{N=1}$")
-ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{00}-\bar{k}_6$")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
+#ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean $k^{11}-k^{11}_{N=1}$")
+ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{11}-\bar{k}_6$")
+ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{11}$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,100,500)
@@ -157,8 +156,8 @@ ax.plot(N_smooth, 1.1*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1
 #ax.plot(N_smooth, (-0.07469260409119505)*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"square grid mean")
 ax.plot(N_smooth,(mean_1[-1]-2.77982)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
 
-#ax.scatter(num_nodes_list,mean_1-1.72461, label=r"mean-$k^{00}_{N=1}$")
-#ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean-$k^{00}_{N=1}$")
+#ax.scatter(num_nodes_list,mean_1-1.72461, label=r"mean-$k^{11}_{N=1}$")
+#ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean-$k^{11}_{N=1}$")
 #ax.plot(numpy.linspace(0,100,1000), 0.1*numpy.power(numpy.linspace(0,100,1000),-0.5)-0.1, color="tab:blue")
 #ax.plot(numpy.linspace(0,100,500), 0.498*numpy.power(numpy.linspace(0,100,500),-0.5), color="tab:blue")
 
@@ -185,8 +184,8 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 N_smoother = numpy.linspace(0.01,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"$log($mean $k^{00}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"$log$(std. dev. $k^{00}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"$log($mean $k^{11}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"$log$(std. dev. $k^{11}$$)$")
 ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", ls="--", label=r"square grid fit")
 #ax.plot(N_smoother, -0.5*N_smoother + (0.2*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
 ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(1.1)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"new fit")
