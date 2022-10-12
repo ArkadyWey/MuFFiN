@@ -4,12 +4,6 @@ import configure
 import os
 import argparse
 
-path_results = os.path.join(".","results/results_cond-dist")
-
-# Make results directories 
-# --------
-if not os.path.exists(path_results):
-    os.makedirs(path_results)
 
 sigma          = 0.3
 initialisation = "6-ireg"
@@ -25,6 +19,13 @@ args = parser.parse_args()
 
 num_nodes = args.num_nodes
 num_reps  = args.num_reps
+
+path_results = os.path.join(".","results/results_cond-dist_N-{}_R-{}".format(num_nodes,num_reps))
+
+# Make results directories 
+# --------
+if not os.path.exists(path_results):
+    os.makedirs(path_results)
 
 conf = configure.Configure(num_nodes=num_nodes,
                            initialisation=initialisation,
