@@ -38,7 +38,9 @@ for r in range(num_reps):
                                   num_refs=3, 
                                   num_dims=2,
                                   mean=conf.mean,
-                                  leng_1=conf.leng_1)
+                                  leng_1=conf.leng_1,
+                                  mu=0.5,
+                                  sigma=0.3)
     
     for edge_leng in cell.edge_lengs:
         edge_lengs.append(edge_leng)
@@ -56,8 +58,21 @@ median_edge_conds = numpy.median(a=numpy.array(edge_conds),axis=None)
 mean_edge_lengs = numpy.mean(a=numpy.array(edge_lengs),axis=None)
 mean_edge_conds = numpy.mean(a=numpy.array(edge_conds),axis=None)
 
+var_edge_lengs = numpy.var(a=numpy.array(edge_lengs),axis=None)
+var_edge_conds = numpy.var(a=numpy.array(edge_conds),axis=None)
+
 print("median_edge_lengs:\n{}".format(median_edge_lengs))
 print("median_edge_conds:\n{}".format(median_edge_conds))
 
 print("mean_edge_lengs:\n{}".format(mean_edge_lengs))
 print("mean_edge_conds:\n{}".format(mean_edge_conds))
+
+print("var_edge_lengs:\n{}".format(var_edge_lengs))
+print("var_edge_conds:\n{}".format(var_edge_conds))
+
+v = var_edge_conds
+l = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+c = numpy.exp(2.0*0.5)
+sig_squ = numpy.log((v*l**2)/c+1.0)
+sig = numpy.sqrt(sig_squ)
+print("sig:\n{}".format(sig))
