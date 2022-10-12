@@ -20,7 +20,7 @@ args = parser.parse_args()
 num_nodes = args.num_nodes
 num_reps  = args.num_reps
 
-path_results = os.path.join(".","results/results_cond-dist_N-{}_R-{}".format(num_nodes,num_reps))
+path_results = os.path.join(".","results/results_cond-dist_nodes-{}_reps-{}".format(num_nodes,num_reps))
 
 # Make results directories 
 # --------
