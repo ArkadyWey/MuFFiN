@@ -375,7 +375,7 @@ class Cell_2D_six_ireg():
             [i_i, r_i, s_i] = key[p_i]
             [i_j, r_j, s_j] = key[p_j]
             
-            ireg_like_reg = True
+            ireg_like_reg = False
             if ireg_like_reg == False:
                 # Keep edge if involves unit cell
                 # Either i or j is in unit cell, such that r==0==s.
