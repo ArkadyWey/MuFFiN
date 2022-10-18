@@ -215,17 +215,17 @@ class PlotParameterMeanAndSD():
             N = num_nodes_list[t]
 
             if parameter_name == "perm":
-                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_2_N-{}.npy".format(N)))
+                param_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
             elif parameter_name == "depo":
                 # For square-struc
-                param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))/numpy.sqrt(N)
+                param_effe_2 = numpy.load(os.path.join(path_results, "depo_effe_1_N-{}.npy".format(N)))
                 # for other strucs
                 #param_effe_2 = -numpy.load(os.path.join(path_results, "depo_effe_2_N-{}.npy".format(N)))
             else: 
                 raise Exception("parameter_name must be either perm or depo.")
 
-            mean_1[t] = numpy.mean(a=param_effe_2, axis=1)
-            sd_1[t]   = numpy.std(a=param_effe_2, axis=1)
+            mean_1[t] = numpy.mean(a=param_effe_2, axis=0)
+            sd_1[t]   = numpy.std(a=param_effe_2, axis=0)
 
         return mean_1, sd_1
 
@@ -253,7 +253,7 @@ class PlotParameterMeanAndSD():
         
             ax_mean.scatter(num_nodes_lists[i],mean_1, marker=markers[i], label=labels_mean[i], color=colors[i])
             ax_mean.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color=colors[i], ls="--")
-            
+      
             ax_sd.scatter(num_nodes_lists[i],  sd_1,   marker=markers[i], label=labels_sd[i], color=colors[i])
             ax_sd.plot(N_smooth, sd_constants_and_powers[i][0]*numpy.power(N_smooth,sd_constants_and_powers[i][1]), color=colors[i], label=labels_sd_fit[i],ls="-")
 
