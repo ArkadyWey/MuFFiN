@@ -1805,4 +1805,25 @@ class Cell_2D_six_rand():
         
         self.edge_lengs = edge_lengs
         self.edge_conds = edge_conds
+        
+        conns = numpy.zeros(shape=num_nodes) # conns[i] = number of edges from ndoe i in unit cell
+        conns_intra = numpy.zeros(shape=num_nodes)
+        conns_inter = numpy.zeros(shape=num_nodes)
+        for i in range(num_nodes):
+            conns[i] = numpy.count_nonzero(a=cond_init_4[i,:,:,:],axis=None)
+            conns_intra[i] = numpy.count_nonzero(a=cond_init_4[i,:,0,0],axis=None)
+            conns_inter[i] = conns[i]-conns_intra[i]
+
+        mean_conns = numpy.mean(conns)
+        mean_conns_intra = numpy.mean(conns_intra)
+        mean_conns_inter = numpy.mean(conns_inter)
+        #print("conns:{}, mean_conns:{}".format(conns,numpy.mean(conns)))
+        #print("conns_intra:{}, mean_conns_intra:{}".format(conns_intra,numpy.mean(conns_intra)))
+        #print("conns_inter:{}, mean_conns_inter:{}".format(conns_inter,numpy.mean(conns_inter)))
+        #print(numpy.mean(conns))
+
+        self.mean_conns = mean_conns
+        self.mean_conns_intra = mean_conns_intra
+        self.mean_conns_inter = mean_conns_inter
+
         return cond_init_4
