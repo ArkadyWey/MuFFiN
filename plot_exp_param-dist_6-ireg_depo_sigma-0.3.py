@@ -12,8 +12,8 @@ import plotting
 
 # Parameters 
 # -----
-initialisation = "6-ireg"
-num_reps       = 10000
+initialisation = "6-reglikeireg"
+num_reps       = 1000
 sigma          = 0.3
 type_alpha     = "mean"
 
@@ -21,7 +21,7 @@ path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma
 
 #num_nodes_list = [16,25,36,49,64,81,100]
 #num_nodes_list = [4,9,16,25,36,49,64,81,100]
-num_nodes_list = [4,9,16,25]#[4,9,16,25,36,49]#[4,16,36,64,100]
+num_nodes_list = [8]#[4,9,16,25,36,49]#[4,16,36,64,100]
 num_tests = len(num_nodes_list)
 
 

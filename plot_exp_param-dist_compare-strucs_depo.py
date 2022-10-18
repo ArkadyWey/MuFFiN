@@ -15,9 +15,13 @@ if not os.path.exists(path_results):
 parameter_name = "depo"
 
 # Paths to param experiment results for each structure
-path_results_square_struc = os.path.join(".","results_experiment_param-dist_square-structure_reps-50k")
-path_results_hexag_struc = os.path.join("."," results_experiment_param-dist_hexag-structure_reps-5k")
-path_results_rand_struc = os.path.join(".","  results_experiment_param-dist_random-structure_reps-50k")
+path_results_square_struc = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3_alpha-mean")
+#path_results_hexag_struc = os.path.join(".","results/results_exp_param-dist_6-reg_reps-10000_sigma-0.3_alpha-mean")
+#path_results_rand_struc = os.path.join(".","results/results_exp_param-dist_6-ireg_reps-10000_sigma-0.3_alpha-mean")
+#path_results_hexag_struc = os.path.join(".","results/results_exp_param-dist_6-reg_reps-10000_sigma-0.3_alpha-mean")
+#path_results_rand_struc = os.path.join(".","results/results_exp_param-dist_6-ireg_reps-1001_sigma-0.3_alpha-mean")
+path_results_hexag_struc = os.path.join(".","results/results_exp_param-dist_6-rand_reps-1001_sigma-0.3_alpha-mean") #fixed connectivity 
+path_results_rand_struc =  os.path.join(".","results/results_exp_param-dist_6-rand_reps-1002_sigma-0.3_alpha-mean") #random connectivity
 
 paths_results = [
     path_results_square_struc,
@@ -31,8 +35,8 @@ markers = ["s","h",(6, 2, 0)]
 
 # Each structure was trialed for different numbers of nodes
 num_nodes_list_square_struc = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list_hexag_struc = [2, 8,18,32,50,72,98,128]
-num_nodes_list_rand_struc = [4,9,16,25,36,49,64,81,100]
+num_nodes_list_hexag_struc = [4,9,16]#[8,18,32,50,72,98,128,162,200]
+num_nodes_list_rand_struc =  [4,9,16]#[8,18,32,50]
 num_nodes_lists = [num_nodes_list_square_struc, 
                    num_nodes_list_hexag_struc,
                    num_nodes_list_rand_struc]

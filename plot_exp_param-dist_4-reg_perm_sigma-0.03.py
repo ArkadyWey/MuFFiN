@@ -212,7 +212,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-k_and_logstd-
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-1.npy"))
-count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=75, density=True, align='mid', label=r"$N=1$", alpha=0.4)
+count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=50, density=True, align='mid', label=r"$k^{11} |_{N=1}$", alpha=0.4)
 
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
@@ -224,34 +224,34 @@ mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf   = conf.get_pdf(x=x) 
-ax.plot(x, pdf, linewidth=2, color='r', label=r"$G$")
+ax.plot(x, pdf, linewidth=2, color='tab:orange', label=r"$G_{ij}^{r,0}$")
 
 # Find proportion of GF above mean
 x   = conf.mean
 cdf = conf.get_cdf(x=x) # proportion up to mean
 
-ax.vlines(x=conf.mean, 
-          ymin=0.0, 
-          ymax=10.0, 
-          color="tab:red", 
-          linewidth=2.0, 
-          linestyle="--", 
-          alpha=1.0, 
-          label="mean")
-
-ax.vlines(x=numpy.exp(conf.mu), 
-          ymin=0.0, 
-          ymax=10.0, 
-          color="black", 
-          linewidth=2.0, 
-          linestyle=":", 
-          alpha=1.0,
-          label="median")
+#ax.vlines(x=conf.mean, 
+#          ymin=0.0, 
+#          ymax=10.0, 
+#          color="tab:green", 
+#          linewidth=2.0, 
+#          linestyle="-.", 
+#          alpha=1.0, 
+#          label=r"$\mathbb{E}[G_{ij}^{r,0}]$")
+#
+#ax.vlines(x=numpy.exp(conf.mu), 
+#          ymin=0.0, 
+#          ymax=10.0, 
+#          color="tab:red", 
+#          linewidth=2.0, 
+#          linestyle=":", 
+#          alpha=1.0,
+#          label=r"$\mathbb{M}[G_{ij}^{r,0}]$")
 
 # Cleanup graph 
 # ------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{11}$",
+                             x_label=r"$k^{11}|_{N=1}$ and $G_{ij}^{r,0}$",
                              y_label=r"Probability density",
                              x_left=1.45,
                              x_right=1.85,
