@@ -287,3 +287,57 @@ def six_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
     cond_init_4 = cell.cond_init_4
 
     return cond_init_4
+
+
+def six_ireglikereg(num_nodes: int,
+                    num_refs: int, 
+                    num_dims: int,
+                    leng_1: numpy.ndarray,
+                    mu: float, 
+                    sigma: float):
+    num_dims  = 2
+
+    cell = cells.Cell_2D_six_ireglikereg(num_nodes=num_nodes,
+                                         num_refs=num_refs, 
+                                         num_dims=num_dims,
+                                         leng_1=leng_1,
+                                         mu=mu, 
+                                         sigma=sigma)
+
+    cond_init_4 = cell.cond_init_4
+    
+    return cond_init_4
+
+
+
+def six_reglikeireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, mu: float, sigma: float):
+    """
+    """
+    num_dims  = 2
+
+    cell = cells.Cell_2D_six_reglikeireg(num_nodes=num_nodes,
+                                         num_refs=num_refs,
+                                         num_dims=num_dims,
+                                         mean=mean, 
+                                         leng_1=leng_1, 
+                                         mu=mu,
+                                         sigma=sigma)
+
+    #cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
+    cond_init_4 = cell.cond_init_4
+    
+def six_rand(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, mu: float, sigma: float):
+    """
+    """
+    num_dims  = 2
+
+    cell = cells.Cell_2D_six_rand(num_nodes=num_nodes,
+                                  num_refs=num_refs,
+                                  num_dims=num_dims,
+                                  mean=mean, 
+                                  leng_1=leng_1, 
+                                  mu=mu,
+                                  sigma=sigma)
+
+    cond_init_4 = cell.cond_init_4
+    return cond_init_4

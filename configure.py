@@ -24,8 +24,6 @@ class Configure():
         self.sigma          = sigma
         self.type_alpha     = type_alpha
 
-        self.ireg_like_reg = True
-
         # Get input parameters from parameters dictionary or class parameters
         # -----
         file = open("parameters.json", "r")
@@ -83,27 +81,45 @@ class Configure():
             n = int(numpy.sqrt(num_nodes))
             l1 = n*1.0
             l2 = n*1.0
+
         elif initialisation == "4-reg_prescribed":
             n = int(numpy.sqrt(num_nodes))
             l1 = n*1.0
             l2 = n*1.0
+
         elif initialisation == "6-reg":
             n  = int(numpy.sqrt(num_nodes/2))    
-            #l1 = n*1.0
-            #l2 = n*numpy.sqrt(3.0)
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             l1 = n*scale_factor
             l2 = n*numpy.sqrt(3.0)*scale_factor
+
         elif initialisation == "6-ireg":
-            n = int(numpy.sqrt(num_nodes))
+            n = numpy.sqrt(num_nodes)
             l1 = n*1.0
             l2 = n*1.0
-            #n  = int(numpy.sqrt(num_nodes/2))    
-            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-            #l1 = n*scale_factor
-            #l2 = n*numpy.sqrt(3.0)*scale_factor
+
+        elif initialisation == "6-ireglikereg":
+            n  = int(numpy.sqrt(num_nodes/2))    
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            l1 = n*scale_factor
+            l2 = n*numpy.sqrt(3.0)*scale_factor
+
+        elif initialisation == "6-reglikeireg":
+            n  = int(numpy.sqrt(num_nodes/2))    
+            #l1 = n*1.0
+            #l2 = n*numpy.sqrt(3.0)
+            n = int(numpy.sqrt(num_nodes/2))
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            l1 = n*scale_factor
+            l2 = n*numpy.sqrt(3.0)*scale_factor
+
+        elif initialisation == "6-rand":
+            n = numpy.sqrt(num_nodes)
+            l1 = n*1.0
+            l2 = n*1.0
+
         else: 
-            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', or '6-reglikeireg'.")
 
         return (l1, l2)
 
@@ -141,58 +157,84 @@ class Configure():
         """
         if self.initialisation == "4-reg_prescribed":
             scaled_mean = self.mean
+
         elif self.initialisation == "4-reg":
             scaled_mean = self.mean
+
         elif self.initialisation == "6-reg":
             # Scale factor is length of edge
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_mean = self.mean/scale_factor
+
         elif self.initialisation == "6-ireg":
-            if self.ireg_like_reg == False:
-                #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
-                #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
-                # Scale factor is average length of edge
-                # See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle
+            #scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half
+            #scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)
+            # Scale factor is average length of edge
+            # See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle
+            lw = 3*self.l1
+            lh = 3*self.l2
+            d = numpy.sqrt(lw**2+lh**2)
+            t1 = (lw**3)/(lh**2) + (lh**3)/(lw**2)
+            t2 = d*(3.0 - (lw**2)/(lh**2) - (lh**2)/(lw**2) )
+            t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
+            scale_factor = (1.0/15.0)*(t1+t2+t3)
+            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scale_factor = 1.2
+            scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
 
-                lw = 3*self.l1
-                lh = 3*self.l2
 
-                d = numpy.sqrt(lw**2+lh**2)
-                t1 = (lw**3)/(lh**2) + (lh**3)/(lw**2)
-                t2 = d*(3.0 - (lw**2)/(lh**2) - (lh**2)/(lw**2) )
-                t3 = (5.0/2.0)*( (lh**2/lw)*numpy.log((lw + d)/self.l2) + (lw**2/lh)*numpy.log((lh + d)/lw)  )
-                scale_factor = (1.0/15.0)*(t1+t2+t3)
-                #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-                scale_factor = 1.2
-                scaled_mean = self.mean/scale_factor # mean/length for length uniformly distributed
+            if self.num_nodes == 4:               
+                scaled_mean = 1.871389085821546
+            elif self.num_nodes == 8:
+                scaled_mean = 2.8273194155276555
+            elif self.num_nodes == 9:
+                scaled_mean = 2.018996118941066
+            elif self.num_nodes == 16:
+                scaled_mean = 2.066710746623104
+            elif self.num_nodes == 18:
+                scaled_mean = 1.2080041802724817
+            elif self.num_nodes == 25:
+                scaled_mean = 2.1118597827108325
+            elif self.num_nodes == 32:
+                scaled_mean = 1.0846242099702512
+            elif self.num_nodes == 36:
+                scaled_mean = 2.14799194260467
+            elif self.num_nodes == 49:
+                scaled_mean = 2.161514899791776
+            elif self.num_nodes == 64:
+                scaled_mean = 2.1727393516346836
+            elif self.num_nodes == 81:
+                scaled_mean = 2.189568000338446
+            elif self.num_nodes == 100:
+                scaled_mean = 2.198423880031176
+            else: 
+                raise Exception("There is no scaled_mean for this num_nodes.")  
 
-                if self.num_nodes == 4:               
-                    scaled_mean = 1.871389085821546
-                elif self.num_nodes == 9:
-                    scaled_mean = 2.018996118941066
-                elif self.num_nodes == 16:
-                    scaled_mean = 2.066710746623104
-                elif self.num_nodes == 25:
-                    scaled_mean = 2.1118597827108325
-                elif self.num_nodes == 36:
-                    scaled_mean = 2.14799194260467
-                elif self.num_nodes == 49:
-                    scaled_mean = 2.161514899791776
-                elif self.num_nodes == 64:
-                    scaled_mean = 2.1727393516346836
-                elif self.num_nodes == 81:
-                    scaled_mean = 2.189568000338446
-                elif self.num_nodes == 100:
-                    scaled_mean = 2.198423880031176
-                else: 
-                    raise Exception("There is no scaled_mean for this num_nodes.")  
-            elif self.ireg_like_reg == True:
-                # Scale factor is length of edge in reg case
-                scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-                scaled_mean = self.mean/scale_factor
+        elif self.initialisation == "6-ireglikereg":
+            # Scale factor is length of edge in reg case
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scaled_mean = self.mean/scale_factor
+        
+        elif self.initialisation == "6-reglikeireg":
+            # Scale factor is length of edge
+            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            #scaled_mean = self.mean/scale_factor
+            if self.num_nodes == 8:
+                scaled_mean = 1.3374119028739853
+            elif self.num_nodes == 18:
+                scaled_mean = 1.2192023958069975
+            elif self.num_nodes == 32:
+                scaled_mean = 1.0950280678479565
+            else: 
+                raise Exception("There is no scaled_mean for this num_nodes.")  
+
+        elif self.initialisation == "6-rand":
+            # Scale factor is length of edge
+            scaled_mean = self.mean
 
         else: 
             raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+
 
         return scaled_mean
 
@@ -205,40 +247,57 @@ class Configure():
         """
         if self.initialisation == "4-reg_prescribed":
             scaled_median = self.median
+
         elif self.initialisation == "4-reg":
             scaled_median = self.median
+
         elif self.initialisation == "6-reg":
             # Scale factor is length of edge
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_median = self.median/scale_factor
+
         elif self.initialisation == "6-ireg":
-            if self.ireg_like_reg == False:
-                if self.num_nodes == 4:
-                    scaled_median = 1.3660568651646265
-                elif self.num_nodes == 9:
-                    scaled_median = 1.441922764619922
-                elif self.num_nodes == 16:
-                    scaled_median = 1.4752637571897684
-                elif self.num_nodes == 25:
-                    scaled_median = 1.4959911760321492
-                elif self.num_nodes == 36:
-                    scaled_median = 1.5097381075644065
-                elif self.num_nodes == 49:
-                    scaled_median = 1.5219542630185445
-                elif self.num_nodes == 64:
-                    scaled_median = 1.5305661672129145
-                elif self.num_nodes == 81:
-                    scaled_median = 1.5356810990598735
-                elif self.num_nodes == 100:
-                    scaled_median = 1.5407607827960603
-                else: 
-                    raise Exception("There is no scaled_median for this num_nodes.")    
-            elif self.ireg_like_reg == True:
+            if self.num_nodes == 4:
+                scaled_median = 1.3660568651646265
+            elif self.num_nodes == 9:
+                scaled_median = 1.441922764619922
+            elif self.num_nodes == 16:
+                scaled_median = 1.4752637571897684
+            elif self.num_nodes == 18:
+                scaled_median = 0.656494415209621
+            elif self.num_nodes == 25:
+                scaled_median = 1.4959911760321492
+            elif self.num_nodes == 32:
+                scaled_median = 0.552792165039536
+            elif self.num_nodes == 36:
+                scaled_median = 1.5097381075644065
+            elif self.num_nodes == 49:
+                scaled_median = 1.5219542630185445
+            elif self.num_nodes == 64:
+                scaled_median = 1.5305661672129145
+            elif self.num_nodes == 81:
+                scaled_median = 1.5356810990598735
+            elif self.num_nodes == 100:
+                scaled_median = 1.5407607827960603
+            else: 
+                raise Exception("There is no scaled_median for this num_nodes.")    
+
+        elif self.initialisation == "6-ireglikereg":
                 # Scale factor is length of edge
                 scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
                 scaled_median = self.median/scale_factor
+
+        elif self.initialisation == "6-reglikeireg":
+            # Scale factor is length of edge
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scaled_median = self.median/scale_factor
+
+        elif self.initialisation == "6-rand":
+            # Scale factor is length of edge
+            scaled_median = self.median
+
         else: 
-            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', or '6-reglikeireg'.")
 
         return scaled_median
 
@@ -287,10 +346,30 @@ class Configure():
                                                          leng_1=self.leng_1,
                                                          mu=self.mu,
                                                          sigma=self.sigma)
-
+        elif self.initialisation == "6-ireglikereg":
+            cond_init_4 = initial_conditions_2D.six_ireglikereg(num_nodes=self.num_nodes,
+                                                                num_refs=self.num_refs, 
+                                                                num_dims=self.num_dims,
+                                                                leng_1=self.leng_1,
+                                                                mu=self.mu, 
+                                                                sigma=self.sigma)
+        elif self.initialisation == "6-reglikeireg":
+            cond_init_4 = initial_conditions_2D.six_ireg(num_nodes=self.num_nodes,
+                                                         num_refs=self.num_refs,
+                                                         mean=self.mean, 
+                                                         leng_1=self.leng_1,
+                                                         mu=self.mu,
+                                                         sigma=self.sigma)
+        elif self.initialisation == "6-rand":
+            cond_init_4 = initial_conditions_2D.six_rand(num_nodes=self.num_nodes,
+                                                         num_refs=self.num_refs,
+                                                         mean=self.mean, 
+                                                         leng_1=self.leng_1,
+                                                         mu=self.mu,
+                                                         sigma=self.sigma)    
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \
-                               4-reg or 6-ireg or 6-reg.""")
+                               4-reg or 6-ireg or 6-reg or '6-reglikeireg'.""")
 
         return cond_init_4
 
