@@ -38,7 +38,7 @@ class Configure():
 
         # Do secondary configuration 
         # -----
-        self.l1, self.l2    = self.get_lengths()        
+        self.l1, self.l2     = self.get_lengths()        
         self.leng_1          = numpy.array([self.l1, self.l2])
         self.conc_max_disc_1 = numpy.linspace(0, 1.0, self.num_concs)
         self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
@@ -103,6 +103,9 @@ class Configure():
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             l1 = n*scale_factor
             l2 = n*numpy.sqrt(3.0)*scale_factor
+            #n = numpy.sqrt(num_nodes)
+            #l1 = n*1.0
+            #l2 = n*1.0
 
         elif initialisation == "6-reglikeireg":
             n  = int(numpy.sqrt(num_nodes/2))    
@@ -214,6 +217,7 @@ class Configure():
             # Scale factor is length of edge in reg case
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             scaled_mean = self.mean/scale_factor
+            #scaled_mean = self.mean
         
         elif self.initialisation == "6-reglikeireg":
             # Scale factor is length of edge
@@ -283,9 +287,10 @@ class Configure():
                 raise Exception("There is no scaled_median for this num_nodes.")    
 
         elif self.initialisation == "6-ireglikereg":
-                # Scale factor is length of edge
-                scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-                scaled_median = self.median/scale_factor
+            # Scale factor is length of edge
+            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            #scaled_median = self.median/scale_factor
+            scaled_median = self.median
 
         elif self.initialisation == "6-reglikeireg":
             # Scale factor is length of edge
