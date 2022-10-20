@@ -99,7 +99,7 @@ class Configure():
             l2 = n*1.0
 
         elif initialisation == "6-ireglikereg":
-            n  = int(numpy.sqrt(num_nodes/2))    
+            n  = numpy.sqrt(num_nodes/2)    
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             l1 = n*scale_factor
             l2 = n*numpy.sqrt(3.0)*scale_factor
@@ -108,10 +108,10 @@ class Configure():
             #l2 = n*1.0
 
         elif initialisation == "6-reglikeireg":
-            n  = int(numpy.sqrt(num_nodes/2))    
+            n  = numpy.sqrt(num_nodes/2)    
             #l1 = n*1.0
             #l2 = n*numpy.sqrt(3.0)
-            n = int(numpy.sqrt(num_nodes/2))
+            n = numpy.sqrt(num_nodes/2)
             scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
             l1 = n*scale_factor
             l2 = n*numpy.sqrt(3.0)*scale_factor
