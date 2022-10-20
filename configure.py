@@ -288,9 +288,9 @@ class Configure():
 
         elif self.initialisation == "6-ireglikereg":
             # Scale factor is length of edge
-            #scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-            #scaled_median = self.median/scale_factor
-            scaled_median = self.median
+            scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            scaled_median = self.median/scale_factor
+            #scaled_median = self.median
 
         elif self.initialisation == "6-reglikeireg":
             # Scale factor is length of edge
