@@ -16,6 +16,13 @@ Grid indexing
 -------------
 node: ii is node ii which is an index from 0 to num_nodes*num_rows*num_cols-1.
 edge: (ii,jj) is the edge from ii to jj.
+
+
+Note: 
+reshape_..._all_edges():... converts every edge, even those that leave the network, into a 2D matric description. 
+For example, converting the initial conductance using _all_edge... and back again, would give exactly 
+the same tensor... 
+This isn't what we need, since we don't care about all edges in the network model, we only care about internal ones.
 """
 
 
@@ -85,8 +92,6 @@ def convert_indx_grid_to_cell_node(ii,num_nodes,num_rows):
 
 
 
-
-
 def convert_indx_cell_to_grid_edge(i,j,r0,r1,i_c,j_c,num_nodes,num_rows):
     """
     Convert the cell index of an edge, which is a six-tuple (i,j,r0,r1,i_c,j_c), 
@@ -122,6 +127,7 @@ def convert_indx_cell_to_grid_edge(i,j,r0,r1,i_c,j_c,num_nodes,num_rows):
     ii = convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
     jj = convert_indx_cell_to_grid_node(i=j,i_c=i_c+r1,j_c=j_c+r0,num_nodes=num_nodes,num_rows=num_rows)
     return (ii,jj)
+
 
 
 def convert_indx_grid_to_cell_edge(ii,jj,num_nodes,num_rows):
@@ -169,10 +175,17 @@ def convert_indx_grid_to_cell_edge(ii,jj,num_nodes,num_rows):
 
 
 
-def reshape_6_to_2(a_6):
+
+
+
+
+def reshape_6_to_2_all_edges(a_6):
     """
     Reshape an edge quantity with cell indexing into the same edge quantity with grid indexing. 
     For example, cond_6.
+    This includes nodes that are outside the network (but still in the grid) because, for example, a_6 
+    tells us about the connections from nodes in bottom left cell to the cell on the left (using r0=-1)...
+    this cell is outside the network.
 
     Parameters 
     -----
@@ -212,11 +225,16 @@ def reshape_6_to_2(a_6):
                             (ii,jj) = convert_indx_cell_to_grid_edge(i=i,j=j,r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows+2)
                             # + 2 since then r0 and r1 mean that nodes in cells outside network get indexed
                             a_2[ii,jj] = a_6[i,j,r0,r1,i_c-1,j_c-1] 
-                            # -1 since a_6 doesn't know about cells outside network
+                            # -1 since a_6 knows about the cells outside network via r not i_c,j_c
+
     return a_2
 
 
-def reshape_2_to_6(a_2,num_nodes,num_refs,num_rows,num_cols):
+
+
+
+
+def reshape_2_to_6_all_edges(a_2,num_nodes,num_refs,num_rows,num_cols):
     """
     Reshape an edge quantity with grid indexing into the same edge quantity with cell indexing. 
     For example, cond_2 back to cond_6 after the problem has been solved.
@@ -253,6 +271,225 @@ def reshape_2_to_6(a_2,num_nodes,num_refs,num_rows,num_cols):
                 # edge is not in network and we never considered it in a_6
                 pass 
     return a_6
+
+
+
+
+
+
+
+
+
+
+
+
+def reshape_6_to_2_internal_edges(a_6):
+    """
+    Reshape an edge quantity with cell indexing into the same edge quantity with grid indexing. 
+    For example, cond_6.
+
+    Parameters 
+    -----
+    - a_6: numpy.ndarray
+        A quantity defined on edges, indexed with cell indexing. 
+        a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between 
+        the node i in cell i_c,j_c, and the node j located in the cell at 
+        r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+    
+    Returns
+    -----
+    - a_2: numpy.ndarray
+        The same quantity defined on edges, indexed with grid indexing.
+        That is, the quantity a on edge (ii,jj). 
+        We understand where this edge is by converting this grid descroption back to a cell 
+        description.
+    """
+
+    # Parameters 
+    num_nodes = len(a_6[:,0,0,0,0,0])
+    num_refs  = len(a_6[0,0,:,0,0,0])
+    num_rows  = len(a_6[0,0,0,0,:,0])
+    num_cols  = len(a_6[0,0,0,0,0,:])
+
+    refs_1 = [0,1,-1]
+    rows_1 = list(numpy.arange(start=0,stop=num_rows,step=1,dtype=int))
+    cols_1 = list(numpy.arange(start=0,stop=num_cols,step=1,dtype=int))
+
+    num_nodes_net = num_nodes*num_rows*num_cols # take only internal nodes
+    a_2 = numpy.zeros(shape=(num_nodes_net,num_nodes_net))
+    internal_edges = [] # internal_edges[i] = ([ii,jj],[i,j,r0,r1,i_c,j_c]) that is not an external edge
+    # i..e internal_edges stores indices of internal edges
+    for i in range(num_nodes):
+        for j in range(num_nodes):
+            for r0 in refs_1:
+                for r1 in refs_1:
+                    for i_c in rows_1: # don't consider below or above network: r will take these into account
+                        for j_c in cols_1: # don't consider left of right of network. r will take these into account                                                        
+                            edge_is_external = get_edge_is_external(r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_rows=num_rows,num_cols=num_cols)
+                            if edge_is_external == False:
+                                (ii,jj) = convert_indx_cell_to_grid_edge(i=i,j=j,r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+                                a_2[ii,jj] = a_6[i,j,r0,r1,i_c,j_c]
+                                internal_edges.append(([ii,jj],[i,j,r0,r1,i_c,j_c]))
+                            else: 
+                                # edge is not part of network 
+                                pass
+    return (a_2, internal_edges)
+
+
+
+def get_edge_is_external(r0,r1,i_c,j_c,num_rows,num_cols):
+    """
+    Check if edge leaves the network into the 
+    external cells that form the grid.
+    """
+    if i_c!=0 and i_c!=num_rows-1:
+        # cell is not on boundary so edge is internal
+        edge_is_external=False
+    else:
+        # cell is on a boundary so edge might be external
+        if i_c==0:
+            # cell is on bottom 
+            if r1==-1:
+                # j is outside network so edge is external
+                edge_is_external=True
+            else:
+                # j is inside network so edge is internal
+                edge_is_external=False
+        elif i_c==num_rows-1:
+            # cell is on top 
+            if r1==1:
+                # j is outside network so edge is external
+                edge_is_external=True
+            else:
+                # j is inside network so edge is internal
+                edge_is_external=False
+    
+    if edge_is_external == False:
+        # If edge was not external in the row direction
+        if j_c!=0 and j_c!=num_cols-1:
+            # cell is not on boundary so edge is internal
+            edge_is_external=False
+        else:
+            # cell is on a boundary so edge might be external
+            if j_c==0:
+                # cell is on left 
+                if r0==-1:
+                    # j is outside network so edge is external
+                    edge_is_external=True
+                else:
+                    # j is inside network so edge is internal
+                    edge_is_external=False
+            elif j_c==num_cols-1:
+                # cell is on right 
+                if r0==1:
+                    # j is outside network so edge is external
+                    edge_is_external=True
+                else:
+                    # j is inside network so edge is internal
+                    edge_is_external=False
+    else: 
+        # We have already established its external via row so don't need to check with j
+        edge_is_external = True
+    return edge_is_external
+
+
+
+
+
+def reshape_2_to_6_internal_edges(a_2,internal_edges,num_nodes,num_refs,num_rows,num_cols):
+    """
+    Reshape an edge quantity with grid indexing into the same edge quantity with cell indexing. 
+    For example, cond_2 back to cond_6 after the problem has been solved.
+
+    Parameters 
+    -----
+    - a_2: numpy.ndarray
+        The same quantity defined on edges, indexed with grid indexing.
+        That is, the quantity a on edge (ii,jj). 
+        We understand where this edge is by converting this grid descroption back to a cell 
+        description.
+  
+    Returns
+    -----
+    - a_6: numpy.ndarray
+        A quantity defined on edges, indexed with cell indexing. 
+        a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between 
+        the node i in cell i_c,j_c, and the node j located in the cell at 
+        r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+    """
+    refs_1 = [0,1,-1]
+    rows_1 = list(numpy.arange(start=0,stop=num_rows,step=1,dtype=int))
+    cols_1 = list(numpy.arange(start=0,stop=num_cols,step=1,dtype=int))
+
+    a_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
+    num_nodes_net = num_nodes*num_rows*num_cols
+    for ii in range(num_nodes_net):
+        for jj in range(num_nodes_net):
+            this_edge = [ii,jj]
+            for edge in internal_edges:
+                if edge[0]==this_edge:
+                    # this_edge is an internal_edge
+                    i = edge[1][0]
+                    j = edge[1][1]
+                    r0 = edge[1][2]
+                    r1 = edge[1][3]
+                    i_c = edge[1][4]
+                    j_c = edge[1][5]
+    
+                    a_6[i,j,r0,r1,i_c,j_c] = a_2[ii,jj] #-1 since a_6 doesn't know about external cells
+    return a_6
+
+
+
+
+
+
+
+
+
+
+
+
+
+def reshape_3_to_1_internal_nodes(a_3:numpy.ndarray):
+    """
+    """
+    # Parameters 
+    # -----
+    num_nodes = len(a_3[:,0,0])
+    num_rows  = len(a_3[0,:,0])
+    num_cols  = len(a_3[0,0,:])
+
+    refs_1 = [0,1,-1]
+    rows_1 = list(numpy.arange(start=0,stop=num_rows,step=1,dtype=int)) # notice we index network differently from edges, ... here we don't have r to account for external cells
+    cols_1 = list(numpy.arange(start=0,stop=num_cols,step=1,dtype=int)) # notice we index network differently from edges, ... here we don't have r to account for external cells
+
+    num_nodes_grid = num_nodes*(num_rows)*(num_cols) # usual size since don't consider external cells
+    a_1 = numpy.zeros(shape=num_nodes_grid)
+    for i in range(num_nodes):
+        for i_c in rows_1:
+            for j_c in cols_1:
+                ii = convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows) # no +2 since not indexing external rows too
+                a_1[ii] = a_3[i,i_c,j_c]
+    return a_1
+
+
+def reshape_1_to_3_internal_nodes(a_1:numpy.ndarray, num_nodes:int, num_rows:int, num_cols:int):
+    """
+    """
+    # Parameters 
+    # -----
+    num_nodes_network = num_nodes*(num_rows)*(num_cols) # +2 because need to index the cells left right up and down from the grid to use r
+
+    a_3 = numpy.zeros(shape=(num_nodes,num_rows,num_cols))
+    for ii in range(num_nodes_network):
+        i,i_c,j_c = convert_indx_grid_to_cell_node(ii=ii,num_nodes=num_nodes,num_rows=num_rows)
+        a_3[i,i_c,j_c] = a_1[ii]
+    return a_3
+
+
+
+
 
 
 
@@ -325,8 +562,8 @@ if __name__ == "__main__":
                                                                             mu=mu,sigma=sigma,
                                                                             boundary_nodes_2=boundary_nodes_2,conc_in=1.0)
     #print(cond_init_6.shape)
-    cond_init_2     = reshape_6_to_2(a_6=cond_init_6)
-    cond_init_6_new = reshape_2_to_6(a_2=cond_init_2,num_nodes=num_nodes,num_refs=num_refs,num_rows=num_rows,num_cols=num_cols)
+    cond_init_2     = cond_init_2 = reshape_6_to_2_all_edges(a_6=cond_init_6)
+    cond_init_6_new = reshape_2_to_6_all_edges(a_2=cond_init_2,num_nodes=num_nodes,num_refs=num_refs,num_rows=num_rows,num_cols=num_cols)
 
 
     res = numpy.sum(cond_init_6-cond_init_6_new)
@@ -341,6 +578,44 @@ if __name__ == "__main__":
                     #j_c=1
                     #r0 =-1
                     #r1 =0
+                    before =     cond_init_6[:,:,r0,r1,i_c,j_c]
+                    after  = cond_init_6_new[:,:,r0,r1,i_c,j_c]
+                    #print(before)
+                    #print(after)
+                    print(numpy.sum(before-after))
+
+    
+    node_prep = numpy.array(range(num_nodes*num_rows*num_cols))
+    node_3 = numpy.reshape(a=node_prep,newshape=(num_nodes,num_rows,num_cols))
+    #print(node_3)
+
+    node_1 = reshape_3_to_1_internal_nodes(a_3=node_3)
+    #print(node_1)
+    node_3_new = reshape_1_to_3_internal_nodes(a_1=node_1,num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
+    print(numpy.sum(node_3_new-node_3))
+
+
+
+
+
+
+    cond_init_2, internal_edges     = reshape_6_to_2_internal_edges(a_6=cond_init_6)
+    cond_init_6_new = reshape_2_to_6_internal_edges(a_2=cond_init_2,internal_edges=internal_edges,num_nodes=num_nodes,num_refs=num_refs,num_rows=num_rows,num_cols=num_cols)
+
+
+    res = numpy.sum(cond_init_6-cond_init_6_new)
+    #print(res)
+
+    # Check that
+    for i_c in range(num_rows):
+        for j_c in range(num_cols):
+            for r0 in [0,1,-1]:
+                for r1 in [0,1,-1]:
+                    #i_c=1
+                    #j_c=1
+                    #r0 =-1
+                    #r1 =0
+                    print("i_c={},j_c={},r0={},r1={}".format(i_c,j_c,r0,r1))
                     before =     cond_init_6[:,:,r0,r1,i_c,j_c]
                     after  = cond_init_6_new[:,:,r0,r1,i_c,j_c]
                     #print(before)
