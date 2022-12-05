@@ -202,6 +202,7 @@ def reshape_6_to_2_all_edges(a_6):
         That is, the quantity a on edge (ii,jj). 
         We understand where this edge is by converting this grid descroption back to a cell 
         description.
+        This includes edges to external nodes.
     """
 
     # Parameters 
@@ -246,6 +247,13 @@ def reshape_2_to_6_all_edges(a_2,num_nodes,num_refs,num_rows,num_cols):
         That is, the quantity a on edge (ii,jj). 
         We understand where this edge is by converting this grid descroption back to a cell 
         description.
+    - num_nodes: int
+        The number of nodes in a cell. 
+    - num_rows: int
+        The number of rows of cells in the network (not including external cells).
+    - num_cols: int 
+        The number of columns of cells in the network (not including external cells).
+        
   
     Returns
     -----
@@ -254,6 +262,7 @@ def reshape_2_to_6_all_edges(a_2,num_nodes,num_refs,num_rows,num_cols):
         a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between 
         the node i in cell i_c,j_c, and the node j located in the cell at 
         r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+        This includes edges to external nodes.
     """
     refs_1 = [0,1,-1]
     rows_1 = list(numpy.arange(start=1,stop=num_rows+1,step=1,dtype=int))
@@ -303,6 +312,10 @@ def reshape_6_to_2_internal_edges(a_6):
         That is, the quantity a on edge (ii,jj). 
         We understand where this edge is by converting this grid descroption back to a cell 
         description.
+        This does not include edges to external nodes.
+    - internal_edges: list 
+        internal_edges[i] = ([ii,jj],[i,j,r0,r1,i_c,j_c]). internal_edges[i][0] is the grid index of an internal 
+        edge, internal_edge[i][1] is the corresponding cell index of the same internal edge.
     """
 
     # Parameters 
@@ -339,8 +352,29 @@ def reshape_6_to_2_internal_edges(a_6):
 
 def get_edge_is_external(r0,r1,i_c,j_c,num_rows,num_cols):
     """
-    Check if edge leaves the network into the 
-    external cells that form the grid.
+    Check if the edge going to j in the cell defined by the arguments 
+    leaves the network into the external cells that form the outer grid.
+
+    Parameters 
+    -------
+    - r0: int
+        Horizontal position of the cell that contains node j, relative to the cell that contains node i.
+    - r1: int 
+        Vertical position of the cell that contains the node j, relative to the cell that contains node i.
+    - i_c: int 
+        Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom 
+        row in the grid.
+    - j_c: int 
+        Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.
+    - num_rows: int 
+        Number of rows of cells in the network (not including the external cells).
+    - num_cols: int 
+        Number of cols of cells in the network (not including the external cells).
+
+    Returns 
+    -----
+    - edge_is_external: bool
+        True if the edge to cell defined by arguments from i,i_c,j_c is external, False if it is internal.
     """
     if i_c!=0 and i_c!=num_rows-1:
         # cell is not on boundary so edge is internal
@@ -408,7 +442,19 @@ def reshape_2_to_6_internal_edges(a_2,internal_edges,num_nodes,num_refs,num_rows
         That is, the quantity a on edge (ii,jj). 
         We understand where this edge is by converting this grid descroption back to a cell 
         description.
-  
+        This does not include edges to nodes that are in cells outside the network.
+    - internal_edges: list 
+        internal_edges[i] = ([ii,jj],[i,j,r0,r1,i_c,j_c]). internal_edges[i][0] is the grid index of an internal 
+        edge, internal_edge[i][1] is the corresponding cell index of the same internal edge.
+    - num_nodes: int
+        Number of nodes in each cell. 
+    - num_refs: int 
+        Number of references.
+    - num_rows: int 
+        Number of rows of cells in the network (does not include external cells).
+    - num_cols: int 
+        Number of cols of cells in the network (does not include external cells).
+
     Returns
     -----
     - a_6: numpy.ndarray
