@@ -1,0 +1,352 @@
+import numpy
+
+import network_2D
+
+"""
+This module collects functions that map cell indexes to grid indexes
+and back again, and convert tensors that are indexed by one way 
+to the other way.
+
+Cell indexing
+-------------
+node: (i,i_c,j_c) is node i in the cell at row=i_c and col=j_c where the 0,0 cell is in the bottom left corner.
+edge: (i,j,r0,r1,i_c,j_c) is the edge from the node (i,i_c,j_c) to the node (j,i_c+r1,j_c+r0).
+
+Grid indexing
+-------------
+node: ii is node ii which is an index from 0 to num_nodes*num_rows*num_cols-1.
+edge: (ii,jj) is the edge from ii to jj.
+"""
+
+
+def convert_indx_cell_to_grid_node(i,i_c,j_c,num_nodes,num_rows):
+    """
+    Convert the cell index of a node, which is a triple (i,i_c,j_c) 
+    to a grid index, which is a single number ii.
+
+    Parameters 
+    -----
+    - i: int
+        Index of node within the cell.
+    - i_c: int 
+        Row that the cell is in. Rows are indexed from 0 upwards. Row 0 is the bottom 
+        row in the grid.
+    - j_c: int 
+        Column that the cell is in. Colums are indexed from 0 upwards. Column 0 is on the left.
+    - num_nodes: int 
+        Number of nodes in each cell. 
+    - num_rows: int 
+        Number of rows of cells in the grid.
+
+    Returns 
+    -----
+    - ii: int 
+        A grid index description of the cell index (i,i_c,j_c), 
+        which is a number between 0 and num_nodes*num_rows*(num_cols-1)
+        (inclusive, since num_nodes*num_rows*num_cols
+        is the number of nodes in the network).
+    """
+    ii = j_c*num_rows*num_nodes+i_c*num_nodes+i
+    return ii
+
+
+
+def convert_indx_grid_to_cell_node(ii,num_nodes,num_rows):
+    """
+    Given a grid index of a node, 
+    return the cell index of the same node.
+
+    Parameters 
+    -----
+    - ii: int 
+        A grid index description of the cell index (i,i_c,j_c), 
+        which is a number between 0 and num_nodes*num_rows*(num_cols-1)
+        (inclusive, since num_nodes*num_rows*num_cols
+        is the number of nodes in the network).
+    - num_nodes: int 
+        Number of  nodes in a cell. 
+    - num_rows: 
+        Number of rows of cells in the network.
+    
+    Returns
+    -----
+    - i: int 
+        Node index, from 0 to num_nodes-1.
+    - i_c: int
+        The row that the cell containing i is in.
+    - j_c: int 
+        The column that the cell containing i is in.
+    """
+    i = int(ii%num_nodes)
+    num_cells_passed = int(numpy.floor(ii/num_nodes))
+    j_c  = int(numpy.floor(num_cells_passed/num_rows))
+    i_c  = int((ii-i-num_nodes*num_rows*j_c)/num_nodes)
+    return (i,i_c,j_c)
+
+
+
+
+
+def convert_indx_cell_to_grid_edge(i,j,r0,r1,i_c,j_c,num_nodes,num_rows):
+    """
+    Convert the cell index of an edge, which is a six-tuple (i,j,r0,r1,i_c,j_c), 
+    to the grid index of an edge, which is a pair (ii,jj).
+
+    Parameters 
+    -----
+    - i: int
+        Index of node within the cell.
+    - r0: int
+        Horizontal position of the cell that contains node j, relative to the cell that contains node i.
+    - r1: int 
+        Vertical position of the cell that contains the node j, relative to the cell that contains node i.
+    - i_c: int 
+        Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom 
+        row in the grid.
+    - j_c: int 
+        Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.
+    - num_nodes: int 
+        Number of nodes in each cell. 
+    - num_rows: int 
+        Number of rows of cells in the grid.
+
+    Returns 
+    -----
+    - ii: int 
+        A grid index description of the cell index (i,i_c,j_c), 
+        which is a number between 0 and num_nodes*num_rows*num_cols-1 (inclusive, since num_nodes*num_rows*num_cols
+        is the number of nodes in the network).
+    - jj: int 
+        A grid index description of the cell index (j,i_c+r1,j_c+r0), which is the cell index of node j. 
+    """
+    ii = convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+    jj = convert_indx_cell_to_grid_node(i=j,i_c=i_c+r1,j_c=j_c+r0,num_nodes=num_nodes,num_rows=num_rows)
+    return (ii,jj)
+
+
+def convert_indx_grid_to_cell_edge(ii,jj,num_nodes,num_rows):
+    """
+    Given the grid indiceces ii,jj of two nodes between which there is an edge, 
+    return the cell index of the same two indices.
+
+    Parameters 
+    -----
+    - ii: int 
+        A grid index description of the cell index (i,i_c,j_c), 
+        which is a number between 0 and num_nodes*num_rows*num_cols-1 (inclusive, since num_nodes*num_rows*num_cols
+        is the number of nodes in the network).
+    - jj: int 
+        A grid index description of the cell index (j,i_c+r1,j_c+r0), which is the cell index of node j. 
+    - num_nodes: int 
+        Number of nodes in each cell. 
+    - num_rows: int 
+        Number of rows of cells in the grid.
+    
+    Returns
+    -----
+    - i: int
+        Index of node within the cell.
+    - r0: int
+        Horizontal position of the cell that contains node j, relative to the cell that contains node i.
+    - r1: int 
+        Vertical position of the cell that contains the node j, relative to the cell that contains node i.
+    - i_c: int 
+        Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom 
+        row in the grid.
+    - j_c: int 
+        Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.
+    """
+    i,i_c,j_c = convert_indx_grid_to_cell_node(ii=ii,num_nodes=num_nodes,num_rows=num_rows)
+    #print("i={},i_c={},j_c={}".format(i,i_c,j_c))
+    j,i_c_for_j,j_c_for_j = convert_indx_grid_to_cell_node(ii=jj,num_nodes=num_nodes,num_rows=num_rows)
+    #print("j={},i_c_for_j={},j_c_for_j={}".format(j,i_c_for_j,j_c_for_j))
+    r0 = j_c_for_j-j_c
+    r1 = i_c_for_j-i_c
+    return (i,j,r0,r1,i_c,j_c) 
+
+
+
+
+
+
+
+
+def reshape_6_to_2(a_6):
+    """
+    Reshape an edge quantity with cell indexing into the same edge quantity with grid indexing. 
+    For example, cond_6.
+
+    Parameters 
+    -----
+    - a_6: numpy.ndarray
+        A quantity defined on edges, indexed with cell indexing. 
+        a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between 
+        the node i in cell i_c,j_c, and the node j located in the cell at 
+        r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+    
+    Returns
+    -----
+    - a_2: numpy.ndarray
+        The same quantity defined on edges, indexed with grid indexing.
+        That is, the quantity a on edge (ii,jj). 
+        We understand where this edge is by converting this grid descroption back to a cell 
+        description.
+    """
+
+    # Parameters 
+    num_nodes = len(a_6[:,0,0,0,0,0])
+    num_refs  = len(a_6[0,0,:,0,0,0])
+    num_rows  = len(a_6[0,0,0,0,:,0])
+    num_cols  = len(a_6[0,0,0,0,0,:])
+
+    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2)
+    a_2 = numpy.zeros(shape=(num_nodes_grid,num_nodes_grid))
+    for i in range(num_nodes):
+        for j in range(num_nodes):
+            for r0 in [0,1,-1]:
+                for r1 in [0,1,-1]:
+                    for i_c in [1,2]:
+                        #print(i_c)
+                        for j_c in [1,2]:
+                            #print("i_c={}".format(i_c))
+                            #print("i_c={},j_c={}".format(i_c,j_c))
+                            #print(i,j,r0,r1,i_c,j_c)
+                            (ii,jj) = convert_indx_cell_to_grid_edge(i=i,j=j,r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows+2)
+                            #print(ii,jj)
+                            #if i==0 and i_c==2 and j_c==2 and j==3 and r0==0 and r1==0:
+                            #    print("ii={}".format(ii))
+                            #    print("jj={}".format(jj))
+                            #else: 
+                            #    pass
+                            a_2[ii,jj] = a_6[i,j,r0,r1,i_c-1,j_c-1] 
+    return a_2
+
+
+def reshape_2_to_6(a_2,num_nodes,num_refs,num_rows,num_cols):
+    """
+    Reshape an edge quantity with grid indexing into the same edge quantity with cell indexing. 
+    For example, cond_2 back to cond_6 after the problem has been solved.
+
+    Parameters 
+    -----
+    - a_2: numpy.ndarray
+        The same quantity defined on edges, indexed with grid indexing.
+        That is, the quantity a on edge (ii,jj). 
+        We understand where this edge is by converting this grid descroption back to a cell 
+        description.
+  
+    Returns
+    -----
+    - a_6: numpy.ndarray
+        A quantity defined on edges, indexed with cell indexing. 
+        a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between 
+        the node i in cell i_c,j_c, and the node j located in the cell at 
+        r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+    """
+    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2)
+    #print(num_nodes_grid)
+    #print(a_2.shape)
+    a_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
+    #print(a_6.shape)
+    for ii in range(num_nodes_grid):
+        for jj in range(num_nodes_grid):
+            (i,j,r0,r1,i_c,j_c) = convert_indx_grid_to_cell_edge(ii=ii,jj=jj,num_nodes=num_nodes,num_rows=num_rows+2)
+            #if ii==20 and jj==23:
+            #    print(i,j,r0,r1,i_c,j_c)
+            if r0 in [0,1,-1] and r1 in [0,1,-1] and i_c in [1,2] and j_c in [1,2]:
+                a_6[i,j,r0,r1,i_c-1,j_c-1] = a_2[ii,jj]
+            else: 
+                pass # edge is not in network
+    return a_6
+
+
+
+
+
+
+if __name__ == "__main__":
+    
+    num_nodes = 4
+    num_rows  = 2+2
+
+    i   = 0
+    i_c = 1
+    j_c = 1
+
+    j   = 3
+    r0  = 0
+    r1  = 0
+
+    # Check node conversion
+    # -------------
+    ii = convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+    print("ii:{}".format(ii))
+    
+    i_new,i_c_new,j_c_new = convert_indx_grid_to_cell_node(ii=ii,num_nodes=num_nodes,num_rows=num_rows)
+    print("i:{}".format(i_new))
+    print("i_c:{}".format(i_c_new))
+    print("j_c:{}".format(j_c_new))
+
+    print("i_res:{}".format(i-i_new))
+    print("i_c_res:{}".format(i_c-i_c_new))
+    print("j_c_res:{}".format(j_c-j_c_new))
+
+
+    # Check edge conversion
+    # --------------
+    (ii,jj) = convert_indx_cell_to_grid_edge(i=i,j=j,r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+
+    (i_new,j_new,r0_new,r1_new,i_c_new,j_c_new) = convert_indx_grid_to_cell_edge(ii=ii,jj=jj,num_nodes=num_nodes,num_rows=num_rows)
+
+    print("ii={},jj={}".format(ii,jj))
+
+    print("i_res:{}".format(i-i_new))
+    print("j_res:{}".format(j-j_new))
+    print("r0_res:{}".format(r0-r0_new))
+    print("r1_res:{}".format(r1-r1_new))
+    print("i_c_res:{}".format(i_c-i_c_new))
+    print("j_c_res:{}".format(j_c-j_c_new))
+
+
+
+
+    num_nodes = 4
+    num_refs  = 3
+    initialisation = "4-reg"
+    mu = 0.5
+    sigma = 0.3
+    num_rows = 2
+    num_cols = 2
+    is_periodic = True
+
+
+    boundary_nodes_2 = network_2D.get_boundary_nodes(initialisation=initialisation,num_nodes=num_nodes)
+
+
+    (cond_init_6,conc_init_3,volu_init_3) = network_2D.make_initial_network(num_nodes=num_nodes, num_refs=num_refs,
+                                                                            num_rows=num_rows,num_cols=num_cols,
+                                                                            is_periodic=is_periodic,
+                                                                            initialisation=initialisation,
+                                                                            mu=mu,sigma=sigma,
+                                                                            boundary_nodes_2=boundary_nodes_2,conc_in=1.0)
+    #print(cond_init_6.shape)
+    cond_init_2 = reshape_6_to_2(a_6=cond_init_6)
+    cond_init_6_new = reshape_2_to_6(a_2=cond_init_2,num_nodes=num_nodes,num_refs=num_refs,num_rows=num_rows,num_cols=num_cols)
+
+
+    res = numpy.sum(cond_init_6-cond_init_6_new)
+    print(res)
+
+    for i_c in [0,1]:
+        for j_c in [0,1]:
+            for r0 in [0,1,-1]:
+                for r1 in [0,1,-1]:
+                    #i_c=1
+                    #j_c=1
+                    #r0 =-1
+                    #r1 =0
+                    before =     cond_init_6[:,:,r0,r1,i_c,j_c]
+                    after  = cond_init_6_new[:,:,r0,r1,i_c,j_c]
+                    #print(before)
+                    #print(after)
+                    print(numpy.sum(before-after))
