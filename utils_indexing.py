@@ -157,9 +157,7 @@ def convert_indx_grid_to_cell_edge(ii,jj,num_nodes,num_rows):
         Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.
     """
     i,i_c,j_c = convert_indx_grid_to_cell_node(ii=ii,num_nodes=num_nodes,num_rows=num_rows)
-    #print("i={},i_c={},j_c={}".format(i,i_c,j_c))
     j,i_c_for_j,j_c_for_j = convert_indx_grid_to_cell_node(ii=jj,num_nodes=num_nodes,num_rows=num_rows)
-    #print("j={},i_c_for_j={},j_c_for_j={}".format(j,i_c_for_j,j_c_for_j))
     r0 = j_c_for_j-j_c
     r1 = i_c_for_j-i_c
     return (i,j,r0,r1,i_c,j_c) 
@@ -199,26 +197,22 @@ def reshape_6_to_2(a_6):
     num_rows  = len(a_6[0,0,0,0,:,0])
     num_cols  = len(a_6[0,0,0,0,0,:])
 
-    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2)
+    refs_1 = [0,1,-1]
+    rows_1 = list(numpy.arange(start=1,stop=num_rows+1,step=1,dtype=int))
+    cols_1 = list(numpy.arange(start=1,stop=num_cols+1,step=1,dtype=int))
+
+    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2) # +2 because need to index the cells left right up and down from the grid to use r
     a_2 = numpy.zeros(shape=(num_nodes_grid,num_nodes_grid))
     for i in range(num_nodes):
         for j in range(num_nodes):
-            for r0 in [0,1,-1]:
-                for r1 in [0,1,-1]:
-                    for i_c in [1,2]:
-                        #print(i_c)
-                        for j_c in [1,2]:
-                            #print("i_c={}".format(i_c))
-                            #print("i_c={},j_c={}".format(i_c,j_c))
-                            #print(i,j,r0,r1,i_c,j_c)
+            for r0 in refs_1:
+                for r1 in refs_1:
+                    for i_c in rows_1: # don't consider below or above network: r will take these into account
+                        for j_c in cols_1: # don't consider left of right of network. r will take these into account
                             (ii,jj) = convert_indx_cell_to_grid_edge(i=i,j=j,r0=r0,r1=r1,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows+2)
-                            #print(ii,jj)
-                            #if i==0 and i_c==2 and j_c==2 and j==3 and r0==0 and r1==0:
-                            #    print("ii={}".format(ii))
-                            #    print("jj={}".format(jj))
-                            #else: 
-                            #    pass
+                            # + 2 since then r0 and r1 mean that nodes in cells outside network get indexed
                             a_2[ii,jj] = a_6[i,j,r0,r1,i_c-1,j_c-1] 
+                            # -1 since a_6 doesn't know about cells outside network
     return a_2
 
 
@@ -243,20 +237,21 @@ def reshape_2_to_6(a_2,num_nodes,num_refs,num_rows,num_cols):
         the node i in cell i_c,j_c, and the node j located in the cell at 
         r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
     """
-    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2)
-    #print(num_nodes_grid)
-    #print(a_2.shape)
+    refs_1 = [0,1,-1]
+    rows_1 = list(numpy.arange(start=1,stop=num_rows+1,step=1,dtype=int))
+    cols_1 = list(numpy.arange(start=1,stop=num_cols+1,step=1,dtype=int))
+
     a_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
-    #print(a_6.shape)
+    num_nodes_grid = num_nodes*(num_rows+2)*(num_cols+2)
     for ii in range(num_nodes_grid):
         for jj in range(num_nodes_grid):
             (i,j,r0,r1,i_c,j_c) = convert_indx_grid_to_cell_edge(ii=ii,jj=jj,num_nodes=num_nodes,num_rows=num_rows+2)
-            #if ii==20 and jj==23:
-            #    print(i,j,r0,r1,i_c,j_c)
-            if r0 in [0,1,-1] and r1 in [0,1,-1] and i_c in [1,2] and j_c in [1,2]:
-                a_6[i,j,r0,r1,i_c-1,j_c-1] = a_2[ii,jj]
+            if r0 in refs_1 and r1 in refs_1 and i_c in rows_1 and j_c in cols_1:
+                # only add edges between cells that are adjacent
+                a_6[i,j,r0,r1,i_c-1,j_c-1] = a_2[ii,jj] #-1 since a_6 doesn't know about external cells
             else: 
-                pass # edge is not in network
+                # edge is not in network and we never considered it in a_6
+                pass 
     return a_6
 
 
@@ -267,7 +262,7 @@ def reshape_2_to_6(a_2,num_nodes,num_refs,num_rows,num_cols):
 if __name__ == "__main__":
     
     num_nodes = 4
-    num_rows  = 2+2
+    num_rows  = 2
 
     i   = 0
     i_c = 1
@@ -315,8 +310,8 @@ if __name__ == "__main__":
     initialisation = "4-reg"
     mu = 0.5
     sigma = 0.3
-    num_rows = 2
-    num_cols = 2
+    num_rows = 3
+    num_cols = 4
     is_periodic = True
 
 
@@ -330,15 +325,16 @@ if __name__ == "__main__":
                                                                             mu=mu,sigma=sigma,
                                                                             boundary_nodes_2=boundary_nodes_2,conc_in=1.0)
     #print(cond_init_6.shape)
-    cond_init_2 = reshape_6_to_2(a_6=cond_init_6)
+    cond_init_2     = reshape_6_to_2(a_6=cond_init_6)
     cond_init_6_new = reshape_2_to_6(a_2=cond_init_2,num_nodes=num_nodes,num_refs=num_refs,num_rows=num_rows,num_cols=num_cols)
 
 
     res = numpy.sum(cond_init_6-cond_init_6_new)
     print(res)
 
-    for i_c in [0,1]:
-        for j_c in [0,1]:
+    # Check that
+    for i_c in range(num_rows):
+        for j_c in range(num_cols):
             for r0 in [0,1,-1]:
                 for r1 in [0,1,-1]:
                     #i_c=1
