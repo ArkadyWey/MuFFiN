@@ -159,7 +159,8 @@ def get_pressure_problem(cond_2:numpy.ndarray, boundary_nodes_network_2:dict):
     Get the left and right hand side of 
     the linear problem on the entire  network that gives pressure at each time step.
     Note that we include the pressure boundary condition, that 
-    inlet nodes have pressure one and outlet nodes have pressure zero.
+    inlet nodes have pressure one and the single out node 
+    has pressure zero.
     
     Parameters 
     -----
@@ -182,13 +183,16 @@ def get_pressure_problem(cond_2:numpy.ndarray, boundary_nodes_network_2:dict):
         Right vector of linear pressure problem on all the nodes in the network
         with the unit pressure drop condition.
     """
+    # Parameters 
+    # ------
     num_nodes_network = len(cond_2[:,0])
-    # lhs
+    
+    # Get lhs
     # -----
     # Expand pressure so that can multiply
     lhs_2 = cond_2[:,:]-numpy.diag(numpy.sum(a=cond_2[:,:], axis=1))
     
-    # rhs
+    # Get rhs
     # -----
     rhs_1 = numpy.zeros(num_nodes_network) 
 
@@ -201,14 +205,18 @@ def get_pressure_problem(cond_2:numpy.ndarray, boundary_nodes_network_2:dict):
         lhs_2[inlet_node, inlet_node]   = 1
         rhs_1[inlet_node]  = 1
 
-    for outlet_node in outlet_nodes_network_1:        
-        lhs_2[outlet_node,:] = numpy.zeros(num_nodes_network)
-        lhs_2[outlet_node,outlet_node] = 1
-        rhs_1[outlet_node] = 0
+    # if there is no out node
+    #for outlet_node in outlet_nodes_network_1:        
+    #    lhs_2[outlet_node,:] = numpy.zeros(num_nodes_network)
+    #    lhs_2[outlet_node,outlet_node] = 1
+    #    rhs_1[outlet_node] = 0
+
+    # if there is a single out node connected to all outlet nodes
+    lhs_2[-1,:] = numpy.zeros(num_nodes_network)
+    lhs_2[-1,-1] = 1.0
+    rhs_1[-1] = 0.0
 
     return (lhs_2,rhs_1)
-
-
 
 
 
@@ -236,6 +244,79 @@ def get_pressure_solution(lhs_2:numpy.ndarray, rhs_1:numpy.ndarray):
     return pres_1
 
 
+
+def get_initial_conds_with_out_node(cond_init_2:numpy.ndarray, adhe_init_2:numpy.ndarray, conc_init_1:numpy.ndarray, volu_init_1:numpy.ndarray, boundary_nodes_network_2:dict):
+    """
+    Add an out node to the network. 
+    The out node will simply collect all particles that have left the main network. 
+    The out node connects to all outlet nodes.
+    There will be no deposition on edges between outlet nodes and the out node.
+    
+    Parameters 
+    -----
+    - cond_init_2: numpy.ndarray
+        Has shape (num_nodes_network,num_nodes_network).
+        cond_init_2[ii,jj] = the initial conductance between ii and jj. 
+    - adhe_init_2: numpy.ndarray
+        Has shape (num_nodes_network,num_nodes_network).
+        cond_init_2[ii,jj] = the initial adherence between ii and jj.
+    - conc_init_1: numpy.ndarray
+        Has shape (num_nodes_network).
+        conc_init_1[ii] = the initial concentration at ii.
+    - volu_init_1: numpy.ndarray
+        Has shape (num_nodes_network).
+        volu_init_1[ii] = the initial volume at ii.
+
+    Returns
+    -------
+    - cond_init_2: numpy.ndarray
+        Has shape (num_nodes_network+1,num_nodes_network+1).
+        cond_init_2[ii,jj] = the initial conductance between ii and jj. 
+    - adhe_init_2: numpy.ndarray
+        Has shape (num_nodes_network+1,num_nodes_network+1).
+        cond_init_2[ii,jj] = the initial adherence between ii and jj.
+    - conc_init_1: numpy.ndarray
+        Has shape (num_nodes_network+1).
+        conc_init_1[ii] = the initial concentration at ii.
+    - volu_init_1: numpy.ndarray
+        Has shape (num_nodes_network+1).
+        volu_init_1[ii] = the initial volume at ii.
+    """
+    # Parameters
+    # -----
+    num_nodes_network  = len(cond_init_2[:,0])
+    num_nodes_with_out = num_nodes_network+1
+    
+
+    cond_init_network_2 = numpy.zeros(shape=(num_nodes_with_out,num_nodes_with_out))
+    adhe_init_network_2 = numpy.zeros(shape=(num_nodes_with_out,num_nodes_with_out))
+    conc_init_network_1 = numpy.zeros(shape=(num_nodes_with_out))
+    volu_init_network_1 = numpy.zeros(shape=(num_nodes_with_out))
+
+    cond_init_network_2[0:-1,0:-1] = cond_init_2 
+    adhe_init_network_2[0:-1,0:-1] = adhe_init_2 
+    conc_init_network_1[0:-1] = conc_init_1 
+    volu_init_network_1[0:-1] = volu_init_1 
+
+    for ii in boundary_nodes_network_2["outlet"]:
+        cond_init_network_2[-1,ii] = 1.0
+        cond_init_network_2[ii,-1] = 1.0
+        adhe_init_network_2[-1,ii] = 1.0
+        adhe_init_network_2[ii,-1] = 1.0
+    
+    conc_init_network_1[-1] = 0.0
+    volu_init_network_1[-1] = 1.0
+
+    cond_init_2 = cond_init_network_2
+    adhe_init_2 = adhe_init_network_2
+    conc_init_1 = conc_init_network_1
+    volu_init_1 = volu_init_network_1
+
+    return (cond_init_2, adhe_init_2, conc_init_1, volu_init_1)
+
+def get_sol_without_out_node(cond_2,adhe_2,conc_1,volu_1):
+    """
+    """
 
 
 def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int, is_periodic:bool, initialisation:str, mu:float, sigma:float, boundary_nodes_cell_2:dict, conc_in:float):
@@ -353,6 +434,7 @@ def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int
 
 
 
+
 def get_pressure_difference(pres_1:numpy.ndarray):
     """
     Get the pressure difference matrix from the pressure vector.
@@ -419,7 +501,7 @@ def get_edge_concentration(conc_1:numpy.ndarray, pdif_2:numpy.ndarray):
 
 
 
-def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, epsi:float, gamm:float, dt:float):
+def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, conc_in:float, epsi:float, gamm:float, dt:float):
     """
     """
     # Parameters 
@@ -445,12 +527,26 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
     
     inte_2 = (ones_2-gamm*adhe_2)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
 
-    conc_1 = conc_1 + dt*(numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
+    rhs_1 = (numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
+
+    # NOTE: If no deposition then:
+    # -----
+    #rhs_1 = numpy.zeros_like(rhs_1)
+
+    # Boundary condition
+    # -----
+    for ii in boundary_nodes_network_2["inlet"]:
+        rhs_1[ii] = 0.0
+
+
+    conc_1 = conc_1 + dt*rhs_1
+
+    
     return conc_1
 
 
 
-def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, dt:float, beta:float, gamm:float):
+def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, beta:float, gamm:float, dt:float):
     """
     """
     # Parameters 
@@ -459,8 +555,22 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
     rhs_2  = -2.0*beta*conc_2*abs(pdif_2)*(cond_2**(3.0/2.0))*gamm*adhe_2
+
+    # Condition on edges between outlet nodes and out node
+    # -----
+    # There is no deposition on out edges
+    for ii in boundary_nodes_network_2["outlet"]:
+        rhs_2[-1,ii] = 0.0
+        rhs_2[ii,-1] = 0.0
+
+    # NOTE: If no deposition then:
+    # -----
     #rhs_2 = numpy.zeros_like(rhs_2)
+    
+    
     cond_2 = cond_2 + dt*rhs_2
+
+    
     return cond_2
 
 

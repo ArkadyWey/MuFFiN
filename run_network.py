@@ -10,7 +10,7 @@ begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
 
 
-def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_network_2,beta,gamm,epsi):
+def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_network_2,conc_in,beta,gamm,epsi):
     """
     - cond_init_6: numpy.ndarray
         cond_init_6[i,j,r0,r1,i_c,j_c]
@@ -26,32 +26,32 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
     num_cols  = len(cond_init_6[0,0,0,0,0,:])
     num_refs  = len(cond_init_6[0,0,:,0,0,0])
     num_nodes_network = num_nodes*num_rows*num_cols
+    num_nodes_with_out = num_nodes_network+1
     num_times = len(time_1)
     dt        = time_1[1]-time_1[0]
 
     # Reshape initial conditions 
-    # -------
+    # ------
     (cond_init_2, internal_edges) = utils_indexing.reshape_6_to_2_internal_edges(a_6=cond_init_6)
     (adhe_init_2, internal_edges) = utils_indexing.reshape_6_to_2_internal_edges(a_6=adhe_init_6)
     conc_init_1 = utils_indexing.reshape_3_to_1_internal_nodes(a_3=conc_init_3)
     volu_init_1 = utils_indexing.reshape_3_to_1_internal_nodes(a_3=volu_init_3)
 
+    # Add out node
+    # -----
+    (cond_init_2,adhe_init_2,conc_init_1,volu_init_1) = network_2D.get_initial_conds_with_out_node(cond_init_2=cond_init_2,adhe_init_2=adhe_init_2,
+                                                                                                   conc_init_1=conc_init_1,volu_init_1=volu_init_1,
+                                                                                                   boundary_nodes_network_2=boundary_nodes_network_2)
+
+
     # Create storage for grid indexed solution 
     # -----
-    cond_3 = numpy.zeros(shape=(num_times,num_nodes_network,num_nodes_network))
-    adhe_3 = numpy.zeros(shape=(num_times,num_nodes_network,num_nodes_network))
-    conc_2 = numpy.zeros(shape=(num_times,num_nodes_network))
-    volu_2 = numpy.zeros(shape=(num_times,num_nodes_network))
-    pres_2 = numpy.zeros(shape=(num_times,num_nodes_network))
-  
-    # Create storage for cell indexed solution
-    # -----
-    cond_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols)) 
-    adhe_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols)) 
-    conc_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols)) 
-    volu_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols)) 
-    pres_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols)) 
-    
+    cond_3 = numpy.zeros(shape=(num_times,num_nodes_with_out,num_nodes_with_out))
+    adhe_3 = numpy.zeros(shape=(num_times,num_nodes_with_out,num_nodes_with_out))
+    conc_2 = numpy.zeros(shape=(num_times,num_nodes_with_out))
+    volu_2 = numpy.zeros(shape=(num_times,num_nodes_with_out))
+    pres_2 = numpy.zeros(shape=(num_times,num_nodes_with_out))
+     
     for i_t in range(num_times):               
         print("Calculating solution at time step {} of {}".format(i_t,num_times-1))
         # Get adherence 
@@ -80,13 +80,12 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
                                                          pres_1=pres_2[i_t-1,:],
                                                          volu_1=volu_2[i_t-1,:],
                                                          cond_2=cond_3[i_t-1,:,:],
-                                                         adhe_2=adhe_3[i_t-1,:,:], 
+                                                         adhe_2=adhe_3[i_t-1,:,:],
+                                                         boundary_nodes_network_2=boundary_nodes_network_2, 
+                                                         conc_in=conc_in, 
                                                          epsi=epsi,
                                                          gamm=gamm,
                                                          dt=dt)
-            # Boundary condition
-            for i in boundary_nodes_network_2["inlet"]:
-                conc_2[i_t,i] = conc_in
 
             # Get conductance 
             # -----
@@ -95,9 +94,10 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
                                                          volu_1=volu_2[i_t-1,:],
                                                          cond_2=cond_3[i_t-1,:,:],
                                                          adhe_2=adhe_3[i_t-1,:,:], 
-                                                         dt=dt, 
+                                                         boundary_nodes_network_2=boundary_nodes_network_2, 
                                                          beta=beta,
-                                                         gamm=gamm)
+                                                         gamm=gamm,
+                                                         dt=dt)
 
             # Get pressure 
             # ------
@@ -105,6 +105,8 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
             pres_1        = network_2D.get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
             pres_2[i_t,:] = pres_1
 
+    # Remove out node
+    conc_2
 
     return (conc_2,pres_2,volu_2,cond_3,adhe_3,internal_edges)
 
@@ -113,7 +115,7 @@ if __name__ == "__main__":
     # Parameters 
     # --------
     initialisation = "4-reg"
-    num_nodes = 16
+    num_nodes = 4
     num_refs  = 3
 
     mu = 0.5 
@@ -139,7 +141,7 @@ if __name__ == "__main__":
     num_times = 1001#5001#10001 # 1001
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
-    time_1 = numpy.linspace(0,num_nodes*num_cols,num_times)
+    time_1 = numpy.linspace(0,2*num_nodes*num_cols,num_times)
 
     boundary_nodes_cell_2    = network_2D.get_boundary_nodes_in_cell(initialisation=initialisation,num_nodes=num_nodes)
     boundary_nodes_network_2 = network_2D.get_boundary_nodes_in_network(boundary_nodes_cell_2=boundary_nodes_cell_2,
@@ -172,6 +174,7 @@ if __name__ == "__main__":
                                                                volu_init_3=volu_init_3,
                                                                time_1=time_1,
                                                                boundary_nodes_network_2=boundary_nodes_network_2, 
+                                                               conc_in=conc_in,
                                                                beta=beta,
                                                                gamm=gamm,
                                                                epsi=epsi)
@@ -196,10 +199,10 @@ if __name__ == "__main__":
     row = 0
     cols_1 = numpy.linspace(0,num_cols-1,num_cols)
     for i_t in [0,250,500,750,1000]:
-        conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,:], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
+        conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,0:-1], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
         concs = []
         for col in range(num_cols):
-            for i in [0,1,2,3]:
+            for i in [0,1]:
                 concs.append(conc_3[i,row,col])
         plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),concs)   
     plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),   ((1-gamm)**numpy.linspace(0,int(numpy.sqrt(num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
