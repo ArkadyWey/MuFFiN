@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # Parameters 
     # --------
     initialisation = "4-reg"
-    num_nodes = 9
+    num_nodes = 16
     num_refs  = 3
 
     mu = 0.5 
@@ -194,19 +194,14 @@ if __name__ == "__main__":
     print(datetime.datetime.now() - begin_time)
 
     row = 0
-    node = 0
-    node2 = 1
     cols_1 = numpy.linspace(0,num_cols-1,num_cols)
     for i_t in [0,250,500,750,1000]:
         conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,:], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
         concs = []
         for col in range(num_cols):
-            for i in [0,1,3]:
+            for i in [0,1,2,3]:
                 concs.append(conc_3[i,row,col])
         plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),concs)   
-        #plt.plot(numpy.linspace(0,1,num_cols),conc_3[node,row,:])
-        #plt.plot(numpy.linspace(0,1,num_cols),conc_3[node2,row,:])
-        print(concs)
     plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),   ((1-gamm)**numpy.linspace(0,int(numpy.sqrt(num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
     print((1-epsi)**numpy.linspace(0,num_cols-1,num_cols))
     print((1-epsi)**(num_cols-1))
