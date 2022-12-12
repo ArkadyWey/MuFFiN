@@ -443,8 +443,7 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
 
     ones_2 = numpy.ones(shape=(n,n))
     
-    #ones_2-gamm*adhe_2
-    inte_2 = (ones_2)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
+    inte_2 = (ones_2-gamm*adhe_2)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
 
     conc_1 = conc_1 + dt*(numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
     return conc_1
@@ -460,7 +459,7 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
     rhs_2  = -2.0*beta*conc_2*abs(pdif_2)*(cond_2**(3.0/2.0))*gamm*adhe_2
-    rhs_2 = numpy.zeros_like(rhs_2)
+    #rhs_2 = numpy.zeros_like(rhs_2)
     cond_2 = cond_2 + dt*rhs_2
     return cond_2
 
