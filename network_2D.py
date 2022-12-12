@@ -2,20 +2,21 @@ import numpy
 import scipy.sparse.linalg as linalg
 
 import initial_conditions_2D
+import utils_indexing
 
 import matplotlib
 from matplotlib import pyplot as plt
 
 
 
-def get_boundary_nodes(initialisation, num_nodes):
+def get_boundary_nodes_in_cell(initialisation:str, num_nodes:int):
     """
-    Get a dictionary that contains lists of the nodes indices of 
-    nodes that we want to satisfy the inlet 
-    boundary conditions and ones we want so satisfy the outlet 
-    boundary conditions. 
-    The result will be fed into the algebraic equation that finds
+    Get a dictionary that contains lists of the indices of 
+    nodes that would satisfy the inlet or outlet 
+    boundary condition if the cell were at the boundary. 
+    The result will eventually be fed into the algebraic equation that finds
     the pressure. 
+    Since outut is node index, it is netiehr grid indexing or cell indexing.
 
     Parameters 
     ------
@@ -26,11 +27,11 @@ def get_boundary_nodes(initialisation, num_nodes):
 
     Returns
     -----
-    - boundary_nodes: dict
-        boundary_nodes_2["inlet"][i]  = the ith inlet node index
-        boundary_nodes_2["outlet"][i] = the ith outlet node index
+    - boundary_nodes_cell_2: dict
+        boundary_nodes_cell_2["inlet"][i]  = the ith inlet node index in the cell.
+        boundary_nodes_cell_2["outlet"][i] = the ith outlet node index in the cell.
     """
-    if initialisation == "4_reg_prescribed" or initialisation=="4-reg":
+    if initialisation == "4-reg_prescribed" or initialisation=="4-reg":
         inlet_nodes_1 = []
         outlet_nodes_1 = []
         n = int(numpy.sqrt(num_nodes))
@@ -43,86 +44,192 @@ def get_boundary_nodes(initialisation, num_nodes):
 
     else: 
         raise Exception("Have only implemented boundary node calculator for '4-reg' initialisation. Create boundary node calculator for desired initialisation.")
-    boundary_nodes_2 = {}
-    boundary_nodes_2["inlet"]  = inlet_nodes_1
-    boundary_nodes_2["outlet"] = outlet_nodes_1
-    return boundary_nodes_2
+    boundary_nodes_cell_2 = {}
+    boundary_nodes_cell_2["inlet"]  = inlet_nodes_1
+    boundary_nodes_cell_2["outlet"] = outlet_nodes_1
+    return boundary_nodes_cell_2
+
+
+def get_boundary_nodes_in_network(boundary_nodes_cell_2:dict, num_nodes:int, num_rows:int, num_cols:int):
+    """
+    Given that we know which nodes in a cell would have the potential to be boundary nodes, 
+    for each cell, check if the cell is on the boundary, and then if the cell is in the boundary 
+    check which nodes in that cell are on the boundary.
+
+    Parameters 
+    -----
+    - boundary_nodes_cell_2: dict
+        boundary_nodes_cell_2["inlet"][i]  = the ith inlet node index in the cell.
+        boundary_nodes_cell_2["outlet"][i] = the ith outlet node index in the cell.
+    - num_nodes: int 
+        Number of nodes in the cell.
+    - num_rows: int 
+        Number of rows of cells in the network.
+    - num_columns: int 
+        Number of columns of cells in the network.
+
+    Returns 
+    ------
+    - boundary_nodes_network_2: dict
+        Lists of the grid indices that refer to inlet and outlet nodes in the network. 
+        boundary_nodes_network_2["inlet"][ii] = grid index of a node in the inlet of the network. 
+        boundary_ndoes_network_2["outlet"][ii] = grid_index of a node in the outlet of the network.
+    """
+    inlet_nodes_cell_1  = boundary_nodes_cell_2["inlet"]
+    outlet_nodes_cell_1 = boundary_nodes_cell_2["outlet"]
+    
+    inlet_nodes_network_1  = []
+    outlet_nodes_network_1 = []
+    for i in range(num_nodes):
+        for i_c in range(num_rows):
+            for j_c in range(num_cols):
+                (is_inlet_cell,is_outlet_cell) = get_cell_is_boundary_cell(i_c=i_c,j_c=j_c,num_rows=num_rows,num_cols=num_cols)
+                if is_inlet_cell == True:
+                    for node in inlet_nodes_cell_1:
+                        if i==node:
+                            # node is an inlet node
+                            ii = utils_indexing.convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+                            inlet_nodes_network_1.append(ii)
+                        else: 
+                            # node is not an inlet node 
+                            pass    
+                else: 
+                    # cell is not an inlet cell 
+                    pass
+                if is_outlet_cell==True:
+                    for node in outlet_nodes_cell_1:
+                        if i==node:
+                            # node is an outlet node
+                            ii = utils_indexing.convert_indx_cell_to_grid_node(i=i,i_c=i_c,j_c=j_c,num_nodes=num_nodes,num_rows=num_rows)
+                            outlet_nodes_network_1.append(ii)
+                        else: 
+                            # node is not an outlet node 
+                            pass
+                else: 
+                    # cell is not an outlet cell 
+                    pass
+    boundary_nodes_network_2 = {}
+    boundary_nodes_network_2["inlet"] = inlet_nodes_network_1
+    boundary_nodes_network_2["outlet"] = outlet_nodes_network_1
+    return boundary_nodes_network_2
 
 
 
-def get_pressure_problem(cond_4, boundary_nodes_2):
+def get_cell_is_boundary_cell(i_c:int, j_c:int, num_rows:int, num_cols:int):
+    """
+    Check if cell i_c,j_c is on any of the four boundaries of the network 
+    given by num_nodes, num_rows,  num_cols.
+
+    Parameters 
+    -----
+    - i_c: int 
+        The row that the cell containing the node is in.
+    - j_c: int 
+        The column that the cell containing the node is in.
+    - num_rows: int 
+        The number of rows of cells in the network. 
+    - n um_cols: int 
+        The number of colyumns of cells in the network.
+
+    Returns 
+    ------
+    - is_inlet_cell: bool
+        True if cell i_c,j_c is a cell at the inlet of the network.
+    - is_outlet_cell:bool
+        True if cell i_c,j_c is a cell at the outlet of the network.
+    """
+    if j_c==0:
+        is_inlet_cell=True
+    else: 
+        is_inlet_cell=False
+
+    if j_c==num_cols-1:
+        is_outlet_cell=True
+    else:
+        is_outlet_cell=False
+
+    return (is_inlet_cell,is_outlet_cell)
+
+
+
+
+
+def get_pressure_problem(cond_2:numpy.ndarray, boundary_nodes_network_2:dict):
     """
     Get the left and right hand side of 
-    the linear problem that gives pressure at each time step.
+    the linear problem on the entire  network that gives pressure at each time step.
+    Note that we include the pressure boundary condition, that 
+    inlet nodes have pressure one and outlet nodes have pressure zero.
     
     Parameters 
     -----
-    - boundary_nodes_2: dict 
-        boundary_nodes_2["inlet"][i] = ith inlet node
-        boundary_nodes_2["outlet"][i] = ith outlet node
-    - cond_4: numpy.ndarray
-        cond_tabl_5[i,j,r,m] = conductance from i to j, where j is at reference references[r] 
-        in direction directions[m] relative to i.
+    - boundary_nodes_network_2: dict 
+        The grid indexes of all nodes that are on the boundary of the network.
+        boundary_nodes_2["inlet"][ii] = iith inlet node in grid indexing.
+        boundary_nodes_2["outlet"][ii] = iith outlet node in grid indexing.
+    - cond_2: numpy.ndarray
+        cond_2[ii,jj] = cond_6[i,j,r0,r1,i_c,j_c] = conductance from i to j, where 
+        i is in cell in row i_c and column j_c, and j is in the cell at r0,r1 
+        relative to the cell that i is in.
+        Note that this must be an internal edge, we don't consider external edges.
     
     Returns
     -----
     - lhs_2: numpy.ndarray
-        Left matrix of linear pressure problem. 
+        Left matrix of linear pressure problem on all the nodes in the network
+        with the unit pressure drop condition. 
     - rhs_1: numpy.ndarray
-        Right vector of linear pressure problem.
+        Right vector of linear pressure problem on all the nodes in the network
+        with the unit pressure drop condition.
     """
-    # Parameters 
-    # ---------
-    num_nodes = len(cond_4[:,0,0,0])
-    num_refs  = len(cond_4[0,0,0,:])
-
+    num_nodes_network = len(cond_2[:,0])
     # lhs
+    # -----
     # Expand pressure so that can multiply
-    lhs_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
-    for r0 in range(num_refs):
-        for r1 in range(num_refs):
-            lhs_4[:,:,r0,r1] = cond_4[:,:,r0,r1]-numpy.diag(numpy.sum(a=cond_4[:,:,r0,r1], axis=1))
-
-    lhs_3 = numpy.sum(a=lhs_4,axis=3)
-    lhs_2 = numpy.sum(a=lhs_3,axis=2)
+    lhs_2 = cond_2[:,:]-numpy.diag(numpy.sum(a=cond_2[:,:], axis=1))
     
     # rhs
-    rhs_1 = numpy.zeros(num_nodes) 
+    # -----
+    rhs_1 = numpy.zeros(num_nodes_network) 
 
     # boundary conditions
     # incoming pressures are 1, outgoing are zero
-    inlet_nodes_1 = boundary_nodes_2["inlet"]
-    outlet_nodes_1 =  boundary_nodes_2["outlet"]
-    for inlet_node in inlet_nodes_1:
-        lhs_2[inlet_node,:]  = numpy.zeros(num_nodes)
+    inlet_nodes_network_1 = boundary_nodes_network_2["inlet"]
+    outlet_nodes_network_1 = boundary_nodes_network_2["outlet"]
+    for inlet_node in inlet_nodes_network_1:
+        lhs_2[inlet_node,:]  = numpy.zeros(num_nodes_network)
         lhs_2[inlet_node, inlet_node]   = 1
         rhs_1[inlet_node]  = 1
 
-    for outlet_node in outlet_nodes_1:        
-        lhs_2[outlet_node,:] = numpy.zeros(num_nodes)
+    for outlet_node in outlet_nodes_network_1:        
+        lhs_2[outlet_node,:] = numpy.zeros(num_nodes_network)
         lhs_2[outlet_node,outlet_node] = 1
         rhs_1[outlet_node] = 0
 
     return (lhs_2,rhs_1)
 
 
-def get_pressure_solution(lhs_2,rhs_1):
+
+
+
+
+def get_pressure_solution(lhs_2:numpy.ndarray, rhs_1:numpy.ndarray):
     """
-    Get the solution of the pressure problem, whcih is a vector 
+    Get the solution of the pressure problem on the network, whcih is a vector 
     where each element is the pressure at the correspondingly 
-    indexed node.
+    grid indexed node.
 
     Parameters
     -----
     - lhs_2: numpy.ndarray
-        Left matrix of linear pressure problem. 
+        Left matrix of linear pressure problem in grid indexing. 
     - rhs_1: numpy.ndarray
-        Right vector of linear pressure problem.
+        Right vector of linear pressure problem in grid indexing.
 
     Returns
     -----
     - pres_1: numpy.ndarray
-        pres_1[i] = pressure at node nodes[i].
+        pres_1[ii] = pressure at node nodes[ii], where ii is the grid index.
     """ 
     pres_1 = linalg.lsqr(A=lhs_2,b=rhs_1)[0]
 
@@ -130,13 +237,14 @@ def get_pressure_solution(lhs_2,rhs_1):
 
 
 
-def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int, is_periodic:bool, initialisation:str, mu:float, sigma:float, boundary_nodes_2:dict, conc_in:float):
+
+def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int, is_periodic:bool, initialisation:str, mu:float, sigma:float, boundary_nodes_cell_2:dict, conc_in:float):
     """
     """
     # Get boundary nodes
     # -----
-    inlet_nodes_1 = boundary_nodes_2["inlet"]
-    outlet_nodes_1 = boundary_nodes_2["outlet"]
+    inlet_nodes_1 = boundary_nodes_cell_2["inlet"]
+    outlet_nodes_1 = boundary_nodes_cell_2["outlet"]
     
     # Define initial conc and volu
     # -----
@@ -150,7 +258,9 @@ def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int
     for i_cell in range(num_rows):
         for j_cell in range(num_cols):
             if initialisation == "4-reg":
-                cond_init_6[:,:,:,:,i_cell,j_cell] = initial_conditions_2D.four_reg(num_nodes=num_nodes,num_refs=num_refs,mu=sigma,sigma=sigma)
+                cond_init_6[:,:,:,:,i_cell,j_cell] = initial_conditions_2D.four_reg(num_nodes=num_nodes,num_refs=num_refs,mu=mu,sigma=sigma)
+            elif initialisation == "4-reg_prescribed":
+                cond_init_6[:,:,:,:,i_cell,j_cell] = initial_conditions_2D.four_reg_prescribed(num_nodes=num_nodes,num_refs=num_refs)
             else: 
                 raise Exception("Can only make initial network if initialisation=='4-reg'. Write make_initial_network() for new initialisation.")
             
@@ -238,129 +348,245 @@ def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int
 
 
 
-def get_flux_and_heav_and_conc_or(cond_6,pres_3,conc_3):
+
+
+
+
+
+def get_pressure_difference(pres_1:numpy.ndarray):
     """
-    - cond_6: numpy.ndarray
-        cond_4[i,j,r0,r1,i_c,j_c]
-    - pres_3: numpy.ndarray
-        pres_1[i,i_c,j_c]
-    """
-    # Parameters 
-    # -----
-    num_nodes = len(cond_6[:,0,0,0,0,0])
-    num_refs = len(cond_6[0,0,:,0,0,0])
-    num_rows = len(cond_6[0,0,0,0,:,0])
-    num_cols = len(cond_6[0,0,0,0,0,:])
-    tol=1E-6
+    Get the pressure difference matrix from the pressure vector.
 
-
-    pres_i_4 = numpy.repeat(a=pres_3[:,numpy.newaxis,:,:], repeats=num_nodes, axis=1) # matrix where each row is pres_1
-    pres_j_4 = numpy.repeat(a=pres_3[numpy.newaxis,:,:,:], repeats=num_nodes, axis=0) # matrix where each col is pres_1
-
-    conc_i_4 = numpy.repeat(a=conc_3[:,numpy.newaxis,:,:], repeats=num_nodes, axis=1) # matrix where each row is conc_1
-    conc_j_4 = numpy.repeat(a=conc_3[numpy.newaxis,:,:,:], repeats=num_nodes, axis=0) # matrix where each col is conc_1
-
-    flux_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
-    heav_ij_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
-    heav_ji_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
-    conc_or_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
-    for r0 in range(num_refs):
-        for r1 in range(num_refs):
-            for i_c in range(num_rows):
-                for j_c in range(num_cols):
-                    pdif_2 = pres_i_4[:,:,i_c,j_c]-pres_j_4[:,:,i_c,j_c]
-                    flux_2 = cond_6[:,:,r0,r1,i_c,j_c]*pdif_2
-
-                    heav_ij_2 = (flux_2>+tol)*numpy.ones_like(flux_2)
-                    heav_ji_2 = (flux_2<-tol)*numpy.ones_like(flux_2)
-
-                    flux_6[:,:,r0,r1,i_c,j_c] = flux_2[:,:]
-                    heav_ij_6[:,:,r0,r1,i_c,j_c] = heav_ij_2[:,:]
-                    heav_ji_6[:,:,r0,r1,i_c,j_c] = heav_ji_2[:,:]
-
-                    conc_or_6[:,:,r0,r1,i_c,j_c] = conc_i_4[:,:,i_c,j_c]*heav_ij_2+conc_j_4[:,:,i_c,j_c]*heav_ji_2
-
-    return (flux_6,heav_ij_6,heav_ji_6,conc_or_6)
-
-
-
-def get_concentration(conc_3,pres_3,volu_3,cond_6,adhe_6,i_c,j_c,dt):
-    """
-    Get concentration at node (i,i_c,j_c)
-    - conc_3: numpy.ndarray
-        conc_1[i,i_c,j_c]
-    - pres_3: numpy.ndarray
-        pres_1[i,i_c,j_c]
-    - volu_1: numpy.ndarray
-        volu_3[i,i_c,j_c]
-    - cond_6: numpy.ndarray
-        cond_4[i,j,r0,r1,i_c,j_c]
-    - adhe_6: numpy.ndarray
-        adhe_4[i,j,r0,r1,i_c,j_c]
+    Parameters 
+    -----
+    - pres_1: numpy.ndarray
+        pres_1[ii] = pressure at node nodes[ii], where ii is the grid index.
+    
+    Returns 
+    -----
+    - pdif_2: numpy.ndarray
+        pdif_2[ii,jj] = pres_1[ii]-pres_1[jj].
     """
     # Parameters 
     # -----
-    num_nodes = len(conc_3[:,0,0])
-    num_refs = len(cond_6[0,0,:,0,0,0])
+    num_nodes_network = len(pres_1)
 
-    # Get functions of rhs
+    pres_i_2 = numpy.repeat(a=pres_1[:,numpy.newaxis],repeats=num_nodes_network,axis=1)
+    pres_j_2 = numpy.repeat(a=pres_1[numpy.newaxis,:],repeats=num_nodes_network,axis=0)
+    pdif_2   = pres_i_2-pres_j_2
+    return pdif_2
+
+
+
+def get_heaviside(pdif_2:numpy.ndarray):
+    """
+    Get the heaviside function of pressure difference.
+
+    Parameters
+    ------
+    - pdif_2: numpy.ndarray
+        Pressure difference between node i and node j. pdif_2[ii,jj] = pres_1[ii]-pres_1[jj]
+        in grid indexing.
+
+    Returns 
+    ------
+    - heav_2: numpy.ndarray
+        The heaviside function. H[ii,jj] = 1 if pdif>tol
+                                           0 if pdif<tol
+    """
+    tol = 1E-5
+    heav_2 = numpy.array(pdif_2>tol,dtype=float)
+    return heav_2
+
+
+
+def get_edge_concentration(conc_1:numpy.ndarray, pdif_2:numpy.ndarray):
+    """
+    """
+    # Parameters 
     # -----
-    (flux_6,heav_ij_6,heav_ji_6,_conc_or_6) = get_flux_and_heav_and_conc_or(cond_6=cond_6,pres_3=pres_3,conc_3=conc_3)
+    num_nodes_network = len(conc_1)
 
-    # Reshape conc for multiplication 
-    # -----    
-    conc_4 = numpy.repeat(a=conc_3[:,numpy.newaxis,:,:],repeats=num_nodes,axis=1) # add j axis
-    conc_5 = numpy.repeat(a=conc_4[:,:,numpy.newaxis,:,:],repeats=num_refs,axis=2) # add r0 axis
-    conc_6 = numpy.repeat(a=conc_5[:,:,:,numpy.newaxis,:,:],repeats=num_refs,axis=3) # add r1 axis
+    conc_i_2 = numpy.repeat(a=conc_1[:,numpy.newaxis],repeats=num_nodes_network, axis=1)
+    conc_j_2 = numpy.repeat(a=conc_1[numpy.newaxis,:],repeats=num_nodes_network, axis=0)
+
+    heav_ij_2 = get_heaviside(pdif_2=pdif_2)
+    heav_ji_2 = get_heaviside(pdif_2=-pdif_2)
+
+    conc_2 = conc_i_2*heav_ij_2 + conc_j_2*heav_ji_2
+
+    return conc_2
 
 
-    inte_6 = (numpy.ones_like(adhe_6)-adhe_6)*(-flux_6)*conc_6*heav_ji_6 - flux_6*conc_6*heav_ij_6
-    inte_5 = numpy.sum(a=inte_6,axis=3)
-    inte_4 = numpy.sum(a=inte_5,axis=2)
-    inte_3 = numpy.sum(a=inte_4,axis=1)
-    conc_1 = conc_3[:,i_c,j_c] + dt*(1/volu_3[:,i_c,j_c])*inte_3[:,i_c,j_c]
+
+def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, epsi:float, gamm:float, dt:float):
+    """
+    """
+    # Parameters 
+    # ------
+    num_nodes_network = len(conc_1)
+    n = num_nodes_network
+
+    # i to j
+    # -----
+    cond_ij_2 = cond_2
+    pdif_ij_2 = get_pressure_difference(pres_1=pres_1)
+    conc_j_2  = numpy.repeat(conc_1[numpy.newaxis,:], repeats=n, axis=0)
+    heav_ij_2 = get_heaviside(pdif_2=pdif_ij_2)
+    
+    # into i
+    # -----
+    cond_ji_2 = numpy.transpose(a=cond_ij_2)
+    pdif_ji_2 = numpy.transpose(a=pdif_ij_2)
+    conc_i_2  = numpy.repeat(a=conc_1[:,numpy.newaxis], repeats=n, axis=1)
+    heav_ji_2 = numpy.transpose(a=heav_ij_2)
+
+    ones_2 = numpy.ones(shape=(n,n))
+    
+    #ones_2-gamm*adhe_2
+    inte_2 = (ones_2)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
+
+    conc_1 = conc_1 + dt*(numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
     return conc_1
 
 
 
-def get_conductance(conc_3,pres_3,cond_6,adhe_6,i_c,j_c,dt):
+def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, dt:float, beta:float, gamm:float):
     """
     """
-    beta=1.0
+    # Parameters 
+    # ------
+    pdif_2 = get_pressure_difference(pres_1=pres_1)
+    conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
-    (flux_6,_heav_ij_6,_heav_ji_6,conc_or_6) = get_flux_and_heav_and_conc_or(cond_6=cond_6,pres_3=pres_3,conc_3=conc_3)
+    rhs_2  = -2.0*beta*conc_2*abs(pdif_2)*(cond_2**(3.0/2.0))*gamm*adhe_2
+    rhs_2 = numpy.zeros_like(rhs_2)
+    cond_2 = cond_2 + dt*rhs_2
+    return cond_2
 
-    cond_4 = cond_6[:,:,:,:,i_c,j_c] - dt*2*beta*abs(flux_6[:,:,:,:,i_c,j_c])*conc_or_6[:,:,:,:,i_c,j_c]*adhe_6[:,:,:,:,i_c,j_c]*(cond_6[:,:,:,:,i_c,j_c]**(1/2))
-    return cond_4
+
+
+def reshape_solution_grid_to_cell(conc_2:numpy.ndarray, pres_2:numpy.ndarray, volu_2:numpy.ndarray, cond_3:numpy.ndarray, adhe_3:numpy.ndarray,
+                                  num_nodes:int, num_rows:int, num_cols:int, num_refs:int, internal_edges:list):
+    """
+    """
+
+    # Parameters 
+    # -----
+    num_times = len(conc_2[:,0])
+
+    adhe_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
+    cond_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
+    conc_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols))
+    pres_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols))
+    volu_4 = numpy.zeros(shape=(num_times,num_nodes,num_rows,num_cols))
+
+    # Reshape solution 
+    # -----
+    for i_t in range(num_times):
+        print("Reshaping solution at i_t={}.".format(i_t))
+        adhe_7[i_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=adhe_3[i_t,:,:], 
+                                                                               internal_edges=internal_edges,
+                                                                               num_nodes=num_nodes,
+                                                                               num_refs=num_refs,
+                                                                               num_rows=num_rows,
+                                                                               num_cols=num_cols)
+        cond_7[i_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=cond_3[i_t,:,:], 
+                                                                               internal_edges=internal_edges,
+                                                                               num_nodes=num_nodes,
+                                                                               num_refs=num_refs,
+                                                                               num_rows=num_rows,
+                                                                               num_cols=num_cols)
+        volu_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=volu_2[i_t,:], 
+                                                                               num_nodes=num_nodes,
+                                                                               num_rows=num_rows,
+                                                                               num_cols=num_cols)
+        conc_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,:], 
+                                                                               num_nodes=num_nodes,
+                                                                               num_rows=num_rows,
+                                                                               num_cols=num_cols)
+        pres_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=pres_2[i_t,:], 
+                                                                               num_nodes=num_nodes,
+                                                                               num_rows=num_rows,
+                                                                               num_cols=num_cols)                                                                    
+    return (conc_4,pres_4,volu_4,cond_7,adhe_7)
+
+
 
 if __name__ == "__main__":
-    num_nodes = 9
+    num_nodes = 4
     num_refs  = 3
     initialisation = "4-reg"
     mu = 0.5
     sigma = 0.3
-    num_rows = 3
-    num_cols = 3
+    num_rows = 2
+    num_cols = 2
     is_periodic = True
+    epsi = 0.1
 
-    cond_init_4 = initial_conditions_2D.four_reg(num_nodes=num_nodes, num_refs=num_refs, mu=mu, sigma=sigma)
 
-    boundary_nodes_2 = get_boundary_nodes(initialisation=initialisation,num_nodes=num_nodes)
-    #boundary_nodes_2["inlet"] = []
-    #boundary_nodes_2["outlet"] = []
-    (lhs_2,rhs_1)    = get_pressure_problem(cond_4=cond_init_4, boundary_nodes_2=boundary_nodes_2)
-    pres_1           = get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
-    #print(lhs_2)
-    #print(rhs_1)
-    print(pres_1)
-    #plt.plot(pres_1[0:int(numpy.sqrt(num_nodes))])
-    #plt.show()
+    boundary_nodes_cell_2 = get_boundary_nodes_in_cell(initialisation=initialisation,num_nodes=num_nodes)
+    #print(boundary_nodes_cell_2["inlet"])
+    #print(boundary_nodes_cell_2["outlet"])
+    boundary_nodes_network_2 = get_boundary_nodes_in_network(boundary_nodes_cell_2=boundary_nodes_cell_2,num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
+    #print(boundary_nodes_network_2["inlet"])
+    #print(boundary_nodes_network_2["outlet"])
 
     (cond_init_6,conc_init_3,volu_init_3) = make_initial_network(num_nodes=num_nodes, num_refs=num_refs,
                                                                  num_rows=num_rows,num_cols=num_cols,
                                                                  is_periodic=is_periodic,
                                                                  initialisation=initialisation,
                                                                  mu=mu,sigma=sigma,
-                                                                 boundary_nodes_2=boundary_nodes_2,conc_in=1.0)
+                                                                 boundary_nodes_cell_2=boundary_nodes_cell_2,conc_in=1.0)
+
+    (cond_init_2,internal_edges) = utils_indexing.reshape_6_to_2_internal_edges(a_6=cond_init_6)
+
+
+    (lhs_2,rhs_1)    = get_pressure_problem(cond_2=cond_init_2, boundary_nodes_network_2=boundary_nodes_network_2)
+    pres_1           = get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
+    pres_3           = utils_indexing.reshape_1_to_3_internal_nodes(a_1=pres_1,num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
+
+    ##print(lhs_2)
+    ##print(rhs_1)
+    #i_c = 0
+    #j_c = 1
+    #print(pres_3[:,i_c,j_c])
+    #for i_c in range(num_rows):
+    #    i = 0
+    #    for j_c in range(num_cols):
+    #        plt.scatter(i,pres_3[2,i_c,j_c])
+    #        i=i+1
+    #        plt.scatter(i,pres_3[3,i_c,j_c])
+    #        i=i+1
+    #plt.plot(range(i),-(1/(numpy.sqrt(num_nodes)*num_cols-1))*numpy.array(range(i))+1)
+    ##plt.plot(pres_1[0:int(numpy.sqrt(num_nodes))])
+    #plt.show()
+#
+#
+    #for j_c in range(num_cols):
+    #    i = 0
+    #    for i_c in range(num_rows):
+    #        plt.scatter(i,pres_3[0,i_c,j_c])
+    #        i=i+1
+    #        plt.scatter(i,pres_3[2,i_c,j_c])
+    #        i=i+1
+    #plt.plot(range(i),(0/(numpy.sqrt(num_nodes)*num_cols-1))*numpy.ones_like(numpy.array(range(i))))
+    #plt.plot(range(i),(1/(numpy.sqrt(num_nodes)*num_cols-1))*numpy.ones_like(numpy.array(range(i))))
+    #plt.plot(range(i),(2/(numpy.sqrt(num_nodes)*num_cols-1))*numpy.ones_like(numpy.array(range(i))))
+    #plt.plot(range(i),(3/(numpy.sqrt(num_nodes)*num_cols-1))*numpy.ones_like(numpy.array(range(i))))
+    ##plt.plot(pres_1[0:int(numpy.sqrt(num_nodes))])
+    #plt.show()
     
-    
+    pres_1 = numpy.array([1,2,3,4])
+    pdif_2 = get_pressure_difference(pres_1=pres_1)
+    #print(pdif_2)
+
+    cond_2 = numpy.array([[5,6,7,8],[9,10,11,12],[13,14,15,16],[17,18,19,20]])
+
+    heav_2 = get_heaviside(pdif_2= pdif_2)
+    heav_2 = get_heaviside(pdif_2=-pdif_2)
+    print(heav_2)
+
+    conc_1 = numpy.array([1,2,3,4])
+    conc_2 = get_edge_concentration(conc_1=conc_1, pdif_2=pdif_2)
+    print(conc_2)
