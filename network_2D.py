@@ -525,7 +525,8 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
 
     ones_2 = numpy.ones(shape=(n,n))
     
-    inte_2 = (ones_2-gamm*adhe_2)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
+    #ones_2-gamm*epsi
+    inte_2 = (ones_2-gamm*epsi)*cond_ji_2*(1.0/epsi)*(1.0/gamm)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*(1.0/gamm)*pdif_ij_2*conc_i_2*heav_ij_2
 
     rhs_1 = (numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
 
@@ -546,7 +547,7 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
 
 
 
-def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, beta:float, gamm:float, dt:float):
+def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, beta:float, gamm:float, epsi:float, dt:float):
     """
     """
     # Parameters 
@@ -554,8 +555,8 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
     pdif_2 = get_pressure_difference(pres_1=pres_1)
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
-    rhs_2  = -2.0*beta*conc_2*abs(pdif_2)*(cond_2**(3.0/2.0))*gamm*adhe_2
-
+    rhs_2  = -2.0*beta*gamm*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
+    #rhs_2  = numpy.zeros_like(rhs_2)
     # Condition on edges between outlet nodes and out node
     # -----
     # There is no deposition on out edges
@@ -576,13 +577,16 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
 
 
 def reshape_solution_grid_to_cell(conc_2:numpy.ndarray, pres_2:numpy.ndarray, volu_2:numpy.ndarray, cond_3:numpy.ndarray, adhe_3:numpy.ndarray,
-                                  num_nodes:int, num_rows:int, num_cols:int, num_refs:int, internal_edges:list):
+                                  num_nodes:int, num_rows:int, num_cols:int, num_refs:int, internal_edges:list, 
+                                  reshape_times_1:list):
     """
+    - reshape_times_1:list 
+        Times at which to reshape the time-dependent solution.
     """
 
     # Parameters 
     # -----
-    num_times = len(conc_2[:,0])
+    num_times = len(reshape_times_1)
 
     adhe_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
     cond_7 = numpy.zeros(shape=(num_times,num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
@@ -592,34 +596,53 @@ def reshape_solution_grid_to_cell(conc_2:numpy.ndarray, pres_2:numpy.ndarray, vo
 
     # Reshape solution 
     # -----
-    for i_t in range(num_times):
+    for ii_t,i_t in enumerate(reshape_times_1):
         print("Reshaping solution at i_t={}.".format(i_t))
-        adhe_7[i_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=adhe_3[i_t,:,:], 
+        adhe_7[ii_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=adhe_3[i_t,:,:], 
                                                                                internal_edges=internal_edges,
                                                                                num_nodes=num_nodes,
                                                                                num_refs=num_refs,
                                                                                num_rows=num_rows,
                                                                                num_cols=num_cols)
-        cond_7[i_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=cond_3[i_t,:,:], 
+        cond_7[ii_t,:,:,:,:,:,:] = utils_indexing.reshape_2_to_6_internal_edges(a_2=cond_3[i_t,:,:], 
                                                                                internal_edges=internal_edges,
                                                                                num_nodes=num_nodes,
                                                                                num_refs=num_refs,
                                                                                num_rows=num_rows,
                                                                                num_cols=num_cols)
-        volu_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=volu_2[i_t,:], 
+        volu_4[ii_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=volu_2[i_t,:], 
                                                                                num_nodes=num_nodes,
                                                                                num_rows=num_rows,
                                                                                num_cols=num_cols)
-        conc_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,:], 
+        conc_4[ii_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,:], 
                                                                                num_nodes=num_nodes,
                                                                                num_rows=num_rows,
                                                                                num_cols=num_cols)
-        pres_4[i_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=pres_2[i_t,:], 
+        pres_4[ii_t,:,:,:]       = utils_indexing.reshape_1_to_3_internal_nodes(a_1=pres_2[i_t,:], 
                                                                                num_nodes=num_nodes,
                                                                                num_rows=num_rows,
                                                                                num_cols=num_cols)                                                                    
     return (conc_4,pres_4,volu_4,cond_7,adhe_7)
 
+
+
+def get_flux_through_network(cond_2:numpy.ndarray, pres_1:numpy.ndarray, boundary_nodes_network_2:dict, epsi:float, gamm:float):
+    """
+    """ 
+    outlet_nodes_network_1 = boundary_nodes_network_2["outlet"]
+    num_nodes_outlet = len(outlet_nodes_network_1)
+    pdif_2 = get_pressure_difference(pres_1=pres_1)
+    flux_2 = (1.0/epsi)*(1.0/gamm)*cond_2*pdif_2
+    flux_out_1 = numpy.ndarray(shape=(num_nodes_outlet))
+    for i,ii in enumerate(outlet_nodes_network_1):
+        flux_out_1[i] = flux_2[ii,-1]
+        print(ii)
+        print(flux_2[ii,-1])
+        print(pdif_2[ii,-1])
+    flux_out = numpy.mean(a=flux_out_1,axis=0)
+    return flux_out
+
+    
 
 
 if __name__ == "__main__":
