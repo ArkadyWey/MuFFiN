@@ -5,6 +5,7 @@ import datetime
 
 import utils_indexing
 import network_2D
+import utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
@@ -97,6 +98,7 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
                                                          boundary_nodes_network_2=boundary_nodes_network_2, 
                                                          beta=beta,
                                                          gamm=gamm,
+                                                         epsi=epsi,
                                                          dt=dt)
 
             # Get pressure 
@@ -105,8 +107,6 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
             pres_1        = network_2D.get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
             pres_2[i_t,:] = pres_1
 
-    # Remove out node
-    conc_2
 
     return (conc_2,pres_2,volu_2,cond_3,adhe_3,internal_edges)
 
@@ -122,18 +122,22 @@ if __name__ == "__main__":
     sigma = 0.3
 
     conc_in = 1.0
-    beta    = 0.1
+    beta    = 1#0.01
     adhe    = 1.0#0.1
 
     num_rows = 2
-    num_cols = 5
+    num_cols = 4
 
     epsi = 1.0/num_cols
+    print("epsi",epsi)
 
+    num_nodes_hori = int(num_cols*numpy.sqrt(num_nodes))
     num_edge_hori = int(numpy.sqrt(num_nodes)*num_cols)-1
     num_edge_vert = int(numpy.sqrt(num_nodes)*num_rows)-1
     num_edge_network  = num_edge_hori*num_edge_vert
-    gamm = 1.0/(num_edge_hori)
+    #gamm = 1.0/(num_edge_hori)
+    gamm = 1.0/(numpy.sqrt(num_nodes))
+    print("gamm",gamm)
 
     print(num_edge_hori)
     print(num_cols)
@@ -141,7 +145,8 @@ if __name__ == "__main__":
     num_times = 1001#5001#10001 # 1001
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
-    time_1 = numpy.linspace(0,2*num_nodes*num_cols,num_times)
+    #num_nodes*num_cols
+    time_1 = numpy.linspace(0,numpy.sqrt(num_nodes)*num_cols,num_times)
 
     boundary_nodes_cell_2    = network_2D.get_boundary_nodes_in_cell(initialisation=initialisation,num_nodes=num_nodes)
     boundary_nodes_network_2 = network_2D.get_boundary_nodes_in_network(boundary_nodes_cell_2=boundary_nodes_cell_2,
@@ -194,9 +199,23 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"cond_3.npy"), arr=cond_3, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
 
+    parameters = {}
+    parameters["num_nodes"] = num_nodes
+    parameters["num_refs"] = num_refs
+    parameters["num_rows"] = num_rows
+    parameters["num_cols"] = num_cols
+    parameters["internal_edges"] = internal_edges
+    parameters["num_nodes_hori"] = num_nodes_hori
+    parameters["epsi"] = epsi
+    parameters["gamm"] = gamm
+    parameters["initialisation"] = initialisation
+
+    utils_sl.save_dict(dictname=parameters,filename=os.path.join(path_results,"parameters.pkl"))
+
+
     print(datetime.datetime.now() - begin_time)
 
-    row = 0
+    row = 1
     cols_1 = numpy.linspace(0,num_cols-1,num_cols)
     for i_t in [0,250,500,750,1000]:
         conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,0:-1], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
@@ -204,8 +223,8 @@ if __name__ == "__main__":
         for col in range(num_cols):
             for i in [0,1]:
                 concs.append(conc_3[i,row,col])
-        plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),concs)   
-    plt.plot(numpy.linspace(0,1,int(num_cols*numpy.sqrt(num_nodes))),   ((1-gamm)**numpy.linspace(0,int(numpy.sqrt(num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
+        plt.plot(numpy.linspace(0,1,num_nodes_hori),concs)   
+    plt.plot(numpy.linspace(0,1,num_nodes_hori),   ((1-gamm)**numpy.linspace(0,int(numpy.sqrt(num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
     print((1-epsi)**numpy.linspace(0,num_cols-1,num_cols))
     print((1-epsi)**(num_cols-1))
     print((1-epsi)**(num_cols-2))
@@ -214,24 +233,5 @@ if __name__ == "__main__":
 
     print(datetime.datetime.now() - begin_time)
 
-    # Reshape results into cell indexing
-    # -------
-    print("Reshaping the solution...")
-    (conc_4,pres_4,volu_4,cond_7,adhe_7) = network_2D.reshape_solution_grid_to_cell(conc_2=conc_2,
-                                                                                    pres_2=pres_2,
-                                                                                    volu_2=volu_2,
-                                                                                    cond_3=cond_3,
-                                                                                    adhe_3=adhe_3,
-                                                                                    num_nodes=num_nodes,
-                                                                                    num_rows=num_rows,
-                                                                                    num_cols=num_cols,
-                                                                                    num_refs=num_refs,
-                                                                                    internal_edges=internal_edges)
-
-    numpy.save(file=os.path.join(path_results,"conc_4.npy"), arr=conc_4, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"pres_4.npy"), arr=pres_4, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"volu_4.npy"), arr=volu_4, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"cond_7.npy"), arr=cond_7, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"adhe_7.npy"), arr=adhe_7, allow_pickle=True, fix_imports=True)
 
 
