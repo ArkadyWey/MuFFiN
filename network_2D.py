@@ -526,6 +526,7 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
     ones_2 = numpy.ones(shape=(n,n))
     
     #ones_2-gamm*epsi
+    #*(1.0/gamm)
     inte_2 = (ones_2-gamm*epsi)*cond_ji_2*(1.0/epsi)*(1.0/gamm)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*(1.0/gamm)*pdif_ij_2*conc_i_2*heav_ij_2
 
     rhs_1 = (numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
@@ -555,7 +556,12 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
     pdif_2 = get_pressure_difference(pres_1=pres_1)
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
-    rhs_2  = -2.0*beta*gamm*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
+    rhs_2  = -beta*gamm*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)*epsi#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
+    #print(beta)
+    #print(gamm)
+    #print(conc_2)
+    #print(pdif_2[0,1]/(0.1*gamm))
+    #print(conc_2[0,1]*abs(pdif_2[0,1])*cond_2[0,1]/(0.1*gamm))
     #rhs_2  = numpy.zeros_like(rhs_2)
     # Condition on edges between outlet nodes and out node
     # -----

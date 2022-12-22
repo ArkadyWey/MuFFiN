@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     # Parameters 
     # --------
-    initialisation = "4-reg"
+    initialisation = "4-reg_prescribed"
     num_nodes = 4
     num_refs  = 3
 
@@ -122,11 +122,11 @@ if __name__ == "__main__":
     sigma = 0.3
 
     conc_in = 1.0
-    beta    = 1#0.01
-    adhe    = 1.0#0.1
+    #beta    = 1.0#0.01
+    adhe    = 0.1#1.0#0.1
 
     num_rows = 2
-    num_cols = 4
+    num_cols = 2
 
     epsi = 1.0/num_cols
     print("epsi",epsi)
@@ -138,7 +138,9 @@ if __name__ == "__main__":
     #gamm = 1.0/(num_edge_hori)
     gamm = 1.0/(numpy.sqrt(num_nodes))
     print("gamm",gamm)
-
+    beta = 1.0/epsi #1.0*numpy.sqrt((1.0/epsi)*(1.0/gamm))
+    print("beta",beta)
+    
     print(num_edge_hori)
     print(num_cols)
 
@@ -146,6 +148,7 @@ if __name__ == "__main__":
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
     #num_nodes*num_cols
+    #numpy.sqrt(num_nodes)*num_cols
     time_1 = numpy.linspace(0,numpy.sqrt(num_nodes)*num_cols,num_times)
 
     boundary_nodes_cell_2    = network_2D.get_boundary_nodes_in_cell(initialisation=initialisation,num_nodes=num_nodes)
@@ -224,7 +227,7 @@ if __name__ == "__main__":
             for i in [0,1]:
                 concs.append(conc_3[i,row,col])
         plt.plot(numpy.linspace(0,1,num_nodes_hori),concs)   
-    plt.plot(numpy.linspace(0,1,num_nodes_hori),   ((1-gamm)**numpy.linspace(0,int(numpy.sqrt(num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
+    plt.plot(numpy.linspace(0,1,num_nodes_hori),   ((1-epsi*gamm)**numpy.linspace(0,int((num_nodes)*num_cols)-1, int(numpy.sqrt(num_nodes)*num_cols))))
     print((1-epsi)**numpy.linspace(0,num_cols-1,num_cols))
     print((1-epsi)**(num_cols-1))
     print((1-epsi)**(num_cols-2))
