@@ -501,7 +501,7 @@ def get_edge_concentration(conc_1:numpy.ndarray, pdif_2:numpy.ndarray):
 
 
 
-def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, conc_in:float, epsi:float, gamm:float, dt:float):
+def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, boundary_nodes_network_2:dict, conc_in:float, alph:float, delt:float, epsi:float, dt:float):
     """
     """
     # Parameters 
@@ -527,9 +527,9 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
     
     #ones_2-gamm*epsi
     #*(1.0/gamm)
-    inte_2 = (ones_2-gamm*epsi)*cond_ji_2*(1.0/epsi)*(1.0/gamm)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*(1.0/gamm)*pdif_ij_2*conc_i_2*heav_ij_2
+    inte_2 = (ones_2-epsi*delt*alph)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
 
-    rhs_1 = (numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
+    rhs_1 = (1.0/(epsi*delt**2))*(numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
 
     # NOTE: If no deposition then:
     # -----
@@ -548,7 +548,7 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
 
 
 
-def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.ndarray, cond_2:numpy.ndarray, adhe_2:numpy.ndarray, boundary_nodes_network_2:dict, beta:float, gamm:float, epsi:float, dt:float):
+def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, cond_2:numpy.ndarray, boundary_nodes_network_2:dict, alph:float, beta:float, delt:float, epsi:float, dt:float):
     """
     """
     # Parameters 
@@ -556,7 +556,7 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.nda
     pdif_2 = get_pressure_difference(pres_1=pres_1)
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
-    rhs_2  = -beta*gamm*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)*epsi#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
+    rhs_2  = -((delt*alph*beta)/(epsi*delt**2))*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
     #print(beta)
     #print(gamm)
     #print(conc_2)
@@ -632,13 +632,13 @@ def reshape_solution_grid_to_cell(conc_2:numpy.ndarray, pres_2:numpy.ndarray, vo
 
 
 
-def get_flux_through_network(cond_2:numpy.ndarray, pres_1:numpy.ndarray, boundary_nodes_network_2:dict, epsi:float, gamm:float):
+def get_flux_through_network(cond_2:numpy.ndarray, pres_1:numpy.ndarray, boundary_nodes_network_2:dict, delt:float, epsi:float):
     """
     """ 
     outlet_nodes_network_1 = boundary_nodes_network_2["outlet"]
     num_nodes_outlet = len(outlet_nodes_network_1)
     pdif_2 = get_pressure_difference(pres_1=pres_1)
-    flux_2 = (1.0/epsi)*(1.0/gamm)*cond_2*pdif_2
+    flux_2 = (1.0/delt)*(1.0/epsi)*cond_2*pdif_2
     flux_out_1 = numpy.ndarray(shape=(num_nodes_outlet))
     for i,ii in enumerate(outlet_nodes_network_1):
         flux_out_1[i] = flux_2[ii,-1]

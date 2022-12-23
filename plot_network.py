@@ -88,8 +88,10 @@ num_rows = parameters["num_rows"]
 num_cols = parameters["num_cols"]
 internal_edges = parameters["internal_edges"]
 num_nodes_hori = parameters["num_nodes_hori"]
+alph = parameters["alph"]
+beta = parameters["beta"]
+delt = parameters["delt"]
 epsi = parameters["epsi"]
-gamm = parameters["gamm"]
 initialisation = parameters["initialisation"]
 
 # Get solution in cell_indexed form at desired times 
@@ -283,8 +285,8 @@ for i_t in range(num_times):
     flux_out = network_2D.get_flux_through_network(cond_2=cond_3[i_t,:,:],
                                                    pres_1=pres_2[i_t,:],
                                                    boundary_nodes_network_2=boundary_nodes_network_2,
-                                                   epsi=epsi, 
-                                                   gamm=gamm)
+                                                   delt=delt,
+                                                   epsi=epsi)
     flux_out_1[i_t] = flux_out
     # reset the first flux to be the second one, since vlocity is artificially zero initially
     flux_out_1[0] = flux_out_1[1]
