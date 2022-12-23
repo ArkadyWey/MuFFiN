@@ -219,11 +219,11 @@ for ii_t,i_t in enumerate(reshape_times_1):
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-ax.scatter(posi_nodes_1,conc_2[0,:], label=r"$t=0$")
-ax.scatter(posi_nodes_1,conc_2[1,:], label=r"$t=1/4$")
-ax.scatter(posi_nodes_1,conc_2[2,:], label=r"$t=1/2$")
-ax.scatter(posi_nodes_1,conc_2[3,:], label=r"$t=3/4$")
-ax.scatter(posi_nodes_1,conc_2[4,:], label=r"$t=1$")
+ax.scatter(posi_nodes_1,conc_2[0,:])   #label=r"$t=0$"  
+ax.scatter(posi_nodes_1,conc_2[1,:])   #label=r"$t=1/4$"
+ax.scatter(posi_nodes_1,conc_2[2,:])   #label=r"$t=1/2$"
+ax.scatter(posi_nodes_1,conc_2[3,:])   #label=r"$t=3/4$"
+ax.scatter(posi_nodes_1,conc_2[4,:])   #label=r"$t=1$"  
 
 # Interpolate the network values
 # ------
@@ -233,7 +233,7 @@ for ii_t in range(num_time_indxs_to_plot):
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$x$",
-                             y_label=r"$\bar{C}_i$",
+                             y_label=r"$\bar{C}$",
                              x_left=None,
                              x_right=None,
                              y_bottom=None,
@@ -249,11 +249,11 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conc_2__v__posi_nodes
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-ax.scatter(posi_edges_1,cond_2[0,:], label=r"$t=0$")
-ax.scatter(posi_edges_1,cond_2[1,:], label=r"$t=1/4$")
-ax.scatter(posi_edges_1,cond_2[2,:], label=r"$t=1/2$")
-ax.scatter(posi_edges_1,cond_2[3,:], label=r"$t=3/4$")
-ax.scatter(posi_edges_1,cond_2[4,:], label=r"$t=1$")
+ax.scatter(posi_edges_1,cond_2[0,:])  #label=r"$t=0$"  
+ax.scatter(posi_edges_1,cond_2[1,:])  #label=r"$t=1/4$"
+ax.scatter(posi_edges_1,cond_2[2,:])  #label=r"$t=1/2$"
+ax.scatter(posi_edges_1,cond_2[3,:])  #label=r"$t=3/4$"
+ax.scatter(posi_edges_1,cond_2[4,:])  #label=r"$t=1$"  
 
 # Interpolate the network values
 # ------
@@ -263,7 +263,7 @@ for ii_t in range(num_time_indxs_to_plot):
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$x$",
-                             y_label=r"$\bar{G}_{ij}^{(r^1,0)^\top}$",
+                             y_label=r"$\bar{G}$",
                              x_left=-0.05,
                              x_right=+1.05,
                              y_bottom=None,
@@ -299,7 +299,7 @@ ax.plot(time_1,flux_out_1)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$T$",
-                             y_label=r"$\bar{Q}_{i\mathrm{out}}$",
+                             y_label=r"$U$",
                              x_left=None,
                              x_right=None,
                              y_bottom=None,
