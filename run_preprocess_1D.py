@@ -13,7 +13,7 @@ import os
 
 import preprocess_1D
 
-def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
+def main(conc_max_or_tot_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     """
     """
 
@@ -21,10 +21,10 @@ def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # ------------
     # Get conductance and adhesivity 
     # -----
-    cond_tabl_4, adhe_tabl_4 = preprocess_1D.get_conductance_and_adhesivity(conc_max_disc_1=conc_max_disc_1, 
-                                                                         cond_init_3=cond_init_3, 
-                                                                         adhe_init_3=adhe_init_3, 
-                                                                         alpha=alpha)
+    cond_tabl_4, adhe_tabl_4 = preprocess_1D.get_conductance_and_adhesivity(conc_max_or_tot_1=conc_max_or_tot_1, 
+                                                                            cond_init_3=cond_init_3, 
+                                                                            adhe_init_3=adhe_init_3, 
+                                                                            alpha=alpha)
     #print("cond_tabl_4[k,:,:,l]: \n",cond_tabl_4[3,:,:,-1])
     #print("adhe_tabl_4[k,:,:,l]: \n",adhe_tabl_4[3,:,:,-1])
 
@@ -32,8 +32,8 @@ def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # Get lhs and rhs of cell problem 
     # ------
     lhs_3, rhs_3 = preprocess_1D.get_cell_problem(refs_1=refs_1, 
-                                               cond_tabl_4=cond_tabl_4,
-                                               length=length)
+                                                  cond_tabl_4=cond_tabl_4,
+                                                  length=length)
     #print("lhs_3[k,:,:]: \n", lhs_3[0,:,:])
     #print("rhs_3[k,:,:]: \n", rhs_3[0,:,:])
 
@@ -41,7 +41,7 @@ def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # Get solution of cell problem
     # ------
     csol_2 = preprocess_1D.get_cell_solution(lhs_3=lhs_3,
-                                          rhs_3=rhs_3)
+                                             rhs_3=rhs_3)
     #print("csol_2[k,:]: \n", csol_2[0,:])
 
 
@@ -49,8 +49,8 @@ def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # ------
     # Form delt_4 where delta_4[k,i,j,r] = W_i-W_j-rl at the kth concentration 
     delt_4 = preprocess_1D.get_delta(csol_2=csol_2, 
-                                  refs_1=refs_1, 
-                                  length=length)
+                                     refs_1=refs_1, 
+                                     length=length)
     #print("delt_4[k,:,:,l]: \n", delt_4[3,:,:,1])
 
 
@@ -66,12 +66,12 @@ def main(conc_max_disc_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     # Get local permeability and deposition parameter
     # ------ 
     perm_prep_1, depo_prep_1 = preprocess_1D.get_permeability_and_deposition(cond_tabl_4=cond_tabl_4, 
-                                                                 adhe_tabl_4=adhe_tabl_4, 
-                                                                 refs_1=refs_1, 
-                                                                 delt_4=delt_4, 
-                                                                 heav_4=heav_4, 
-                                                                 cond_init_3=cond_init_3, 
-                                                                 length=length)
+                                                                             adhe_tabl_4=adhe_tabl_4, 
+                                                                             refs_1=refs_1, 
+                                                                             delt_4=delt_4, 
+                                                                             heav_4=heav_4, 
+                                                                             cond_init_3=cond_init_3, 
+                                                                             length=length)
     #print("perm_prep_1[:]: \n{}".format(perm_prep_1[0]))
     #print("depo_prep_1[:]: \n{}".format(depo_prep_1[-1]))
     return (perm_prep_1,depo_prep_1)
@@ -96,8 +96,8 @@ if __name__ == "__main__":
     phi       = v/length # TODO: Define this properly
     
     # Concentrations to tabulate 
-    conc_max_disc_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
-    #print("conc_max_disc_1: \n {}".format(conc_max_disc_1))
+    conc_max_or_tot_1 = numpy.linspace(0,1.0,num_concs) # discrete list of possible concentrations
+    #print("conc_max_or_tot_1: \n {}".format(conc_max_or_tot_1))
     
     # Conductance and adhesivity 
     cond_init_3 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs)) 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     # Get permeability and deposition parameter tables
     # -----
-    perm_prep_1, depo_prep_1 = main(conc_max_disc_1=conc_max_disc_1,
+    perm_prep_1, depo_prep_1 = main(conc_max_or_tot_1=conc_max_or_tot_1,
                                     cond_init_3=cond_init_3,
                                     adhe_init_3=adhe_init_3,
                                     alpha=alpha,
@@ -179,7 +179,7 @@ if __name__ == "__main__":
 
     numpy.save(file=os.path.join(path_results,"perm_prep_1.npy"), arr=perm_prep_1, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_prep_1.npy"), arr=depo_prep_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"conc_max_disc_1.npy"), arr=conc_max_disc_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"conc_max_or_tot_1.npy"), arr=conc_max_or_tot_1, allow_pickle=True, fix_imports=True)
 
 
 
