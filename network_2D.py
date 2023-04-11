@@ -1,11 +1,45 @@
 import numpy 
 import scipy.sparse.linalg as linalg
+from scipy import interpolate
 
 import initial_conditions_2D
 import utils_indexing
 
 import matplotlib
 from matplotlib import pyplot as plt
+
+def get_new_interpolated_point(table_x,table_y,new_x_value,type_clog):
+    """
+    Given a list of x values, and corresponding y values, and
+    a new x value, approximate the corresponding function, 
+    and use this function to return the new y value 
+    corresponding to the new x value.
+
+    Parameters 
+    ----------
+    - table_x: numpy.ndarray
+        1-dimensional list of x values.
+    - table_y: numpy.ndarray
+        1-dimensional list of y values.
+    - new_x_value: float
+        New x value for which the corresponding y value is to be approximated.
+    
+    Returns
+    -------
+    - new_y_value: float
+        Interpolated y value corresponding to new_x_value
+    """
+    if type_clog == "deposit":
+        interpolated_function = interpolate.splrep(x=table_x,y=table_y,k=3)
+        new_y_value = interpolate.splev(x=new_x_value, tck=interpolated_function)
+        #print(new_x_value)
+    elif type_clog == "block":
+        step_fun = interpolate.interp1d(table_x, table_y, kind='next') 
+        #print("new_x_value:\n{}".format(new_x_value))
+        new_y_value = step_fun(new_x_value)
+    else: 
+        raise Exception("type_clog must be either 'block' or 'deposit'.")
+    return new_y_value
 
 
 
@@ -527,9 +561,14 @@ def get_concentration(conc_1:numpy.ndarray, pres_1:numpy.ndarray, volu_1:numpy.n
     
     #ones_2-gamm*epsi
     #*(1.0/gamm)
+    # NETWORK MODEL
     inte_2 = (ones_2-epsi*delt*alph)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
-
     rhs_1 = (1.0/(epsi*delt**2))*(numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
+
+    # MULTISCALE MODEL
+    #inte_2 = (ones_2-delt*epsi*alph)*cond_ji_2*(1.0/epsi)*pdif_ji_2*conc_j_2*heav_ji_2-cond_ij_2*(1.0/epsi)*pdif_ij_2*conc_i_2*heav_ij_2
+    #rhs_1 =  (numpy.ones(n)/volu_1)*numpy.sum(a=inte_2, axis=1)
+
 
     # NOTE: If no deposition then:
     # -----
@@ -556,7 +595,12 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, cond_2:numpy.nda
     pdif_2 = get_pressure_difference(pres_1=pres_1)
     conc_2 = get_edge_concentration(conc_1=conc_1,pdif_2=pdif_2)
 
+
+    # NETWORK MODEL
     rhs_2  = -((delt*alph*beta)/(epsi*delt**2))*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
+    
+    # MULTISCALE MODEL
+    #rhs_2  = -alph*delt*beta*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
     #print(beta)
     #print(gamm)
     #print(conc_2)
@@ -642,13 +686,117 @@ def get_flux_through_network(cond_2:numpy.ndarray, pres_1:numpy.ndarray, boundar
     flux_out_1 = numpy.ndarray(shape=(num_nodes_outlet))
     for i,ii in enumerate(outlet_nodes_network_1):
         flux_out_1[i] = flux_2[ii,-1]
-        print(ii)
-        print(flux_2[ii,-1])
-        print(pdif_2[ii,-1])
     flux_out = numpy.mean(a=flux_out_1,axis=0)
     return flux_out
 
+
+def get_average_solutions_down_columns(reshape_times_1:list, num_nodes_hori:int, num_rows:int, num_cols:int, cond_7:numpy.ndarray, adhe_7:numpy.ndarray, conc_4:numpy.ndarray, volu_4:numpy.ndarray, pres_4:numpy.ndarray):
+    """
+    Get average values of solution down columns that can be plotted against position at times 
+    that we have selected. 
+    The solutions fed in have been reshaped into cell indexing.    
+    """
     
+    # Parameters 
+    # ------
+    num_nodes = len(conc_4[0,:,0,0])
+    n = int(numpy.sqrt(num_nodes))
+
+    num_time_indxs_to_plot = len(reshape_times_1)
+    num_posis = num_nodes_hori
+
+    # -------
+    conc_2 = numpy.zeros(shape=(num_time_indxs_to_plot,num_posis))
+    volu_2 = numpy.zeros(shape=(num_time_indxs_to_plot,num_posis))
+    pres_2 = numpy.zeros(shape=(num_time_indxs_to_plot,num_posis))
+
+    cond_2 = numpy.zeros(shape=(num_time_indxs_to_plot,num_posis-1)) # one less edge col than node col
+    adhe_2 = numpy.zeros(shape=(num_time_indxs_to_plot,num_posis-1)) # one less edge col than node col
+    for ii_t,i_t in enumerate(reshape_times_1):
+        for j_c in range(num_cols):
+            for sub_col in range(n):
+                # we are now in a particular sub_col aka column of nodes
+                # get the indexes of nodes that can appear in this sub col
+                indxs_in_sub_col = numpy.linspace(start=0.0+sub_col,stop=num_nodes-n+sub_col,num=n,dtype=int)
+
+                # Get mean conc and volu down each node column
+                # -------
+                concs_in_this_sub_col_1 = []
+                volus_in_this_sub_col_1 = []
+                press_in_this_sub_col_1 = []
+                for i_c in range(num_rows):
+                    for i in indxs_in_sub_col:
+                        conc = conc_4[ii_t,i,i_c,j_c]
+                        concs_in_this_sub_col_1.append(conc)
+
+                        volu = volu_4[ii_t,i,i_c,j_c]
+                        volus_in_this_sub_col_1.append(volu)
+
+                        pres = pres_4[ii_t,i,i_c,j_c]
+                        press_in_this_sub_col_1.append(pres)
+
+                mean_conc_in_this_sub_col = numpy.mean(concs_in_this_sub_col_1)
+                conc_2[ii_t,sub_col+j_c*n] = mean_conc_in_this_sub_col
+
+                mean_volu_in_this_sub_col = numpy.mean(volus_in_this_sub_col_1)
+                volu_2[ii_t,sub_col+j_c*n] = mean_volu_in_this_sub_col
+
+                mean_pres_in_this_sub_col = numpy.mean(press_in_this_sub_col_1)
+                pres_2[ii_t,sub_col+j_c*n] = mean_pres_in_this_sub_col
+                # Get cond and adhe in each edge column
+                # --------
+                if (j_c==num_cols-1 and sub_col==n-1)==False:
+                    # If we're not in the last node column
+                    # Get mean cond and adhe down each edge column
+                    # ------
+                    if sub_col!=n-1:
+                        # If not last ndoe col in cell, 
+                        # then there is another to the right
+                        sub_col_to_right = sub_col+1
+                        indxs_in_sub_col_to_right = numpy.linspace(start=0.0+sub_col_to_right,stop=num_nodes-n+sub_col_to_right,num=n,dtype=int)   
+                    elif sub_col==n-1:
+                        # In last col of nodes in cell, 
+                        # col to the right is 0th col of the next cell
+                        sub_col_to_right = 0
+                        indxs_in_sub_col_to_right = numpy.linspace(start=0.0+sub_col_to_right,stop=num_nodes-n+sub_col_to_right,num=n,dtype=int)   
+                    else: 
+                        raise Exception("Current node column does not exist.")
+
+                    conds_in_this_sub_col_1 = []
+                    adhes_in_this_sub_col_1 = []
+                    for i_c in range(num_rows):
+                        for ii in range(len(indxs_in_sub_col)):
+                            i = indxs_in_sub_col[ii]
+                            j = indxs_in_sub_col_to_right[ii]
+
+                            if sub_col!=n-1:
+                                # Not in last col so j is in same cell as i
+                                r0 = 0
+                                r1 = 0
+                            elif sub_col==n-1:
+                                # In last col so j in celll to right of i
+                                r0=1
+                                r1=0
+                            else: 
+                                raise Exception("Current node column does not exist.")
+                            cond = cond_7[ii_t,i,j,r0,r1,i_c,j_c]
+                            conds_in_this_sub_col_1.append(cond)
+
+                            adhe = cond_7[ii_t,i,j,r0,r1,i_c,j_c]
+                            adhes_in_this_sub_col_1.append(adhe)
+
+                    mean_cond_in_this_sub_col = numpy.mean(conds_in_this_sub_col_1)
+                    cond_2[ii_t,sub_col+j_c*n] = mean_cond_in_this_sub_col
+
+                    mean_adhe_in_this_sub_col = numpy.mean(adhes_in_this_sub_col_1)
+                    adhe_2[ii_t,sub_col+j_c*n] = mean_adhe_in_this_sub_col
+                elif (j_c==num_cols-1 and sub_col==n-1)==True:
+                    pass
+                else:
+                    raise Exception("Current node column does not exist.")
+
+    return (conc_2, volu_2, cond_2, adhe_2, pres_2)
+
 
 
 if __name__ == "__main__":
