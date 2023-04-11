@@ -24,7 +24,7 @@ class Configure():
         self.sigma          = sigma
         self.type_alpha     = type_alpha
 
-        # Get input parameters from parameters dictionary or class parameters
+        # Get input parameters from parameters dictionary or classself.num_concs parameters
         # -----
         file = open("parameters.json", "r")
         parameters = json.load(file)
@@ -38,12 +38,13 @@ class Configure():
 
         # Do secondary configuration 
         # -----
-        self.l1, self.l2     = self.get_lengths()        
-        self.leng_1          = numpy.array([self.l1, self.l2])
-        self.conc_max_disc_1 = numpy.linspace(0, 1.0, self.num_concs)
-        self.refs_2          = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
-                                                           num_dims=self.num_dims)
-        self.phi             = self.v/(numpy.prod(self.leng_1))
+        self.l1, self.l2       = self.get_lengths()        
+        self.leng_1            = numpy.array([self.l1, self.l2])
+        #self.conc_max_or_tot_1 = numpy.linspace(0, 10.0, self.num_concs)
+        self.conc_max_or_tot_1 = numpy.linspace(0, 20.0, self.num_concs)
+        self.refs_2            = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
+                                                             num_dims=self.num_dims)
+        self.phi               = self.v/(numpy.prod(self.leng_1))
 
 
         # Get params
@@ -65,7 +66,7 @@ class Configure():
         # -----
         self.num_refs = len(self.refs_2[:,0])
 
-        self.adhe_init_4 = numpy.zeros(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) 
+        self.adhe_init_4 = numpy.ones(shape=(self.num_nodes, self.num_nodes, self.num_refs, self.num_refs)) ## might need to change to ones
 
         self.cond_init_4 = self.get_initial_conductance()
 
