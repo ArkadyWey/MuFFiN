@@ -3,7 +3,7 @@ from scipy import integrate
 import numpy
 
 
-def get_new_interpolated_point(table_x,table_y,new_x_value):
+def get_new_interpolated_point(table_x,table_y,new_x_value,type_clog):
     """
     Given a list of x values, and corresponding y values, and
     a new x value, approximate the corresponding function, 
@@ -24,11 +24,16 @@ def get_new_interpolated_point(table_x,table_y,new_x_value):
     - new_y_value: float
         Interpolated y value corresponding to new_x_value
     """
-    #interpolated_function = interpolate.splrep(x=table_x,y=table_y,k=3)
-    #new_y_value = interpolate.splev(x=new_x_value, tck=interpolated_function)
-    step_fun = interpolate.interp1d(table_x, table_y, kind='next') 
-    #print(new_x_value)
-    new_y_value = step_fun(new_x_value)
+    if type_clog == "deposit":
+        interpolated_function = interpolate.splrep(x=table_x,y=table_y,k=3)
+        new_y_value = interpolate.splev(x=new_x_value, tck=interpolated_function)
+        #print(new_x_value)
+    elif type_clog == "block":
+        step_fun = interpolate.interp1d(table_x, table_y, kind='next') 
+        #print("new_x_value:\n{}".format(new_x_value))
+        new_y_value = step_fun(new_x_value)
+    else: 
+        raise Exception("type_clog must be either 'block' or 'deposit'.")
     return new_y_value
 
 
@@ -107,7 +112,7 @@ def get_concentration_at_time_and_position(conc_2,velo_1,psi_2,phi,conc_in,dt,dx
     return conc
 
 
-def get_maximum_concentration_at_time_and_position(conc_2,i_t,i_x):
+def get_maximum_or_total_concentration_at_time_and_position(conc_2,dpdx_2,time_1,i_t,i_x,type_clog):
     """
     Get the maximum concentration at the current position up to and including the current time.
     Given the concentration at all positions and times, the current position, and the current time, 
@@ -117,6 +122,8 @@ def get_maximum_concentration_at_time_and_position(conc_2,i_t,i_x):
     -----------
     - conc_2: numpy.ndarray
         2-dimensional concentration as function of position and time, such that conc_2[i_x,i_t] = concentration at posi_1[i_x] and time_1[i_t].
+    - dpdx_2: numpy.ndarray
+        2-dimensional pressure gradient as function of position and time, such that dpdx_2[i_x,i_t] = pressure gradient at posi_1[i_x] and time_1[i_t].
     - i_t: int 
         The time current time index.
     - i_x: int
@@ -124,16 +131,25 @@ def get_maximum_concentration_at_time_and_position(conc_2,i_t,i_x):
 
     Returns
     -------
-    - conc_max: float 
+    - conc_max_or_tot: float 
         Scaler value that is the maximum concentration at position_1[i_x] over times up to and including time_1[i_t].
     """
-    conc_at_posi_1 = conc_2[i_x,0:i_t+1] # concentration at current position up to (and including) current time
-    conc_max = numpy.amax(a=conc_at_posi_1, axis=0)
-    
-    return conc_max
+    #print("i_x:\n{}".format(i_x))
+    #print("i_t:\n{}".format(i_t))
+    #print("conc_2[i_x,0:i_t+1]:\n{}".format(conc_2[i_x,0:i_t+1]))
+    if type_clog == "block":
+        conc_at_posi_1 = conc_2[i_x,0:i_t+1] # concentration at current position up to (and including) current time
+        conc_max_or_tot = numpy.amax(a=conc_at_posi_1, axis=0)
+    elif type_clog == "deposit":
+        conc_at_posi_1 = conc_2[i_x,0:i_t+1]
+        dpdx_at_posi_1 = dpdx_2[i_x,0:i_t+1]
+        integrand_1 = conc_at_posi_1*abs(dpdx_at_posi_1)
+        dt = time_1[1]-time_1[0]
+        conc_max_or_tot = integrate.simps(y=integrand_1,x=time_1[0:i_t+1],dx=dt,even="avg")
+    return conc_max_or_tot
 
 
-def get_permeability_and_deposition_at_time_and_position(conc_max_disc_1,perm_prep_1,depo_prep_1,conc_2,i_t,i_x):
+def get_permeability_and_deposition_at_time_and_position(conc_max_or_tot_1,perm_prep_1,depo_prep_1,conc_2,dpdx_2,time_1,i_t,i_x,type_clog):
     """
     Find the permeabiltiy and adhesivity at the current time and position.
     Given a discrete list of maximum concentrations, and the lists of corresponding permeability 
@@ -143,7 +159,7 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_disc_1,perm_pr
 
     Parameters
     ----------
-    - conc_max_disc_1: numpy.ndarray 
+    - conc_max_or_tot_1: numpy.ndarray 
         1-dimensional list of pre-determined maximum concentration values. For example, an evenly distributed list 
         of numbers between 0 and 1.
     - perm_prep_1: numpy.ndarray
@@ -160,19 +176,21 @@ def get_permeability_and_deposition_at_time_and_position(conc_max_disc_1,perm_pr
     Returns
     -------
     - perm: float
-        The permeability corresponding to the maximum concentration conc_max at position posi_1[i_x] and time_1[i_t].
+        The permeability corresponding to the maximum concentration conc_max_or_tot at position posi_1[i_x] and time_1[i_t].
     - depo: float
-        The adhesivity corresponding to the maximum concentration conc_max at position posi_1[i_x] and time_1[i_t].
+        The adhesivity corresponding to the maximum concentration conc_max_or_tot at position posi_1[i_x] and time_1[i_t].
     """
 
     # Find max concentration at current position up to and including current time 
     # -----
-    conc_max = get_maximum_concentration_at_time_and_position(conc_2=conc_2,i_t=i_t,i_x=i_x)
+    conc_max_or_tot = get_maximum_or_total_concentration_at_time_and_position(conc_2,dpdx_2,time_1,i_t,i_x,type_clog)
+    #print("conc_max_or_tot:\n{}".format(conc_max_or_tot))
 
     # Get permeability and adhesivity corresponding to new max concentration
     # -----
-    perm = get_new_interpolated_point(table_x=conc_max_disc_1,table_y=perm_prep_1,new_x_value=conc_max)
-    depo = get_new_interpolated_point(table_x=conc_max_disc_1,table_y=depo_prep_1,new_x_value=conc_max)
+    perm = get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_1,new_x_value=conc_max_or_tot,type_clog=type_clog)
+    depo = get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_1,new_x_value=conc_max_or_tot,type_clog=type_clog)
+    #print(depo)
     return (perm, depo)
 
 
@@ -185,7 +203,7 @@ def get_velocity_at_time(perm_2,posi_1,i_t,dx):
     ----------
     - perm_2: numpy.ndarray
         2-dimensional list of permeabilities, so that perm_2[i_x,i_t] = the permeability corresponding 
-        to the maximum concentration conc_max at posi_1[i_x] and time_1[i_t].
+        to the maximum concentration conc_max_or_tot at posi_1[i_x] and time_1[i_t].
     - posi_1: numpy.ndarray 
         1-dimensional list of positions at which the permeabilities have been calculated.
     - i_t: int 
@@ -226,7 +244,7 @@ def get_pressure_gradient_at_time_and_position(perm_2,velo_1,i_t,i_x):
     ------------
     - perm_2: numpy.ndarray
         2-dimensional list of permeabilities, so that perm_2[i_x,i_t] = the permeability corresponding 
-        to the maximum concentration conc_max at posi_1[i_x] and time_1[i_t].
+        to the maximum concentration conc_max_or_tot at posi_1[i_x] and time_1[i_t].
     - velo_1: float 
         The Darcy velocity as a function of time, so that velo_1[i_t] = velocity at time[i_t].
         Note that velo_1[i_t] is the velocity corresponding to the set of permeabilities perm_2
@@ -267,11 +285,14 @@ def get_reactivity_at_time_and_position(depo_2,dpdx_2,i_t,i_x):
     depo = depo_2[i_x,i_t]
     dpdx = dpdx_2[i_x,i_t]
     psi = -depo*dpdx
+
+    #depo_prev = depo_2[i_x,i_t-1]
+    #psi = -(depo-depo_prev)*dpdx
     return psi
 
 
 def step(conc_2,conc_max_2,perm_2,depo_2,velo_1,dpdx_2,psi_2,
-         conc_max_disc_1,perm_prep_1,depo_prep_1,
+         conc_max_or_tot_1,perm_prep_1,depo_prep_1,
          posi_1,
          phi,conc_in,
          dt,dx,
@@ -291,9 +312,9 @@ def step(conc_2,conc_max_2,perm_2,depo_2,velo_1,dpdx_2,psi_2,
                                                              i_t=i_t,
                                                              i_x=i_x)
 
-    conc_max_2[i_x,i_t] = get_maximum_concentration_at_time_and_position(conc_2=conc_2,i_t=i_t,i_x=i_x)
+    conc_max_2[i_x,i_t] = get_maximum_or_total_concentration_at_time_and_position(conc_2,dpdx_2,time_1,i_t,i_x,type_clog)
 
-    perm_2[i_x,i_t], depo_2[i_x,i_t] = get_permeability_and_deposition_at_time_and_position(conc_max_disc_1=conc_max_disc_1,
+    perm_2[i_x,i_t], depo_2[i_x,i_t] = get_permeability_and_deposition_at_time_and_position(conc_max_or_tot_1=conc_max_or_tot_1,
                                                                                             perm_prep_1=perm_prep_1,
                                                                                             depo_prep_1=depo_prep_1,
                                                                                             conc_2=conc_2,
