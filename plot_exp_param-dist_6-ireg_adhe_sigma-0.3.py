@@ -79,7 +79,7 @@ plt.gca().set_prop_cycle(None)
 # Fit binomial distribution and normal
 # --------------------
 for i,N in enumerate(num_nodes_list):
-    p = 0.5 # because median #conf.get_cdf(x=conf.mean)
+    p = conf.get_cdf(x=conf.mean) #0.5 # because median #
     n = 3*N
     ks = list(range(n+1))
     bs = []
@@ -118,7 +118,7 @@ Plot mean and standard deviation of the distributions above.
 Use this to inform what the parameters of the normal distributions 
 are that we fit the distributions above to.
 """
-num_nodes_list = [4,9,16,25]
+num_nodes_list = [4,9,16,25,36,49,64,81,100]
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()
@@ -135,22 +135,26 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_hori_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"mean $b^{1}$")
-ax.scatter(num_nodes_list, sd_1,   label=r"std. dev. $b^{1}$")
+ax.scatter(num_nodes_list, mean_1, label=r"$\mathbb{E}[b^{1}]$")
+ax.scatter(num_nodes_list, sd_1,   label=r"$\mathbb{S}[b^{1}]$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
-ax.plot(N_smooth, 3/2*N_smooth, color="tab:blue", ls=":", label=r"$\frac{3N}{2}$") # what it was in 6-reg
-ax.plot(N_smooth, 1.4*N_smooth, color="tab:blue", ls="--", label=r"$1.4N$")
-ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls=":", label=r"$\frac{\sqrt{N}}{2}$") # what it was in 6-reg
-ax.plot(N_smooth, numpy.sqrt(N_smooth)/2+(1/30)*N_smooth, color="tab:orange", ls="--", label=r"$\frac{\sqrt{N}}{2}+\frac{N}{30}$")
+ax.plot(2*numpy.array([1,4,9,16,25,36,49,64,81,100]),[3.3792, 13.4049 , 30.2594 , 53.7045  ,83.9426 ,120.899,  164.5025, 214.6811, 272.0894 ,335.6281])
+ax.plot(num_nodes_list, mean_1, color="tab:blue", ls="--")
+ax.plot(num_nodes_list, sd_1,color="tab:orange", ls="--" )
+
+#ax.plot(N_smooth, 3/2*N_smooth, color="tab:blue", ls=":", label=r"$\frac{3N}{2}$") # what it was in 6-reg
+#ax.plot(N_smooth, 1.4*N_smooth, color="tab:blue", ls="--", label=r"$1.4N$")
+#ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:orange", ls=":", label=r"$\frac{\sqrt{N}}{2}$") # what it was in 6-reg
+#ax.plot(N_smooth, numpy.sqrt(N_smooth)/2+(1/30)*N_smooth, color="tab:orange", ls="--", label=r"$\frac{\sqrt{N}}{2}+\frac{N}{30}$")
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
-                             y_label=None,
+                             y_label=r"Blocked edges statistics",
                              x_left=0.0,
                              x_right=102.0,
-                             y_bottom=0.0,
-                             y_top=52.0)
+                             y_bottom=None,
+                             y_top=250)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")

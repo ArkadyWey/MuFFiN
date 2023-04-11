@@ -12,8 +12,8 @@ import plotting
 
 # Parameters 
 # -----
-initialisation = "6-reglikeireg"
-num_reps       = 1000
+initialisation = "6-ireg"
+num_reps       = 10000
 sigma          = 0.3
 type_alpha     = "mean"
 
@@ -21,7 +21,7 @@ path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma
 
 #num_nodes_list = [16,25,36,49,64,81,100]
 #num_nodes_list = [4,9,16,25,36,49,64,81,100]
-num_nodes_list = [8]#[4,9,16,25,36,49]#[4,16,36,64,100]
+num_nodes_list = [4,16,36,64,100]
 num_tests = len(num_nodes_list)
 
 
@@ -56,7 +56,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__depo__old.svg"), f
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [4,9,16,25]
+num_nodes_list = [4,16,36,64,100]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -69,7 +69,8 @@ for t, N in enumerate(num_nodes_list):
 
     num_bins = 100
     min_val = 0.0
-    max_val = 3.0
+    max_val = 4*(1.0/numpy.sqrt(3))*conf.scaled_mean
+
 
     # Get parameter to histogram
     # ------
@@ -132,7 +133,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 
 # Plot mean and standard deviation of each histogram 
 # ------
-num_nodes_list = [4,9,16,25] #2*numpy.linspace(1,10,10,dtype=int)**2
+num_nodes_list = [4,9,16,25,36,49,64,81,100] #2*numpy.linspace(1,10,10,dtype=int)**2
 num_tests = len(num_nodes_list)
 
 # Get mean and standard deviation at each N
@@ -155,16 +156,30 @@ conf = configure.Configure(num_nodes=4,initialisation=initialisation,sigma=sigma
 
 rel = 4.0*conf.mean*conf.get_cdf(x=conf.mean)/numpy.sqrt(3.0)
 
-ax.scatter(num_nodes_list,mean_1-rel, label=r"mean $j^{1}-\frac{4}{\sqrt{3}}\bar{G}$cdf($\bar{G}$)")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{1}$")
+#ax.scatter(num_nodes_list,mean_1-rel, label=r"mean $j^{1}-\frac{4}{\sqrt{3}}\bar{G}$cdf($\bar{G}$)")
+#ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{1}$")
+#
+## Plot guide lines
+#N_smooth =  numpy.linspace(1,num_nodes_list[-1],500)
+##ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
+#
+#ax.plot(N_smooth, (mean_1[-1]-rel*numpy.ones_like(N_smooth)), color="tab:blue",ls="--")
+#ax.plot(N_smooth, numpy.exp(+0.01)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1.01N^{-\frac{1}{2}}$",ls="-")
+#print(numpy.exp(+0.01))
+
+
+
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[j^{1}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[j^{1}]$")
 
 # Plot guide lines
 N_smooth =  numpy.linspace(1,num_nodes_list[-1],500)
 #ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
 
-ax.plot(N_smooth, (mean_1[-1]-rel*numpy.ones_like(N_smooth)), color="tab:blue",ls="--")
-ax.plot(N_smooth, numpy.exp(-0.1)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.905N^{-\frac{1}{2}}$",ls="-")
-print(numpy.exp(-0.1))
+ax.plot(N_smooth, 2.074180794884483*numpy.ones_like(N_smooth), color="tab:blue",ls="-", label=r"$\bar{j}^{1}_{6}$")
+ax.plot(N_smooth, mean_1[-1]*numpy.ones_like(N_smooth), color="tab:blue",ls="--", label=r"$\bar{j}^{1}_{N \rightarrow \infty}$")
+ax.plot(N_smooth, numpy.exp(+0.01)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$1.01N^{-\frac{1}{2}}$",ls="-")
+print(numpy.exp(+0.01))
 
 
 # Cleanup graph 
@@ -193,7 +208,7 @@ fig, ax = plt.subplots(1,1)
 x = numpy.linspace(0,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{1}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{1}$$)$")
-ax.plot(x, -0.5*x + (-0.10*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.1$")
+ax.plot(x, -0.5*x + (+0.01*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.1$")
 
 # Cleanup graph
 # ----------
