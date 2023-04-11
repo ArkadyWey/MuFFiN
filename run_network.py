@@ -105,8 +105,6 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
         (lhs_2,rhs_1) = network_2D.get_pressure_problem(cond_2=cond_3[i_t,:,:], boundary_nodes_network_2=boundary_nodes_network_2)  
         pres_1        = network_2D.get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
         pres_2[i_t,:] = pres_1
-        if i_t==0:
-            print(pres_1)
 
 
     return (conc_2,pres_2,volu_2,cond_3,adhe_3,internal_edges)
@@ -122,13 +120,19 @@ if __name__ == "__main__":
     num_nodes = 4
     num_refs  = 3
     num_rows = 2
-    num_cols = 10
+    num_cols = 40
     # Conductance 
     # ----
-    mu = 0.5 
     sigma = 0.3
+    #mu = 0.5 
+    mu = -(sigma**2)/2.0 
+    print(mu)
 
     conc_in = 1.0
+    # NETWORK MODEL
+    time_end = 1
+    # MULTISCALE MODEL
+    #time_end = num_cols*int(numpy.sqrt(num_nodes))**2
 
 
     # Model 
@@ -142,8 +146,13 @@ if __name__ == "__main__":
 
     delt = 1.0/numpy.sqrt(num_nodes)
     epsi = 1.0/num_cols
-    alph = 1.0
-    beta = 1.0
+    alph = 1.0#1.0#0.2#1.0#1.0*(1.0/(epsi*delt))
+    beta = 1.0#1.0#0.5#1.0#1.0
+
+    print("delt:{}".format(delt))
+    print("epsi:{}".format(epsi))
+    print("alph:{}".format(alph))
+    print("beta:{}".format(beta))
 
     num_nodes_hori = int(num_cols*numpy.sqrt(num_nodes))
     num_edge_hori = int(numpy.sqrt(num_nodes)*num_cols)-1
@@ -152,13 +161,13 @@ if __name__ == "__main__":
 
     # Discretisation 
     # -----
-    num_times = 1001#5001#10001 # 1001
+    num_times = 101#2001#5001#10001 # 1001
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
     #num_nodes*num_cols
     #numpy.sqrt(num_nodes)*num_cols
     # numpy.sqrt(num_nodes)*num_cols
-    time_1 = numpy.linspace(0.0,1.0,num_times)
+    time_1 = numpy.linspace(0.0,time_end,num_times)
 
     # Initial conditions 
     # -----
