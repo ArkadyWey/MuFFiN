@@ -6,7 +6,7 @@ import argparse
 
 
 sigma          = 0.3
-initialisation = "6-rand"
+initialisation = "6-reg"
 
 parser = argparse.ArgumentParser(description="Input parameters")
 parser.add_argument("-N", "--num_nodes", dest="num_nodes", required=True,
@@ -45,25 +45,25 @@ for r in range(num_reps):
     #                                     leng_1=conf.leng_1,
     #                                     mu=0.5,
     #                                     sigma=sigma)
-    #cell = cells.Cell_2D_six_reg(num_nodes=conf.num_nodes,
-    #                            num_refs=3, 
-    #                            num_dims=2,
-    #                            mu=0.5,
-    #                            sigma=sigma)
-    cell = cells.Cell_2D_six_ireglikereg(num_nodes=conf.num_nodes,
-                                         num_refs=3, 
-                                         num_dims=2,
-                                         leng_1=conf.leng_1,
-                                         mu=0.5,
-                                         sigma=sigma)
-    
-    cell = cells.Cell_2D_six_rand(num_nodes=conf.num_nodes,
-                                     num_refs=3, 
-                                     num_dims=2,
-                                     mean=conf.mean,
-                                     leng_1=conf.leng_1,
-                                     mu=0.5,
-                                     sigma=sigma)
+    cell = cells.Cell_2D_six_reg(num_nodes=conf.num_nodes,
+                                num_refs=3, 
+                                num_dims=2,
+                                mu=0.5,
+                                sigma=sigma)
+    #cell = cells.Cell_2D_six_ireglikereg(num_nodes=conf.num_nodes,
+    #                                     num_refs=3, 
+    #                                     num_dims=2,
+    #                                     leng_1=conf.leng_1,
+    #                                     mu=0.5,
+    #                                     sigma=sigma)
+    #
+    #cell = cells.Cell_2D_six_rand(num_nodes=conf.num_nodes,
+    #                                 num_refs=3, 
+    #                                 num_dims=2,
+    #                                 mean=conf.mean,
+    #                                 leng_1=conf.leng_1,
+    #                                 mu=0.5,
+    #                                 sigma=sigma)
     
     for edge_leng in cell.edge_lengs:
         edge_lengs.append(edge_leng)
