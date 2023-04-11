@@ -12,6 +12,7 @@ import configure
 num_nodes      = 4
 sigma          = 0.3
 initialisation = "6-ireg"
+type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
@@ -76,8 +77,10 @@ plt.savefig(fname=os.path.join(path_results,"9-cells_random-structure.svg"), for
 # ----------------------------
 fig, ax = plt.subplots(1,1)
 
+print(pts_x.shape)
+print(pts_y.shape)
 # Plot all nodes
-ax.plot(pts_x, pts_y, 'go', markersize=5.0)
+ax.scatter(pts_x, pts_y,marker='o', s=50.0, facecolors='none', edgecolors='black', linewidths=2.0)
 
 # Plot edges
 for r in range(num_refs):
@@ -102,7 +105,8 @@ for r in range(num_refs):
 
                     linewidth = cond_init_4[i,j,r,s]
                     #ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=2.0, color="tab:blue"))
-                    ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=linewidth, color="tab:blue"))
+                    #ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=linewidth, color="tab:blue"))
+                    ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points, linewidth=linewidth, color="black"))
                     
                     # Plot nodes that have edges
                     #ax.plot(x_i,y_i,'go', markersize=5.0)
@@ -119,16 +123,18 @@ for p in range(len(pts_to_tri_2[:,0])):
     r = array[1]
     s = array[2]
 
-    ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
+    #ax.annotate(r"{}".format(i), (pts_to_tri_2[p,0], pts_to_tri_2[p,1]))
 
 # Plot cell boundaries
 for x in [-1*conf.l1,0,1*conf.l1]:
     for y in [-1*conf.l2,0,1*conf.l2]:
         if x==0 and y==0:
-            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            #ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.2, color="tab:red", edgecolor="tab:red", fill=True, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=1.0, color="black", edgecolor="black", fill=False, linestyle="-"))
         else:
             #pass
-            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            #ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
+            ax.add_patch(Rectangle(xy=(x, y), width=conf.l1, height=conf.l2, alpha=1.0, color="black", edgecolor="black", fill=False, linestyle="-"))
 
 # Clean up cell
 ax.set_xlim(left=-1*conf.l1,right=+2*conf.l1)

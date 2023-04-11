@@ -5,38 +5,237 @@ import copy
 
 import utils_preprocess_2D
 import configure
+import flow 
+
+
+import sys
+sys.path.append("/home/user/utils_python")
+import plotting
 
 # Parameters 
 # -----
 path_results = os.path.join(".","results/results_preprocess_2D")
-
+type_clog = "deposit"
 
 # Load variables
 # -----
-conc_max_disc_1 = numpy.load(os.path.join(path_results, "conc_max_disc_1.npy"))
-perm_prep_3     = numpy.load(os.path.join(path_results, "perm_prep_3.npy"))
-depo_prep_2     = numpy.load(os.path.join(path_results, "depo_prep_2.npy"))
-cond_tabl_5     = numpy.load(os.path.join(path_results, "cond_tabl_5.npy"))
-adhe_tabl_5     = numpy.load(os.path.join(path_results, "adhe_tabl_5.npy"))
-heav_5          = numpy.load(os.path.join(path_results, "heav_5.npy"))
-delt_5          = numpy.load(os.path.join(path_results, "delt_5.npy"))
+conc_max_or_tot_1 = numpy.load(os.path.join(path_results, "conc_max_or_tot_1.npy"))
+perm_prep_3       = numpy.load(os.path.join(path_results, "perm_prep_3.npy"))
+depo_prep_2       = numpy.load(os.path.join(path_results, "depo_prep_2.npy"))
+cond_tabl_5       = numpy.load(os.path.join(path_results, "cond_tabl_5.npy"))
+adhe_tabl_5       = numpy.load(os.path.join(path_results, "adhe_tabl_5.npy"))
+heav_5            = numpy.load(os.path.join(path_results, "heav_5.npy"))
+delt_5            = numpy.load(os.path.join(path_results, "delt_5.npy"))
 
 
 # Plot permeability and deposition parameter values on one axis 
 # -----
+plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 # Choose dimensions to plot
 m = 0
 n = 0
 
+print(conc_max_or_tot_1.shape)
+print(depo_prep_2[:,0])
 
-ax.plot(conc_max_disc_1, perm_prep_3[:,m,n], label=r"$k$", color="red")
-ax.plot(conc_max_disc_1, depo_prep_2[:,m],   label=r"$j$", color="blue")
-ax.set_xlabel("c")
-ax.legend()
-plt.savefig(fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_disc_1.svg"), format="svg")
+#ax.scatter(conc_max_or_tot_1, perm_prep_3[:,m,n], color="tab:blue",   marker="o"  ) # label=r"$k^{11}$"
+#ax.scatter(conc_max_or_tot_1, depo_prep_2[:,m]  , color="tab:orange", marker="o") # label=r"$j^{1}$" 
 
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_3[:,m,n],new_x_value=f,type_clog=type_clog), color="tab:blue") # , label=r"$\hat{k}^{11}$"
+ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=f,type_clog=type_clog), color="tab:orange") # label=r"$\hat{j}^{1}$ "
+
+alph = 1
+beta = 1
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls=":")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$f$",
+                             y_label=r"$k^{11},j^{1}$",
+                             x_left=None,
+                             x_right=None,
+                             y_bottom=None,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_or_tot_1.svg"), format="svg")
+
+
+
+# Plot conductance as a function of f 
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# non-random
+## Choose components to plot
+#i = 0 
+#j = 1
+#r1 = 0
+#r2 = 0
+#
+##ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:green", ls="-")
+
+
+print(conc_max_or_tot_1.shape)
+print(depo_prep_2[:,0])
+
+##ax.scatter(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:blue", marker="o")
+## random
+#for i in [0,1,2,3]:
+#    for j in [0,1,2,3]:
+#        for r1 in [-1,0,1]:
+#            for r2 in [-1,0,1]:
+#                if r1==0 and r2==0:
+#                    c = "tab:blue"
+#                elif r2!=0:
+#                    c="tab:orange"
+#                elif r1!=0:
+#                    c="tab:green"
+#                else: 
+#                    raise Exception("There is another scenario, we need another colour!")
+#                ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color=c, ls="-")
+##ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:blue", marker="o")
+# r = 0
+# -----
+# hori
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,1,0,0]), color="tab:blue", ls="-")
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,2,3,0,0]), color="tab:blue", ls="--")
+# vert
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,0]), color="tab:orange", ls="-")
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,0]), color="tab:orange", ls="--")
+# r = 1
+# -----
+# hori
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,0,1,0]), color="tab:green", ls="-")
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,3,2,1,0]), color="tab:green", ls="--")
+# vert
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,1]), color="tab:red", ls="-")
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,1]), color="tab:red", ls="--")
+
+
+alph = 1
+beta = 1
+
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls="--")
+ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls=":")
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+#ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=cond_tabl_5[:,i,j,r1,r2],new_x_value=f,type_clog=type_clog), color="tab:blue")
+#ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1,type_clog=type_clog), label=r"$\hat{j}^{1}$", color="blue")
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$f$",
+                             y_label=r"$G_{ij}^{\bm{r}}$",
+                             x_left=None,
+                             x_right=None,
+                             y_bottom=None,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5_v__conc_max_or_tot_1.svg"), format="svg")
+
+
+
+
+# Plot delta as a function of f 
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# Choose components to plot
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+# non-random
+# ----------------
+#ax.scatter(conc_max_or_tot_1, abs(delt_5[:,0,1,0,0]), color="tab:blue", marker="o")
+#ax.plot(   conc_max_or_tot_1, abs(delt_5[:,0,1,0,0]), color="tab:blue", ls="-")
+
+#ax.scatter(conc_max_or_tot_1, abs(delt_5[:,0,1,0,1]), color="tab:orange", marker="o")
+#ax.plot(   conc_max_or_tot_1, abs(delt_5[:,0,1,0,1]), color="tab:orange", ls="-")
+
+#ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:blue", marker="o")
+
+# random
+# -----------------
+#for i in [0,1,2,3]:
+#    for j in [0,1,2,3]:
+#        for r in [-1,0,1]:
+#            for m in [0]:
+#                if r==-1:
+#                    c="tab:blue"
+#                    ls="-"
+#                elif r==0:
+#                    c="tab:orange"
+#                    ls="--"
+#                elif r==1:
+#                    c="tab:green"
+#                    ls=":"
+#                ax.plot(   conc_max_or_tot_1, abs(delt_5[:,i,j,r,m]), color=c, ls=ls)
+# r = 0
+# -----
+# hori
+ax.plot(conc_max_or_tot_1, (delt_5[:,1,0,0,0]), color="tab:blue", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,3,2,0,0]), color="tab:blue", ls="--")
+# vert
+ax.plot(conc_max_or_tot_1, (delt_5[:,2,0,0,0]), color="tab:orange", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,3,1,0,0]), color="tab:orange", ls="--")
+# r = 1
+# -----
+# hori
+ax.plot(conc_max_or_tot_1, (delt_5[:,0,1,-1,0]), color="tab:green", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,2,3,-1,0]), color="tab:green", ls="--")
+# vert
+ax.plot(conc_max_or_tot_1, (delt_5[:,0,2,0,0]), color="tab:red", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,1,3,0,0]), color="tab:red", ls="--")
+
+
+## r = 0
+## -----
+## hori
+#ax.plot(conc_max_or_tot_1, (heav_5[:,1,0,0,0]), color="tab:blue", ls="-")
+#ax.plot(conc_max_or_tot_1, (heav_5[:,3,2,0,0]), color="tab:blue", ls="--")
+## vert
+#ax.plot(conc_max_or_tot_1, (heav_5[:,0,2,0,0]), color="tab:orange", ls="-")
+#ax.plot(conc_max_or_tot_1, (heav_5[:,1,3,0,0]), color="tab:orange", ls="--")
+## r = 1
+## -----
+## hori
+#ax.plot(conc_max_or_tot_1, (heav_5[:,0,1,-1,0]), color="tab:green", ls="-")
+#ax.plot(conc_max_or_tot_1, (heav_5[:,2,3,-1,0]), color="tab:green", ls="--")
+## vert
+#ax.plot(conc_max_or_tot_1, (heav_5[:,2,0,0,0]), color="tab:red", ls="-")
+#ax.plot(conc_max_or_tot_1, (heav_5[:,3,1,0,0]), color="tab:red", ls="--")
+## r = -1
+## -----
+## hori
+#ax.plot(conc_max_or_tot_1, abs(delt_5[:,0,1,-1,0]), color="tab:red", ls="-")
+#ax.plot(conc_max_or_tot_1, abs(delt_5[:,2,3,-1,0]), color="tab:red", ls="--")
+
+
+#f = numpy.linspace(0.0,20.0,1000)
+
+#ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=cond_tabl_5[:,i,j,r1,r2],new_x_value=f,type_clog=type_clog), color="tab:blue")
+#ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1,type_clog=type_clog), label=r"$\hat{j}^{1}$", color="blue")
+
+ax.plot(conc_max_or_tot_1, numpy.zeros_like(conc_max_or_tot_1), color="black", ls=":")
+ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls="--")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$f$",
+                             y_label=r"$\Delta_{ij}^{r^1}$",
+                             x_left=None,
+                             x_right=None,
+                             y_bottom=None,
+                             y_top=None)
+#                             y_bottom=-0.1,
+#                             y_top=1.1)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"delt_5_v__conc_max_or_tot_1.svg"), format="svg")
 
 
 # Plot adhe distribution
@@ -121,8 +320,3 @@ m = 0
 #print("-delt_5[0,:,:,r,m]:\n{}".format(-delt_5[0,:,:,r,m]))
 #print("cond_tabl_5[-1,:,:,r,s]:\n{}".format(cond_tabl_5[0,:,:,r,s]))
 #print("adhe_tabl_5[-1,:,:,r,s]:\n{}".format(adhe_tabl_5[-1,:,:,r,s]))
-
-conf = configure.Configure(num_nodes=2,initialisation="6-reg",sigma=0.3)
-#print(conf.mean)
-#print(conf.scaled_mean)
-#print()

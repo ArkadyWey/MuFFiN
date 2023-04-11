@@ -51,7 +51,7 @@ ax.plot(l_smooth,k_3,color="tab:green",ls="-", label=r"$l^{-1}$")
 
 
 ax.legend()
-ax.set_ylabel(r"$k^{00}$")
+ax.set_ylabel(r"$k^{11}$")
 ax.set_xlabel(r"$l$")
 plt.savefig(fname=os.path.join(path_results,"k__vs__l.svg"), format="svg")
 
@@ -79,6 +79,6 @@ ax.plot(l_smooth,j_3,color="tab:green",ls="-", label=r"$l$")
 
 
 ax.legend()
-ax.set_ylabel(r"$j^{0}$")
+ax.set_ylabel(r"$j^{1}$")
 ax.set_xlabel(r"$l$")
 plt.savefig(fname=os.path.join(path_results,"j__vs__l.svg"), format="svg")

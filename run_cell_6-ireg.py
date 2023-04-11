@@ -6,6 +6,9 @@ import os
 # Parameters 
 # -----
 initialisation = "6-ireg"
+type_alpha = "mean"
+mu = 0.5
+sigma=0.3
 
 path_results = os.path.join(".","results/results_cell_{}".format(initialisation))
 
@@ -179,7 +182,10 @@ cell = cells.Cell_2D_six_ireg(num_nodes=conf.num_nodes,
                               num_refs=conf.num_refs, 
                               num_dims=2,
                               mean=conf.mean,
-                              leng_1=conf.leng_1)
+                              leng_1=conf.leng_1, 
+                              mu=mu, 
+                              sigma=sigma
+                              )
 
 cond_init_4 = cell.cond_init_4
 pts_4       = cell.pts_4

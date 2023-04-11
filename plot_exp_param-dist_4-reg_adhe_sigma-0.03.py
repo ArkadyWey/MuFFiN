@@ -101,7 +101,7 @@ for i,N in enumerate(num_nodes_list):
 
 plotting.thesisify_post_plot(ax=ax,
 
-                             x_label=r"$b^{0 \parallel}$",
+                             x_label=r"$b^{1\parallel}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
                              x_right=70.0,
@@ -140,8 +140,8 @@ for t in range(num_tests):
     sd_1[t]     = numpy.std( a=count_adhe_hori_1, axis=0)
     
 # Plot scatter for distribution means
-ax.scatter(num_nodes_list, mean_1, label=r"$\mathbb{E}[b^{0 \parallel}]$")
-ax.scatter(num_nodes_list, sd_1,   label=r"$\mathbb{S}[b^{0 \parallel}]$")
+ax.scatter(num_nodes_list, mean_1, label=r"$\mathbb{E}[b^{1\parallel}]$")
+ax.scatter(num_nodes_list, sd_1,   label=r"$\mathbb{S}[b^{1\parallel}]$")
 
 # Plot guide lines
 N_smooth = numpy.linspace(1,max(num_nodes_list),500)
@@ -158,7 +158,7 @@ print("pcnt:{}".format(pcnt))
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
-                             y_label=None,
+                             y_label=r"Blocked edges statistics",
                              x_left=0.0,
                              x_right=102.0,
                              y_bottom=0.0,

@@ -24,7 +24,7 @@ path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma
 
 # Plot histograms with all bars same width
 # ----------------------------------------
-num_nodes_list = [2,8]#2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = 2*numpy.array([4,16,36,64,100])
 num_tests = len(num_nodes_list)
 fig, ax = plt.subplots(1,1)
 
@@ -38,7 +38,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 ax.set_xlim(left=0.5,right=3.0)
 ax.set_ylim(bottom=0.0)
@@ -55,7 +55,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2,8]#2*numpy.array([1,4,16,36,64,100])
+num_nodes_list = 2*numpy.array([1,4,16,36,64,100])
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -107,7 +107,7 @@ for t, N in enumerate(num_nodes_list):
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=min_val,
                              x_right=max_val,
@@ -123,7 +123,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm
 
 # Plot mean and standard deviation of each histogram 
 # ------------------------------------
-num_nodes_list = [2,8]#2*numpy.array([1,4,9,16,25,36,49,64,81,100])
+num_nodes_list = 2*numpy.array([1,4,9,16,25,36,49,64,81,100])
 num_tests = len(num_nodes_list)
 
 plotting.thesisify_pre_ax_creation()
@@ -141,25 +141,42 @@ for t in range(num_tests):
     sd_1[t]   = numpy.std(a=perm_effe_2, axis=0)
 
 
-# Plot scatter for distribution means
-# -------
-ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{00}-k_6$")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{00}$")
+## Plot scatter for distribution means
+## -------
+#ax.scatter(num_nodes_list,mean_1-2.77982, label=r"mean $k^{11}-k_6$")
+#ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $k^{11}$")
+#
+## Plot guide lines
+## ------
+#N_smooth = numpy.linspace(1,100,500)
+#ax.plot(N_smooth, numpy.exp(-2.9)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.049N^{-\frac{1}{2}}$",ls="-")
+#ax.plot(N_smooth, (mean_1[-1]-2.77982)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+#print(numpy.exp(-2.9))
+
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[k^{11}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[k^{11}]$")
 
 # Plot guide lines
 # ------
-N_smooth = numpy.linspace(1,100,500)
-ax.plot(N_smooth, numpy.exp(-2.9)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.049N^{-\frac{1}{2}}$",ls="-")
-ax.plot(N_smooth, (mean_1[-1]-2.77982)*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
+N_smooth = numpy.linspace(1,200,500)
+ax.plot(N_smooth, (conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls=":", label=r"$\bar{G}$")
+#ax.plot(N_smooth, (2.77982)*numpy.ones_like(N_smooth), color="tab:blue", ls="-", label=r"$\bar{k}_6$")
+ax.plot(N_smooth, mean_1[0]*numpy.ones_like(N_smooth), color="tab:blue", ls="-", label=r"$\bar{k}_6$")
+ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"$\bar{k}^{11}_{N \rightarrow \infty}$")
+ax.plot(N_smooth, numpy.exp(-2.9)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.055N^{-\frac{1}{2}}$",ls="-")
 print(numpy.exp(-2.9))
+print(mean_1[0])
+
+
+
 
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
-                             y_label=None,
+                             y_label=r"Permeability statistics",
                              x_left=-5.0,
-                             x_right=105.0,
+                             x_right=205.0,
                              y_bottom=None,
                              y_top=None)
 
@@ -176,8 +193,8 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 N_smoother = numpy.linspace(0.01,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{00}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{00}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{11}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{11}$$)$")
 ax.plot(N_smoother, -0.5*N_smoother + (-2.9*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.29$")
 
 # Cleanup graph 
@@ -240,7 +257,7 @@ ax.vlines(x=conf.median,
 # Cleanup graph 
 # ------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=4.0,

@@ -25,7 +25,7 @@ for N in Ns:
     sds.append(sd)
 
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 #ax.set_xlim(left=0.0,right=3.5)
 ax.legend()

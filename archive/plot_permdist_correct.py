@@ -76,8 +76,8 @@ for t in range(num_tests):
     
     ax.plot(numpy.linspace(min(bins), max(bins), num_pts_to_interp), dist_interp_1)
 
-#ax.set_xlabel(r"$k^{00}$")
-ax.set_xlabel(r"$j^{0}$")
+#ax.set_xlabel(r"$k^{11}$")
+ax.set_xlabel(r"$j^{1}$")
 ax.set_ylabel(r"Probability density")
 #ax.set_xlim(left=0.0,right=3.5)
 ax.legend()
@@ -104,18 +104,18 @@ for t in range(num_tests):
 print(mean_1)
 
 
-#ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean-$k^{00}_{N=1}$")
-ax.scatter(num_nodes_list,mean_1, label=r"mean $j^{0}$")
+#ax.scatter(num_nodes_list,mean_1-mean_1[0], label=r"mean-$k^{11}_{N=1}$")
+ax.scatter(num_nodes_list,mean_1, label=r"mean $j^{1}$")
 ax.plot(numpy.linspace(1,100,500), 0.406*numpy.power(numpy.linspace(1,100,500),-0.5), color="tab:orange")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
+ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{1}$")
 #ax.plot(numpy.linspace(1,100,500), (mean_1[-1]-mean_1[0])*numpy.ones_like(numpy.linspace(1,100,500)), color="tab:blue", ls="--")
 #ax.plot(numpy.linspace(0,100,1000), 0.1*numpy.power(numpy.linspace(0,100,1000),-0.5)-0.1, color="tab:blue")
 #ax.plot(numpy.linspace(0,100,500), 0.498*numpy.power(numpy.linspace(0,100,500),-0.5), color="tab:blue")
 
 # Log Log
 # -------
-#ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"mean $j^{0}$")
-#ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"std. dev. $j^{0}$")
+#ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"mean $j^{1}$")
+#ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"std. dev. $j^{1}$")
 #ax.plot( numpy.linspace(1,5,500), -0.5*numpy.linspace(1,5,500) + (-0.9*numpy.ones_like(numpy.linspace(1,5,500))), color="tab:orange")
 
 ax.set_xlabel(r"$N$")
@@ -146,7 +146,7 @@ x = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf = (numpy.exp(-(numpy.log(x) - mu)**2 / (2 * sigma**2))  / (x * sigma * numpy.sqrt(2 * numpy.pi))) 
 ax.plot(x, pdf, linewidth=2, color='r', label=r"pdf")
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 
 ax.legend()
