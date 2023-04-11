@@ -2,7 +2,7 @@ import numpy
 import scipy
 import scipy.sparse as sparse
 
-def get_conductance_and_adhesivity(conc_max_discs_1, cond_init_3, adhe_init_3, alpha):
+def get_conductance_and_adhesivity(conc_max_disc_1, cond_init_3, adhe_init_3, alpha):
     """
     Given initial conditions for the conductance and adhesivity at each edge, 
     and a list of max concentrations, return the conductance and adhesivity that 
@@ -10,7 +10,7 @@ def get_conductance_and_adhesivity(conc_max_discs_1, cond_init_3, adhe_init_3, a
 
     Parameters 
     ----------
-    - conc_max_discs_1: numpy.ndarray 
+    - conc_max_disc_1: numpy.ndarray 
         Max concentration values to be tested.
     - cond_init_3: numpy.ndarray
         cond_init_3[i,j,l] = initial conductance at edge i,j, r[l].
@@ -27,7 +27,7 @@ def get_conductance_and_adhesivity(conc_max_discs_1, cond_init_3, adhe_init_3, a
 
     # Define params
     # -----
-    num_concs = len(conc_max_discs_1)
+    num_concs = len(conc_max_disc_1)
     num_nodes = len(cond_init_3[0,:,0])
     num_refs = len(cond_init_3[0,0,:])
 
@@ -44,7 +44,7 @@ def get_conductance_and_adhesivity(conc_max_discs_1, cond_init_3, adhe_init_3, a
     # Set conductance and adhesivity in tables for each possible concentration value
     # -----
     for k in range(num_concs):
-        conc_disc = conc_max_discs_1[k] # discrete concentration
+        conc_disc = conc_max_disc_1[k] # discrete concentration
         for i in range(num_nodes):
             for j in range(num_nodes):
                 for l in range(num_refs):            

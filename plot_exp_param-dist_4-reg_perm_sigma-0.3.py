@@ -38,7 +38,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
                                                                         path_results=path_results,
                                                                         ax=ax)
 
-ax.set_xlabel(r"$k^{00}$")
+ax.set_xlabel(r"$k^{11}$")
 ax.set_ylabel(r"Probability density")
 ax.set_xlim(left=0.5,right=3.0)
 ax.set_ylim(bottom=0.0)
@@ -55,6 +55,7 @@ plt.savefig(fname=os.path.join(path_results,"prob_density__v__perm.svg"), format
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
+num_nodes_list = [1,4,16,36,64,100]
 num_nodes_list = [1,4,16,36,64,100]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
@@ -107,7 +108,7 @@ for t, N in enumerate(num_nodes_list):
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$k^{00}$",
+                             x_label=r"$k^{11}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=2*conf.mean,
@@ -116,7 +117,17 @@ plotting.thesisify_post_plot(ax=ax,
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm__with_approx.svg"))
 
+# Cleanup graph for poster
+# ----
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"Conductivity",
+                             y_label=r"Probability density",
+                             x_left=0.0,
+                             x_right=2*conf.mean,
+                             y_bottom=0.0,
+                             y_top=None)
 
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conductivity.svg"))
 
 
 
@@ -146,22 +157,21 @@ for t in range(num_tests):
 conf = configure.Configure(num_nodes=N,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
-ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[k^{00}]$")
-ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[k^{00}]$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[k^{11}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[k^{11}]$")
 
 # Plot guide lines
 # ------
 N_smooth = numpy.linspace(1,100,500)
-ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
 ax.plot(N_smooth, (conf.mean)*numpy.ones_like(N_smooth), color="tab:blue", ls="-", label=r"$\bar{G}$")
-ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue", ls="--")
-
+ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue", ls="--", label=r"$\bar{k}^{11}_{N \rightarrow \infty}$")
+ax.plot(N_smooth, 0.498*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.498N^{-\frac{1}{2}}$",ls="-")
 
 # Cleanup graph 
 # ----
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
-                             y_label=None,
+                             y_label=r"Permeability statistics",
                              x_left=-5.0,
                              x_right=105.0,
                              y_bottom=None,
@@ -180,8 +190,8 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 N_smoother = numpy.linspace(0.01,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{00}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{00}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $k^{11}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $k^{11}$$)$")
 ax.plot(N_smoother, -0.5*N_smoother + (numpy.log(0.498)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
 
 # Cleanup graph 
@@ -207,47 +217,55 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-k_and_logstd-
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-1.npy"))
-count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=50, density=True, align='mid', label=r"Permeability samples", alpha=0.4)
+count, bins_1, ignored = ax.hist(x=perm_effe_2[:], bins=50, density=True, align='mid', label=r"$\mathcal{K}$", alpha=0.4)
 
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
-conf = configure.Configure(num_nodes=N,
-                           initialisation=initialisation,
-                           sigma=sigma, type_alpha=type_alpha)
+conf  = configure.Configure(num_nodes=1,
+                            initialisation=initialisation,
+                            sigma=sigma,type_alpha=type_alpha)
 mu    = conf.mu
 sigma = conf.sigma
 x     = numpy.linspace(min(bins_1), max(bins_1), 1_000)
 pdf   = conf.get_pdf(x=x) 
-ax.plot(x, pdf, linewidth=2, color='r', label=r"Conductance pdf")
+ax.plot(x, pdf, linewidth=2, color='tab:orange', label=r"$\mathcal{G}$")
 
 # Find proportion of GF above mean
 x   = conf.mean
 cdf = conf.get_cdf(x=x) # proportion up to mean
 
+ax.vlines(x=conf.mean, 
+          ymin=0.0, 
+          ymax=1.0, 
+          color="tab:orange", 
+          linewidth=2.0, 
+          linestyle=(0,(3,3)), 
+          alpha=1.0, 
+          label=r"$\bar{G}$")
 
-#ax.vlines(x=conf.mean, 
-#          ymin=0.0, 
-#          ymax=1.0, 
-#          color="tab:red", 
-#          linewidth=2.0, 
-#          linestyle="--", 
-#          alpha=1.0, 
-#          label="mean")
+ax.vlines(x=mean_1[0], 
+          ymin=0.0, 
+          ymax=1.0, 
+          color="tab:green", 
+          linewidth=2.0, 
+          linestyle=(3,(3,3)), 
+          alpha=1.0, 
+          label=r"$\mathbb{E}[k^{11}]$")
 #
-#ax.vlines(x=conf.median, 
+#ax.vlines(x=numpy.exp(conf.mu), 
 #          ymin=0.0, 
-#          ymax=1.0, 
-#          color="black", 
+#          ymax=10.0, 
+#          color="tab:red", 
 #          linewidth=2.0, 
 #          linestyle=":", 
 #          alpha=1.0,
-#          label="median")
+#          label=r"$\mathbb{M}[G_{ij}^{r,0}]$")
 
 # Cleanup graph 
 # ------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=None,
+                             x_label=r"$k^{11}_{N=1}$ and $G_{ij}^{r0}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=4.0,
@@ -255,3 +273,94 @@ plotting.thesisify_post_plot(ax=ax,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__perm_N=1.svg"), format="svg")
+
+
+
+
+
+
+
+# Plot difference between mean and limit of mean 
+# ------------------------------------
+num_nodes_list = [1,4,9,16,25,36,49,64,81,100]
+num_tests = len(num_nodes_list)
+
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# Get mean and standard deviation for each N
+# -------
+mean_1 = numpy.zeros(shape=num_tests)
+for t in range(num_tests):
+    N = num_nodes_list[t]
+
+    perm_effe_2 = numpy.load(os.path.join(path_results, "perm_effe_1_N-{}.npy".format(N)))
+    mean_1[t] = numpy.mean(a=perm_effe_2, axis=0)
+
+# Plot scatter for distribution means
+# -------
+conf = configure.Configure(num_nodes=N,
+                           initialisation=initialisation,
+                           sigma=sigma, type_alpha=type_alpha)
+ax.scatter(num_nodes_list,(mean_1-mean_1[-1])/mean_1[-1], label=r"$E_{\mathrm{c}}^{k}$")
+
+# Plot guide lines
+# ------
+N_smooth = numpy.linspace(1,100,500)
+ax.plot(N_smooth, numpy.exp(-3.1)*numpy.power(N_smooth,-1.0), color="tab:blue", label=r"$0.05N^{-1}$",ls="-")
+print(numpy.exp(-3.1))
+
+
+colors = ["tab:orange","tab:green","tab:red"]
+for i,N in enumerate([4,9,16]):
+    ax.vlines(x=N, 
+              ymin=-0.002, 
+              ymax=numpy.exp(-3.1)*numpy.power(N,-1.0), 
+              color=colors[i], 
+              linewidth=2.0, 
+              linestyle="--", 
+              alpha=1.0, 
+              label=r"$N={}$".format(N))
+    N_smooth = numpy.linspace(-0.01,N,1000)
+    ax.plot(N_smooth, numpy.exp(-3.1)*numpy.power(N,-1.0)*numpy.ones_like(N_smooth), color=colors[i],linestyle="--")
+
+
+# Cleanup graph 
+# ----
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$N$",
+                             y_label=r"$E_{\mathrm{c}}^{k}$",
+                             x_left=-0.01,
+                             x_right=105.0,
+                             y_bottom=-0.001,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-k_diff__v__N.svg"), format="svg")
+
+
+
+
+
+
+# Plot Log Log to check gradient of mean diff
+# -------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+N_smoother = numpy.linspace(0.01,5,500)
+ax.scatter(numpy.log(num_nodes_list),numpy.log((mean_1-mean_1[-1])/mean_1[-1]), label=r"log(mean $k^{11}$$)$")
+ax.plot(N_smoother, -1*N_smoother + ((-3.1)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
+
+# Cleanup graph 
+# -------------
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"log$(N)$",
+                             y_label=None,
+                             x_left=None,
+                             x_right=None,
+                             y_bottom=None,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-k_diff__v__logN.svg"), format="svg")
+
+print(conf.mean)

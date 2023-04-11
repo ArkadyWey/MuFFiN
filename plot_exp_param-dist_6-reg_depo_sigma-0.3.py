@@ -47,7 +47,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
 conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma,type_alpha=type_alpha)
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
+                             x_label=r"$j^{1}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=None,
@@ -62,9 +62,9 @@ for i in range(4*N+1):
     ax.vlines(x=i*(1.0/2.0)*conf.scaled_mean/N, 
               ymin=0.0, 
               ymax=1.0, 
-              color="black", 
+              color="tab:orange", 
               linewidth=2.0, 
-              linestyle=":", 
+              linestyle="--", 
               alpha=1.0,
               label="median")
 
@@ -83,7 +83,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = 2*numpy.array([4,16,36,64,100])
+#num_nodes_list = 2*numpy.array([4,16,36,64,100])
+num_nodes_list = 2*numpy.array([1])
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -96,7 +97,7 @@ for t, N in enumerate(num_nodes_list):
 
     num_bins = 100
     min_val = 0.0
-    max_val = (4.0/numpy.sqrt(3.0))*conf.mean
+    max_val = (4.0/numpy.sqrt(3.0))*conf.scaled_mean
 
     # Get parameter to histogram
     # ------
@@ -114,8 +115,8 @@ for t, N in enumerate(num_nodes_list):
                                                   bins=bin_edges.bin_edges, 
                                                   density=True, 
                                                   align='mid', 
-                                                  label=r"$N={}$".format(num_nodes_list[t]), 
                                                   alpha=0.4, color=colors[t])
+#                                                  label=r"$N={}$".format(num_nodes_list[t]), 
    
     
     # Interpolate histogram
@@ -174,24 +175,24 @@ N = num_nodes_list[0]
 for i in range(4*N+1):
     ax.vlines(x=i*(1.0/numpy.sqrt(3))*conf.scaled_mean/N, 
               ymin=0.0, 
-              ymax=1.0, 
-              color="black", 
+              ymax=1.5, 
+              color="tab:orange", 
               linewidth=2.0, 
-              linestyle=":", 
+              linestyle="--", 
               alpha=1.0)
 
 
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
+                             x_label=r"$j^{1}$",
                              y_label=r"Probability density",
                              x_left=0.0-0.1,
                              x_right=max_val+0.1,
                              y_bottom=0.0,
                              y_top=None)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo__with_approx.svg"))
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo__with_approx_N={}.svg".format(N)))
 
 
 
@@ -202,7 +203,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 # -----------------------    
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-num_nodes_list = [2*4,2*16,2*36,2*64,2*100]
+num_nodes_list = [2*1,2*4,2*16,2*36,2*64,2*100]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
@@ -252,7 +253,7 @@ for t, N in enumerate(num_nodes_list):
 # Cleanup graph 
 # -------------
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$j^{0}$",
+                             x_label=r"$j^{1}$",
                              y_label=r"Probability density",
                              x_left=0.0,
                              x_right=8*(1.0/numpy.sqrt(3))*conf.scaled_mean/2.0,
@@ -291,17 +292,24 @@ conf = configure.Configure(num_nodes=2,initialisation=initialisation,sigma=sigma
 
 rel = 4.0*conf.mean*conf.get_cdf(x=conf.mean)/numpy.sqrt(3.0)
 
-ax.scatter(num_nodes_list,mean_1-rel, label=r"mean $j^{0}-\frac{4}{\sqrt{3}}\bar{G}$cdf($\bar{G}$)")
-ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{0}$")
+#ax.scatter(num_nodes_list,mean_1-rel, label=r"mean $j^{1}-\frac{4}{\sqrt{3}}\bar{G}$cdf($\bar{G}$)")
+#ax.scatter(num_nodes_list,sd_1, label=r"std. dev. $j^{1}$")
+ax.scatter(num_nodes_list,mean_1, label=r"$\mathbb{E}[j^{1}]$")
+ax.scatter(num_nodes_list,sd_1, label=r"$\mathbb{S}[j^{1}]$")
+
+
 
 # Plot guide lines
 N_smooth =  numpy.linspace(1,num_nodes_list[-1],500)
 #ax.plot(N_smooth, (mean_1[-1]-mean_1[0])*numpy.ones_like(N_smooth), color="tab:blue",ls="--")
 
-ax.plot(N_smooth, (mean_1[-1]-rel*numpy.ones_like(N_smooth)), color="tab:blue",ls="--")
+ax.plot(N_smooth, mean_1[-1]*numpy.ones_like(N_smooth), color="tab:blue",ls="--", label=r"$\bar{j}^{1}_{N \rightarrow \infty}$")
+ax.plot(N_smooth, 4.0*(conf.scaled_mean/numpy.sqrt(3.0))*conf.get_cdf(conf.mean)*numpy.ones_like(N_smooth), color="tab:blue",ls="-", label=r"$\frac{4}{\sqrt{3}}\bar{G}\mathrm{cdf}(\bar{G})$")
+#ax.plot(N_smooth, (mean_1[-1]-rel*numpy.ones_like(N_smooth)), color="tab:blue",ls="--")
 ax.plot(N_smooth, numpy.exp(-0.1)*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.905N^{-\frac{1}{2}}$",ls="-")
 print(numpy.exp(-0.1))
-
+print(conf.scaled_mean)
+print(4.0*(conf.scaled_mean/numpy.sqrt(3.0))*conf.get_cdf(conf.mean))
 
 # Cleanup graph 
 # -------------
@@ -325,8 +333,8 @@ plotting.thesisify_pre_ax_creation
 fig, ax = plt.subplots(1,1)
 
 x = numpy.linspace(0,5,500)
-ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{0}$$)$")
-ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{0}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{1}$$)$")
+ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{1}$$)$")
 ax.plot(x, -0.5*x + (-0.10*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.1$")
 
 # Cleanup graph
@@ -334,3 +342,5 @@ ax.plot(x, -0.5*x + (-0.10*numpy.ones_like(x)), color="tab:orange", label=r"$-\f
 plotting.thesisify_post_plot(ax=ax,x_label=r"log$(N)$")
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-j_and_logstd-j__v__logN.svg"), format="svg")
+
+print(4.0*(conf.scaled_mean/numpy.sqrt(3.0))*conf.get_cdf(conf.mean))
