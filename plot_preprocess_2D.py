@@ -14,7 +14,9 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_preprocess_2D")
+#path_results = os.path.join(".","results/results_preprocess_2D")
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+
 type_clog = "deposit"
 
 # Load variables

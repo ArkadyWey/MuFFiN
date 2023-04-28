@@ -103,7 +103,9 @@ if __name__ == "__main__":
 
     # Preprocess
     # ----------
-    path_results_preprocess = os.path.join(".","results/results_preprocess_2D")
+    #path_results_preprocess = os.path.join(".","results/results_preprocess_2D") # thesis
+    path_results_preprocess = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+
 
     conc_max_or_tot_1  = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_or_tot_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
     perm_prep_3      = numpy.load(file=os.path.join(path_results_preprocess,"perm_prep_3.npy"),      mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
@@ -115,11 +117,11 @@ if __name__ == "__main__":
 
     # Parameters 
     # ----------
-    num_times = 1001#1001#5001#10001 # 1001
+    num_times = 2001#1001#5001#10001 # 1001
     time_1 = numpy.linspace(0,1,num_times)
     dt = time_1[1] - time_1[0]
 
-    num_positions = 161#101#501#1001 # 101
+    num_positions = 1001#161#101#501#1001 # 101
     posi_1 = numpy.linspace(0,1,num_positions)
     dx = posi_1[1]-posi_1[0]
 
@@ -139,7 +141,8 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    path_results = os.path.join(".","results/results_flow")
+    #path_results = os.path.join(".","results/results_flow") # thesis
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 

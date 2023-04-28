@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     # Network
     # ----
-    initialisation = "4-reg"
+    initialisation = "4-reg_prescribed" # 4-reg
     num_nodes = 4
     num_refs  = 3
     num_rows = 2
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     delt = 1.0/numpy.sqrt(num_nodes)
     epsi = 1.0/num_cols
-    alph = 1.0#1.0#0.2#1.0#1.0*(1.0/(epsi*delt))
+    alph = 1.0#1.0#1.0#0.2#1.0#1.0*(1.0/(epsi*delt))
     beta = 1.0#1.0#0.5#1.0#1.0
 
     print("delt:{}".format(delt))
@@ -209,7 +209,8 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    path_results = os.path.join(".","results/results_network")
+    #path_results = os.path.join(".","results/results_network") # thesis
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network") # paper
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
@@ -240,21 +241,21 @@ if __name__ == "__main__":
 
     print(datetime.datetime.now() - begin_time)
 
-    row = 1
-    cols_1 = numpy.linspace(0,num_cols-1,num_cols)
-    for i_t in [0,250,500,750,1000]:
-        conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,0:-1], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
-        concs = []
-        for col in range(num_cols):
-            for i in [0,1]:
-                concs.append(conc_3[i,row,col])
-        plt.plot(numpy.linspace(0,1,num_nodes_hori),concs)   
-    plt.plot(numpy.linspace(0,1,num_nodes_hori),   ((1-epsi*delt*alph)**numpy.linspace(0,1.0/(delt*epsi)-1, int(numpy.sqrt(num_nodes)*num_cols))), color="black", ls="--")
-    print((1-epsi)**numpy.linspace(0,num_cols-1,num_cols))
-    print((1-epsi)**(num_cols-1))
-    print((1-epsi)**(num_cols-2))
-    #plt.ylim(0,1.01)
-    plt.show()
+    #row = 1
+    #cols_1 = numpy.linspace(0,num_cols-1,num_cols)
+    #for i_t in [0,250,500,750,1000]:
+    #    conc_3 = utils_indexing.reshape_1_to_3_internal_nodes(a_1=conc_2[i_t,0:-1], num_nodes=num_nodes,num_rows=num_rows,num_cols=num_cols)
+    #    concs = []
+    #    for col in range(num_cols):
+    #        for i in [0,1]:
+    #            concs.append(conc_3[i,row,col])
+    #    plt.plot(numpy.linspace(0,1,num_nodes_hori),concs)   
+    #plt.plot(numpy.linspace(0,1,num_nodes_hori),   ((1-epsi*delt*alph)**numpy.linspace(0,1.0/(delt*epsi)-1, int(numpy.sqrt(num_nodes)*num_cols))), color="black", ls="--")
+    #print((1-epsi)**numpy.linspace(0,num_cols-1,num_cols))
+    #print((1-epsi)**(num_cols-1))
+    #print((1-epsi)**(num_cols-2))
+    ##plt.ylim(0,1.01)
+    #plt.show()
 
     print(datetime.datetime.now() - begin_time)
 

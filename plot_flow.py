@@ -8,7 +8,8 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join(".","results/results_flow")
+#path_results = os.path.join(".","results/results_flow") # thesis
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
 #path_results = os.path.join(".","results/results_comparison/epsi-0.025/results_flow")
 
 

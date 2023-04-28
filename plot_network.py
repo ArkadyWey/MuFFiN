@@ -19,7 +19,9 @@ if __name__ == "__main__":
 
     # Parameters 
     # -----
-    path_results = os.path.join(".","results/results_network")
+    #path_results = os.path.join(".","results/results_network") # thesis
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network") # paper
+
     #path_results = os.path.join(".","results/results_network/thesis/sweep-alph/tiny-sweep/alph-0.1_T-1")
     #path_results = "/home/user/Dropbox/Gore-OxfordCDT-2019/repos/multiscale-models/multiscale_models/results/results_network/thesis/sweep-alph/large-sweep/alph-zero"
 
