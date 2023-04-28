@@ -13,7 +13,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
     """
     """
     beta=1.0#1.0#10#20.0
-    gamm=1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
+    gamm=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
     # Get paameters needed to find perm and depo
     # -----
     conf = configure.Configure(num_nodes=num_nodes, 
@@ -32,7 +32,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
     #print(len(conc_max_or_tot_1))
     #print(conc_max_or_tot_1)
     cond_init_4     = conf.cond_init_4 
-    adhe_init_4     = conf.adhe_init_4 
+    adhe_init_4     = gamm*conf.adhe_init_4 
     alpha           = conf.alpha 
     refs_2          = conf.refs_2 
     leng_1          = conf.leng_1
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 4
-    initialisation = "4-reg"
+    initialisation = "4-reg_prescribed" # 4-reg
     sigma = 0.3
     type_alpha = "mean"
     type_clog  = "deposit"
@@ -141,7 +141,8 @@ if __name__ == "__main__":
 
     # Save results 
     # -----
-    path_results = os.path.join(".","results/results_preprocess_2D")
+    #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
