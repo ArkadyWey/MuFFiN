@@ -116,11 +116,11 @@ if __name__ == "__main__":
 
     # Network
     # ----
-    initialisation = "4-reg_prescribed" # 4-reg
+    initialisation = "4-reg" # 4-reg
     num_nodes = 4
     num_refs  = 3
     num_rows = 2
-    num_cols = 40
+    num_cols = 10
     # Conductance 
     # ----
     sigma = 0.3
@@ -178,16 +178,18 @@ if __name__ == "__main__":
                                                                         num_cols=num_cols)
     is_periodic = True
 
-    (cond_init_6,conc_init_3,volu_init_3) = network_2D.make_initial_network(num_nodes=num_nodes, 
-                                                                            num_refs=num_refs,
-                                                                            num_rows=num_rows,
-                                                                            num_cols=num_cols,
-                                                                            is_periodic=is_periodic,
-                                                                            initialisation=initialisation,
-                                                                            mu=mu,
-                                                                            sigma=sigma,
-                                                                            boundary_nodes_cell_2=boundary_nodes_cell_2,
-                                                                            conc_in=conc_in)
+    (cond_init_6,conc_init_3,volu_init_3, _cond_init_4) = network_2D.make_initial_network(num_nodes=num_nodes, 
+                                                                                          num_refs=num_refs,
+                                                                                          num_rows=num_rows,
+                                                                                          num_cols=num_cols,
+                                                                                          is_periodic=is_periodic,
+                                                                                          initialisation=initialisation,
+                                                                                          mu=mu,
+                                                                                          sigma=sigma,
+                                                                                          boundary_nodes_cell_2=boundary_nodes_cell_2,
+                                                                                          conc_in=conc_in)
+
+
 
     
     adhe_init_6 = delt*alph*numpy.ones(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
@@ -221,6 +223,7 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"volu_2.npy"), arr=volu_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"cond_3.npy"), arr=cond_3, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
 
     parameters = {}
     parameters["num_nodes"] = num_nodes
@@ -238,6 +241,7 @@ if __name__ == "__main__":
 
     utils_sl.save_dict(dictname=parameters,filename=os.path.join(path_results,"parameters.pkl"))
 
+    numpy.save(file=os.path.join(path_results,"cond_init_4.npy"), arr=_cond_init_4, allow_pickle=True, fix_imports=True)
 
     print(datetime.datetime.now() - begin_time)
 

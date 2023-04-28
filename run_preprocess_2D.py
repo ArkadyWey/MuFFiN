@@ -9,7 +9,7 @@ import preprocess_blocking_2D
 import preprocess_deposition_2D
 
 
-def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, type_clog: str):
+def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, type_clog: str, path_cond_init_4: str):
     """
     """
     beta=1.0#1.0#10#20.0
@@ -19,7 +19,8 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
     conf = configure.Configure(num_nodes=num_nodes, 
                                initialisation=initialisation, 
                                sigma=sigma,
-                               type_alpha=type_alpha)
+                               type_alpha=type_alpha, 
+                               path_cond_init_4=path_cond_init_4)
     
     conc_max_or_tot_1 = conf.conc_max_or_tot_1 
     #a = numpy.linspace(0.0,0.85,11)
@@ -114,7 +115,17 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
     #if depo_2[-1,0] > 4.0:
     #    exit()
     return (perm_3, depo_2, conc_max_or_tot_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5)
-    
+
+def get_path_to_initial_conductance():
+    """
+    In the case where the initial conductance is specified by the network model, 
+    get the path to where the initial cell is stored. 
+    """
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+    path_head, path_tail = os.path.split(path_results)
+    path_cond_init_4 = os.path.join(path_head,"results_network") + "/cond_init_4.npy"
+    return path_cond_init_4
+
 if __name__ == "__main__":
 
 
@@ -123,10 +134,11 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 4
-    initialisation = "4-reg_prescribed" # 4-reg
+    initialisation = "specified"#"4-reg_prescribed" # 4-reg
     sigma = 0.3
     type_alpha = "mean"
     type_clog  = "deposit"
+    path_cond_init_4 = get_path_to_initial_conductance()
     
     # Get permeability and deposition parameter
     # -----
@@ -134,7 +146,8 @@ if __name__ == "__main__":
                                                                                                  initialisation=initialisation,
                                                                                                  sigma=sigma,
                                                                                                  type_alpha=type_alpha,
-                                                                                                 type_clog=type_clog)
+                                                                                                 type_clog=type_clog, 
+                                                                                                 path_cond_init_4=path_cond_init_4)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))

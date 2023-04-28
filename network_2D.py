@@ -462,7 +462,7 @@ def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int
             else: 
                 raise Exception("is_periodic should be a boolean.")
     
-    return (cond_init_6,conc_init_3,volu_init_3)
+    return (cond_init_6,conc_init_3,volu_init_3,  cond_init_4) # cond_init_4 only needed for saving
 
 
 

@@ -13,16 +13,18 @@ class Configure():
     def __init__(self, num_nodes: int, 
                        initialisation: str,
                        sigma: float,
-                       type_alpha: str):
+                       type_alpha: str, 
+                       path_cond_init_4: str = ""):
         """
         """      
 
         # Get class parameters 
         # -----
-        self.num_nodes      = num_nodes
-        self.initialisation = initialisation
-        self.sigma          = sigma
-        self.type_alpha     = type_alpha
+        self.num_nodes        = num_nodes
+        self.initialisation   = initialisation
+        self.sigma            = sigma
+        self.type_alpha       = type_alpha
+        self.path_cond_init_4 = path_cond_init_4
 
         # Get input parameters from parameters dictionary or classself.num_concs parameters
         # -----
@@ -122,8 +124,13 @@ class Configure():
             l1 = n*1.0
             l2 = n*1.0
 
+        elif initialisation == "specified":
+            n = int(numpy.sqrt(num_nodes))
+            l1 = n*1.0
+            l2 = n*1.0
+
         else: 
-            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', or '6-reglikeireg'.")
+            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', '6-reglikeireg', or 'specified.")
 
         return (l1, l2)
 
@@ -237,8 +244,11 @@ class Configure():
             # Scale factor is length of edge
             scaled_mean = self.mean
 
+        elif self.initialisation == "specified":
+            scaled_mean = self.mean
+
         else: 
-            raise Exception("initialisation must be '4-reg', '6-reg', or '6-ireg'.")
+            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', 'specified'.")
 
 
         return scaled_mean
@@ -302,8 +312,11 @@ class Configure():
             # Scale factor is length of edge
             scaled_median = self.median
 
+        elif self.initialisation == "specified":
+            scaled_median = self.median
+
         else: 
-            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', or '6-reglikeireg'.")
+            raise Exception("initialisation must be '4-reg', '6-reg', '6-ireg', '6-reglikeireg', or 'specified'.")
 
         return scaled_median
 
@@ -373,6 +386,10 @@ class Configure():
                                                          leng_1=self.leng_1,
                                                          mu=self.mu,
                                                          sigma=self.sigma)    
+        
+        elif self.initialisation == "specified":
+            cond_init_4 = initial_conditions_2D.specified(path_cond_init_4=self.path_cond_init_4)
+
         else: 
             raise Exception("""initialisation must be: 4-reg_prescribed or \
                                4-reg or 6-ireg or 6-reg or '6-reglikeireg'.""")

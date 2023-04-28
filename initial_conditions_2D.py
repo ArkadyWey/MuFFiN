@@ -342,3 +342,8 @@ def six_rand(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, 
 
     cond_init_4 = cell.cond_init_4
     return cond_init_4
+
+
+def specified(path_cond_init_4:str): 
+    cond_init_4 = numpy.load(path_cond_init_4)
+    return cond_init_4
