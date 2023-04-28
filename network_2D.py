@@ -370,14 +370,17 @@ def make_initial_network(num_nodes:int, num_refs:int, num_rows:int, num_cols:int
     # Define initial cond
     # -----
     cond_init_6 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs,num_rows,num_cols))
+    # Get initial cell 
+    if initialisation == "4-reg":
+        cond_init_4 = initial_conditions_2D.four_reg(num_nodes=num_nodes,num_refs=num_refs,mu=mu,sigma=sigma)
+    elif initialisation == "4-reg_prescribed":
+        cond_init_4 = initial_conditions_2D.four_reg_prescribed(num_nodes=num_nodes,num_refs=num_refs)
+    else: 
+        raise Exception("Can only make initial network if initialisation=='4-reg'. Write make_initial_network() for new initialisation.")
+
     for i_cell in range(num_rows):
         for j_cell in range(num_cols):
-            if initialisation == "4-reg":
-                cond_init_6[:,:,:,:,i_cell,j_cell] = initial_conditions_2D.four_reg(num_nodes=num_nodes,num_refs=num_refs,mu=mu,sigma=sigma)
-            elif initialisation == "4-reg_prescribed":
-                cond_init_6[:,:,:,:,i_cell,j_cell] = initial_conditions_2D.four_reg_prescribed(num_nodes=num_nodes,num_refs=num_refs)
-            else: 
-                raise Exception("Can only make initial network if initialisation=='4-reg'. Write make_initial_network() for new initialisation.")
+            cond_init_6[:,:,:,:,i_cell,j_cell] = cond_init_4
             
             # Correct boundary conditions
             # -----
