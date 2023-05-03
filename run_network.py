@@ -11,7 +11,7 @@ begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
 
 
-def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_network_2,conc_in,alph,beta,delt,epsi):
+def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_network_2,conc_in,alph,beta,delt,epsi,incr):
     """
     - cond_init_6: numpy.ndarray
         cond_init_6[i,j,r0,r1,i_c,j_c]
@@ -107,6 +107,12 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
         pres_2[i_t,:] = pres_1
 
 
+    conc_2 = conc_2[0::incr,:] 
+    pres_2 = pres_2[0::incr,:]
+    volu_2 = volu_2[0::incr,:]
+    cond_3 = cond_3[0::incr,:]
+    adhe_3 = adhe_3[0::incr,:]
+
     return (conc_2,pres_2,volu_2,cond_3,adhe_3,internal_edges)
 
 if __name__ == "__main__":
@@ -116,7 +122,7 @@ if __name__ == "__main__":
 
     # Network
     # ----
-    initialisation = "4-reg" # 4-reg
+    initialisation = "4-reg_prescribed" # 4-reg
     num_nodes = 4
     num_refs  = 3
     num_rows = 2
@@ -130,7 +136,7 @@ if __name__ == "__main__":
 
     conc_in = 1.0
     # NETWORK MODEL
-    time_end = 1
+    time_end = 1000
     # MULTISCALE MODEL
     #time_end = num_cols*int(numpy.sqrt(num_nodes))**2
 
@@ -147,7 +153,9 @@ if __name__ == "__main__":
     delt = 1.0/numpy.sqrt(num_nodes)
     epsi = 1.0/num_cols
     alph = 1.0#1.0#1.0#0.2#1.0#1.0*(1.0/(epsi*delt))
-    beta = 1.0#1.0#0.5#1.0#1.0
+    beta = 0.01#1.0#0.5#1.0#1.0
+
+    incr = 100 # time increment - save every incr-th time point
 
     print("delt:{}".format(delt))
     print("epsi:{}".format(epsi))
@@ -161,13 +169,14 @@ if __name__ == "__main__":
 
     # Discretisation 
     # -----
-    num_times = 101#2001#5001#10001 # 1001
+    num_times = 20001#101#2001#5001#10001 # 1001
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
     #num_nodes*num_cols
     #numpy.sqrt(num_nodes)*num_cols
     # numpy.sqrt(num_nodes)*num_cols
     time_1 = numpy.linspace(0.0,time_end,num_times)
+
 
     # Initial conditions 
     # -----
@@ -206,7 +215,8 @@ if __name__ == "__main__":
                                                                alph=alph,
                                                                beta=beta,
                                                                delt=delt,
-                                                               epsi=epsi)
+                                                               epsi=epsi,
+                                                               incr=incr)
 
 
     # Save results 
@@ -216,6 +226,7 @@ if __name__ == "__main__":
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
+    time_1 = time_1[0::incr]
     numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
 
     numpy.save(file=os.path.join(path_results,"conc_2.npy"), arr=conc_2, allow_pickle=True, fix_imports=True)
@@ -236,6 +247,7 @@ if __name__ == "__main__":
     parameters["beta"] = beta
     parameters["delt"] = delt
     parameters["epsi"] = epsi
+    parameters["incr"] = incr
 
     parameters["initialisation"] = initialisation
 

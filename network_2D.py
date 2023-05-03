@@ -601,7 +601,7 @@ def get_conductance(conc_1:numpy.ndarray, pres_1:numpy.ndarray, cond_2:numpy.nda
 
     # NETWORK MODEL
     rhs_2  = -((delt*alph*beta)/(epsi*delt**2))*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
-    
+    #print(rhs_2)
     # MULTISCALE MODEL
     #rhs_2  = -alph*delt*beta*conc_2*abs(pdif_2)*cond_2**(3.0/2.0)#*(1.0/gamm)#*(gamm)#*epsi      #*adhe_2*(1/(epsi**(1.0/2.0)))
     #print(beta)

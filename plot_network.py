@@ -252,7 +252,9 @@ if __name__ == "__main__":
     plotting.thesisify_pre_ax_creation()
     fig, ax = plt.subplots(1,1)
 
-    ax.plot(time_1,cond_3[:,0,1])  
+    #ax.plot(time_1,cond_3[:,0,1])  
+    ax.plot(time_1,cond_3[:,0,0])  
+    #ax.plot(time_1,cond_7[:,0,1,0,0,0,0])  
     ax.plot(time_1,1.0/(1.0-1.0*0.5*time_1)**2.0)  
 
 
