@@ -54,7 +54,7 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
     pres_2 = numpy.zeros(shape=(num_times,num_nodes_with_out))
      
     for i_t in range(num_times):               
-        print("Calculating solution at time step {} of {}".format(i_t,num_times-1))
+        #print("Calculating solution at time step {} of {}".format(i_t,num_times-1))
         # Get adherence 
         # -----
         adhe_3[i_t,:,:] = adhe_init_2
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     num_nodes = 4
     num_refs  = 3
     num_rows = 2
-    num_cols = 10
+    num_cols = 20
     # Conductance 
     # ----
     sigma = 0.3
@@ -155,12 +155,12 @@ if __name__ == "__main__":
     alph = 1.0#1.0#1.0#0.2#1.0#1.0*(1.0/(epsi*delt))
     beta = 0.01#1.0#0.5#1.0#1.0
 
-    incr = 100 # time increment - save every incr-th time point
-
     print("delt:{}".format(delt))
     print("epsi:{}".format(epsi))
     print("alph:{}".format(alph))
     print("beta:{}".format(beta))
+
+    incr = 200 # time increment - save every incr-th time point
 
     num_nodes_hori = int(num_cols*numpy.sqrt(num_nodes))
     num_edge_hori = int(numpy.sqrt(num_nodes)*num_cols)-1
@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
     # Discretisation 
     # -----
-    num_times = 20001#101#2001#5001#10001 # 1001
+    num_times = 20001#40001#101#2001#5001#10001 # 1001
     #2*int(num_edge_hori)
     # int(numpy.sqrt(num_nodes))*num_edge_hori
     #num_nodes*num_cols
@@ -221,10 +221,31 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    #path_results = os.path.join(".","results/results_network") # thesis
-    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network") # paper
-    if not os.path.exists(path_results):
-        os.mkdir(path_results)
+    ensemble = False
+    if ensemble == False:
+        #path_results = os.path.join(".","results/results_network") # thesis
+        path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network") # paper
+        
+        if not os.path.exists(path_results):
+            os.mkdir(path_results)
+
+
+    elif ensemble == True:
+        import argparse
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument("-pr", "--path_results", help="Path to results")
+
+        args = parser.parse_args()
+
+        path_results = args.path_results
+    
+        if not os.path.exists(path_results):
+            os.makedirs(path_results)
+
+    else: 
+        raise Exception("ensemble should be a boolean.")
+    
 
     time_1 = time_1[0::incr]
     numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
@@ -233,7 +254,6 @@ if __name__ == "__main__":
     numpy.save(file=os.path.join(path_results,"pres_2.npy"), arr=pres_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"volu_2.npy"), arr=volu_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"cond_3.npy"), arr=cond_3, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
 
     parameters = {}
