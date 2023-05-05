@@ -20,7 +20,9 @@ if __name__ == "__main__":
     # Parameters 
     # -----
     #path_results = os.path.join(".","results/results_network") # thesis
-    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network") # paper
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/2_cond-mono_adhe-nonzero/results_network/epsi-0.025") # paper
+    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_network")
+
 
     #path_results = os.path.join(".","results/results_network/thesis/sweep-alph/tiny-sweep/alph-0.1_T-1")
     #path_results = "/home/user/Dropbox/Gore-OxfordCDT-2019/repos/multiscale-models/multiscale_models/results/results_network/thesis/sweep-alph/large-sweep/alph-zero"
@@ -37,8 +39,6 @@ if __name__ == "__main__":
     volu_2 = numpy.load(os.path.join(path_results, "volu_2.npy"))
     cond_3 = numpy.load(os.path.join(path_results, "cond_3.npy"))
     adhe_3 = numpy.load(os.path.join(path_results, "adhe_3.npy"))
-    print(conc_2.shape)
-
 
     parameters = utils_sl.load_dict(filename=os.path.join(path_results, "parameters.pkl"))
 
@@ -153,27 +153,68 @@ if __name__ == "__main__":
 
 
 
-    # Plot average concentration
-    # -----
     plotting.thesisify_pre_ax_creation()
-    fig, ax = plt.subplots(1,1)
+    fig_conc, ax_conc = plt.subplots(1,1)
 
-    ax.scatter(posi_nodes_1,conc_av_2[0,:])   #label=r"$t=0$"  
-    ax.scatter(posi_nodes_1,conc_av_2[1,:])   #label=r"$t=1/4$"
-    ax.scatter(posi_nodes_1,conc_av_2[2,:])   #label=r"$t=1/2$"
-    ax.scatter(posi_nodes_1,conc_av_2[3,:])   #label=r"$t=3/4$"
-    ax.scatter(posi_nodes_1,conc_av_2[4,:])   #label=r"$t=1$"  
+    plotting.thesisify_pre_ax_creation()
+    fig_cond, ax_cond = plt.subplots(1,1)
 
-    # Interpolate the network values
-    # ------
+    plotting.thesisify_pre_ax_creation()
+    fig_pres, ax_pres = plt.subplots(1,1)
+
+    new_x_values_1 = numpy.linspace(0,1,40,endpoint=True)
+    colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
     for ii_t in range(num_time_indxs_to_plot):
+
+        # Plot concentration
+        # -----
+        
+        #ax_conc.scatter(posi_nodes_1,conc_av_av_2[ii_t,:])   #label=r"$t=0$"  
+        
+        # Interpolate the network values
+        # ------
         new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_nodes_1,table_y=conc_av_2[ii_t,:],new_x_value=posi_nodes_1,type_clog="deposit")
-        ax.plot(posi_nodes_1,new_y_values_1)
+        ax_conc.plot(posi_nodes_1,conc_av_2[ii_t,:], color=colors[ii_t]) 
+  
+        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_nodes_1,table_y=conc_av_2[ii_t,:],new_x_value=new_x_values_1,type_clog="deposit")
+        ax_conc.plot(new_x_values_1,new_y_values_1, color=colors[ii_t]) 
+  
+  
+        if ii_t == 0:
+            ax_conc.plot(numpy.linspace(0,1,num_nodes_hori), ((1-epsi*delt*alph)**numpy.linspace(0,1.0/(delt*epsi)-1, int(numpy.sqrt(num_nodes)*num_cols))), color="black", ls="--")
+            ax_conc.plot(numpy.linspace(0,1,num_nodes_hori), ((1-epsi*delt*alph)**(1.0/(delt*epsi)-1))*numpy.ones(num_nodes_hori), color="black", ls=":")
 
-    ax.plot(numpy.linspace(0,1,num_nodes_hori), ((1-epsi*delt*alph)**numpy.linspace(0,1.0/(delt*epsi)-1, int(numpy.sqrt(num_nodes)*num_cols))), color="black", ls="--")
-    ax.plot(numpy.linspace(0,1,num_nodes_hori), ((1-epsi*delt*alph)**(1.0/(delt*epsi)-1))*numpy.ones(num_nodes_hori), color="black", ls=":")
+        # Plot average conductance
+        # -----
 
-    plotting.thesisify_post_plot(ax=ax,
+        #ax_cond.scatter(posi_edges_1,cond_av_av_2[ii_t,:])  
+
+        # Interpolate the network values
+        # ------
+        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_edges_1,table_y=cond_av_2[ii_t,:],new_x_value=posi_edges_1,type_clog="deposit")
+        ax_cond.plot(posi_edges_1,new_y_values_1, c=colors[ii_t])
+
+        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_edges_1,table_y=cond_av_2[ii_t,:],new_x_value=new_x_values_1,type_clog="deposit")
+        ax_cond.plot(new_x_values_1,new_y_values_1, c=colors[ii_t])
+
+
+        # Plot average pressure
+        # -----
+
+        #ax_pres.scatter(posi_nodes_1,pres_av_av_2[ii_t,:])   #label=r"$t=0$"  
+
+        # Interpolate the network values
+        # ------
+        #new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_nodes_1,table_y=pres_av_2[ii_t,:],new_x_value=posi_nodes_1,type_clog="deposit")
+        #ax_pres.plot(posi_nodes_1,new_y_values_1, c=colors[ii_t])
+    
+        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_nodes_1,table_y=pres_av_2[ii_t,:],new_x_value=new_x_values_1,type_clog="deposit")
+        ax_pres.plot(new_x_values_1,new_y_values_1, c=colors[ii_t])
+
+
+
+
+    plotting.thesisify_post_plot(ax=ax_conc,
                                  x_label=r"$x$",
                                  y_label=r"$\bar{C}$",
                                  x_left=None,
@@ -181,31 +222,10 @@ if __name__ == "__main__":
                                  y_bottom=None,
                                  y_top=None)
 
-    plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conc_2__v__posi_nodes_1.svg"), format="svg")
+    plotting.save_fig(fig=fig_conc,fname=os.path.join(path_results,"conc_2__v__posi_nodes_1.svg"), format="svg")
 
 
-
-
-
-
-    # Plot average conductance
-    # -----
-    plotting.thesisify_pre_ax_creation()
-    fig, ax = plt.subplots(1,1)
-
-    ax.scatter(posi_edges_1,cond_av_2[0,:])  #label=r"$t=0$"  
-    ax.scatter(posi_edges_1,cond_av_2[1,:])  #label=r"$t=1/4$"
-    ax.scatter(posi_edges_1,cond_av_2[2,:])  #label=r"$t=1/2$"
-    ax.scatter(posi_edges_1,cond_av_2[3,:])  #label=r"$t=3/4$"
-    ax.scatter(posi_edges_1,cond_av_2[4,:])  #label=r"$t=1$"  
-
-    # Interpolate the network values
-    # ------
-    for ii_t in range(num_time_indxs_to_plot):
-        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_edges_1,table_y=cond_av_2[ii_t,:],new_x_value=posi_edges_1,type_clog="deposit")
-        ax.plot(posi_edges_1,new_y_values_1)
-
-    plotting.thesisify_post_plot(ax=ax,
+    plotting.thesisify_post_plot(ax=ax_cond,
                                  x_label=r"$x$",
                                  y_label=r"$\bar{G}$",
                                  x_left=-0.05,
@@ -213,30 +233,9 @@ if __name__ == "__main__":
                                  y_bottom=None,
                                  y_top=None)
 
-    plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_2__v__posi_edges_1.svg"), format="svg")
+    plotting.save_fig(fig=fig_cond,fname=os.path.join(path_results,"cond_2__v__posi_edges_1.svg"), format="svg")
 
-
-
-
-
-    # Plot average pressure
-    # -----
-    plotting.thesisify_pre_ax_creation()
-    fig, ax = plt.subplots(1,1)
-
-    ax.scatter(posi_nodes_1,pres_av_2[0,:])   #label=r"$t=0$"  
-    ax.scatter(posi_nodes_1,pres_av_2[1,:])   #label=r"$t=1/4$"
-    ax.scatter(posi_nodes_1,pres_av_2[2,:])   #label=r"$t=1/2$"
-    ax.scatter(posi_nodes_1,pres_av_2[3,:])   #label=r"$t=3/4$"
-    ax.scatter(posi_nodes_1,pres_av_2[4,:])   #label=r"$t=1$"  
-
-    # Interpolate the network values
-    # ------
-    for ii_t in range(num_time_indxs_to_plot):
-        new_y_values_1 = network_2D.get_new_interpolated_point(table_x=posi_nodes_1,table_y=pres_av_2[ii_t,:],new_x_value=posi_nodes_1,type_clog="deposit")
-        ax.plot(posi_nodes_1,new_y_values_1)
-
-    plotting.thesisify_post_plot(ax=ax,
+    plotting.thesisify_post_plot(ax=ax_pres,
                                  x_label=r"$x$",
                                  y_label=r"$\bar{P}$",
                                  x_left=None,
@@ -244,26 +243,4 @@ if __name__ == "__main__":
                                  y_bottom=None,
                                  y_top=None)
 
-    plotting.save_fig(fig=fig,fname=os.path.join(path_results,"pres_2__v__posi_nodes_1.svg"), format="svg")
-
-
-    # Plot conductance at boundary 
-    # ----------
-    plotting.thesisify_pre_ax_creation()
-    fig, ax = plt.subplots(1,1)
-
-    #ax.plot(time_1,cond_3[:,0,1])  
-    ax.plot(time_1,cond_3[:,0,0])  
-    #ax.plot(time_1,cond_7[:,0,1,0,0,0,0])  
-    ax.plot(time_1,1.0/(1.0-1.0*0.5*time_1)**2.0)  
-
-
-    plotting.thesisify_post_plot(ax=ax,
-                                 x_label=r"$t$",
-                                 y_label=r"$\bar{G}(0)$",
-                                 x_left=None,
-                                 x_right=None,
-                                 y_bottom=None,
-                                 y_top=None)
-
-    plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_3__v__time_1.svg"), format="svg")
+    plotting.save_fig(fig=fig_pres,fname=os.path.join(path_results,"pres_2__v__posi_nodes_1.svg"), format="svg")
