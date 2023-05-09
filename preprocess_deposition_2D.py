@@ -173,7 +173,7 @@ def get_delta(csol_2: numpy.ndarray, refs_2:numpy.ndarray, leng_1: numpy.ndarray
 
 
 
-def get_conductance_rhs(cond_4,delt_4,adhe_4,beta,gamm):
+def get_conductance_rhs(cond_4,delt_4,adhe_4,beta,alph):
     """
     Returns the right hand side of the differential equation for conductance. 
     In paractice, we will take the arguments at the previous time step, 
@@ -201,21 +201,21 @@ def get_conductance_rhs(cond_4,delt_4,adhe_4,beta,gamm):
     ## repeat delt so can multiply
     #delt_4 = numpy.repeat(a=delt_3[:,:,:,numpy.newaxis],repeats=num_refs,axis=3) # delt_4[i,j,r0,r1]
 
-    #gamm = 0.02564102564102564
+    #alph = 0.02564102564102564
     #epsi = 0.05
-    #gamm=0.5
+    #alph=0.5
     #delt_2 = delt_4[:,:,0,0]
     #delt_3= numpy.repeat(a=delt_2[:,:,numpy.newaxis],repeats=3,axis=2)
     #delt_4= numpy.repeat(a=delt_3[:,:,:,numpy.newaxis],repeats=3,axis=3)
-    #cond_rhs_4  = -2.0*beta*(cond_4**(3.0/2.0))*gamm*abs(delt_4) #*abs(delt_4) #*epsi    #*adhe_4*(1/(epsi**(1.0/2.0)))
+    #cond_rhs_4  = -2.0*beta*(cond_4**(3.0/2.0))*alph*abs(delt_4) #*abs(delt_4) #*epsi    #*adhe_4*(1/(epsi**(1.0/2.0)))
     cond_rhs_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_refs))
     for r0 in range(num_refs):
         for r1 in range(num_refs):
-            cond_rhs_4[:,:,r0,r1] = -beta*gamm*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0) #*0.05
+            cond_rhs_4[:,:,r0,r1] = -beta*alph*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0) #*0.05
             #cond_rhs_4[:,:,r0,r1] = -1*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0)
             #print(abs(delt_4[:,:,r0,0]))
             #print(beta)
-            #print(gamm)
+            #print(alph)
             #print(cond_4)
             #print(abs(delt_4[:,:,0,0])*cond_4[:,:,0,00])
             #raise Exception 
@@ -251,7 +251,7 @@ def get_conductance(cond_4,cond_rhs_4,dt):
 
 
 
-def get_conductance_adherence_csol_delta(conc_tot_disc_1,cond_init_4,adhe_init_4,refs_2,leng_1,beta,gamm):
+def get_conductance_adherence_csol_delta(conc_tot_disc_1,cond_init_4,adhe_init_4,refs_2,leng_1,beta,alph):
     """
     """
     # Parameters 
@@ -293,7 +293,7 @@ def get_conductance_adherence_csol_delta(conc_tot_disc_1,cond_init_4,adhe_init_4
             adhe_4 = adhe_5[k-1,:,:,:,:]
 
             # get new conductance
-            cond_rhs_4 = get_conductance_rhs(cond_4=cond_4,delt_4=delt_4,adhe_4=adhe_4,beta=beta,gamm=gamm)
+            cond_rhs_4 = get_conductance_rhs(cond_4=cond_4,delt_4=delt_4,adhe_4=adhe_4,beta=beta,alph=alph)
             cond_4     = get_conductance(cond_4=cond_4,cond_rhs_4=cond_rhs_4,dt=dt)
 
             # use solution at t to get lhs and rhs of alg equation
@@ -358,7 +358,7 @@ if __name__ == "__main__":
                                                                        adhe_init_4=adhe_init_4,
                                                                        refs_2=refs_2,
                                                                        leng_1=leng_1)
-    print(csol_3[0:2,:,:])
+    #print(csol_3[0:2,:,:])
     plt.plot(times,cond_5[:,0,1,0,0])
     plt.plot(times,1/((1/1)+(times/2))**2,ls="--")
     plt.show()
