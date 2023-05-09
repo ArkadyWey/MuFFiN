@@ -1,4 +1,4 @@
-for r in {0..1000}; do 
+for r in {0..20000}; do 
 
 echo Running for r-$r
 

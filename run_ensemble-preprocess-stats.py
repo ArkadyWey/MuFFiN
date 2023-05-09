@@ -3,7 +3,7 @@ import os
 
 path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/"
 
-r_max = 1000
+r_max = 20000
 
 perm_prep_4 = [] # [r_max+1,k,m,n] 
 depo_prep_3 = [] # [r_max+1,k,m]
