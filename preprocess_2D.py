@@ -173,8 +173,8 @@ def get_permeability_and_deposition(refs_2: numpy.ndarray,
                     
                         perm_inte_7[k,:,:,r0,r1,m,n] = refs_2[rm,m]*cond_tabl_5[k,:,:,r0,r1]*(-delt_5[k,:,:,rn,n])
 
-    print(-delt_5[0,:,:,0,m])
-    print(depo_inte_6[k,:,:,r0,r1,m])
+    #print(-delt_5[0,:,:,0,m])
+    #print(depo_inte_6[k,:,:,r0,r1,m])
     #print(perm_inte_7[k,:,:,r0,r1,m,n])
 
 

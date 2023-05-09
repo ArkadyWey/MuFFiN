@@ -9,11 +9,10 @@ import preprocess_blocking_2D
 import preprocess_deposition_2D
 
 
-def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, type_clog: str, path_cond_init_4: str):
+def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, type_clog: str, path_cond_init_4: str, alph: int, beta: int):
     """
     """
-    beta=1.0#1.0#10#20.0
-    gamm=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
+
     # Get paameters needed to find perm and depo
     # -----
     conf = configure.Configure(num_nodes=num_nodes, 
@@ -33,7 +32,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
     #print(len(conc_max_or_tot_1))
     #print(conc_max_or_tot_1)
     cond_init_4     = conf.cond_init_4 
-    adhe_init_4     = gamm*conf.adhe_init_4 
+    adhe_init_4     = alph*conf.adhe_init_4 
     alpha           = conf.alpha 
     refs_2          = conf.refs_2 
     leng_1          = conf.leng_1
@@ -79,7 +78,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
                                                                                                               refs_2=refs_2,
                                                                                                               leng_1=leng_1,
                                                                                                               beta=beta,
-                                                                                                              gamm=gamm)
+                                                                                                              alph=alph)
     else: 
         raise Exception("type_clog must be either 'block' or 'deposit'.")
         #print(csol_3[0:2,:,:])
@@ -104,13 +103,13 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
                                                                    heav_5=heav_5,
                                                                    leng_1=leng_1,
                                                                    cond_init_4=cond_init_4)
-    print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
+    #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     #print("perm_3[:,1,0]: \n{}".format(perm_3[:,1,0]))
     #print("depo_2[:,0]: \n{}".format(depo_2[:,0]))
     #print("depo_2[:,1]: \n{}".format(depo_2[-1,1]))
-    print("delt_5[:,i,j,r,m]: \n{}".format(delt_5[0,:,:,-1,0]))
-    print("heav_5[:,i,j,r,m]: \n{}".format(heav_5[0,:,:,-1,0]))
+    #print("delt_5[:,i,j,r,m]: \n{}".format(delt_5[0,:,:,-1,0]))
+    #print("heav_5[:,i,j,r,m]: \n{}".format(heav_5[0,:,:,-1,0]))
 
     #if depo_2[-1,0] > 4.0:
     #    exit()
@@ -134,11 +133,16 @@ if __name__ == "__main__":
     # Define parameters that aren't in default dictionary
     # -----   
     num_nodes = 4
-    initialisation = "specified"#"4-reg_prescribed" # 4-reg
+    initialisation = "4-reg" # specified #"4-reg_prescribed" # 4-reg
     sigma = 0.3
     type_alpha = "mean"
     type_clog  = "deposit"
     path_cond_init_4 = get_path_to_initial_conductance()
+
+
+    alph=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
+    beta=1.0#1.0#10#20.0
+
     
     # Get permeability and deposition parameter
     # -----
@@ -147,17 +151,43 @@ if __name__ == "__main__":
                                                                                                  sigma=sigma,
                                                                                                  type_alpha=type_alpha,
                                                                                                  type_clog=type_clog, 
-                                                                                                 path_cond_init_4=path_cond_init_4)
+                                                                                                 path_cond_init_4=path_cond_init_4, 
+                                                                                                 alph=alph, 
+                                                                                                 beta=beta)
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))
 
+
+
     # Save results 
-    # -----
-    #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
-    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
-    if not os.path.exists(path_results):
-        os.mkdir(path_results)
+    # ----- 
+    ensemble = True
+    if ensemble == False:
+        #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
+        path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+        if not os.path.exists(path_results):
+            os.mkdir(path_results)
+
+
+    elif ensemble == True:
+        import argparse
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument("-pr", "--path_results", help="Path to results")
+
+        args = parser.parse_args()
+
+        path_results = args.path_results
+    
+        if not os.path.exists(path_results):
+            os.makedirs(path_results)
+
+    else: 
+        raise Exception("ensemble should be a boolean.")
+
+
+
 
     numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),       arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),       arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
