@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
 
     alph=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
-    beta=1.0#1.0#10#20.0
+    beta=0.01#1.0#1.0#10#20.0
 
     
     # Get permeability and deposition parameter
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    ensemble = True
+    ensemble = False#True
     if ensemble == False:
         #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
         path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper

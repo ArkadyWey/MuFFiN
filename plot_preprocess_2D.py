@@ -51,7 +51,7 @@ ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=per
 ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=f,type_clog=type_clog), color="tab:orange") # label=r"$\hat{j}^{1}$ "
 
 alph = 1
-beta = 1
+beta = 0.01
 ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls=":")
 
 
@@ -120,7 +120,7 @@ ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,1]), color="tab:red", ls="--")
 
 
 alph = 1
-beta = 1
+beta = 0.01
 
 ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls="--")
 ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls=":")
