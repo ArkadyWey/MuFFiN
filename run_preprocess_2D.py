@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    ensemble = False#True
+    ensemble = True#True
     if ensemble == False:
         #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
         path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
