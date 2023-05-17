@@ -1,7 +1,8 @@
 import numpy
 import os 
 
-path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/"
+#path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/"
+path_results = "/scratch/wey/2023_homogenisation/figures/results_ensemble-preprocess/"
 
 r_max = 20000
 
@@ -32,7 +33,8 @@ depo_prep_sd_2 = numpy.std(a=depo_prep_3, axis=0)
 
 
 # Save statistics
-path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/stats"
+#path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/stats"
+path_results = os.path.join(path_results,"stats")
 if not os.path.exists(path_results):
     os.mkdir(path_results)
 
