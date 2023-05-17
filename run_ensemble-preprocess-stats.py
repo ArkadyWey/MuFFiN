@@ -13,12 +13,17 @@ depo_prep_3 = [] # [r_max+1,k,m]
 # Collect results in lists
 for r in range(r_max+1):
     path_results_r = os.path.join(path_results,"r-{}".format(r))
-
+    
     perm_prep_3 = numpy.load(os.path.join(path_results_r, "perm_prep_3.npy"))
     depo_prep_2 = numpy.load(os.path.join(path_results_r, "depo_prep_2.npy"))
 
     perm_prep_4.append(perm_prep_3)
     depo_prep_3.append(depo_prep_2)
+
+    if r==0:
+        conc_max_or_tot_1 = numpy.load(os.path.join(path_results_r, "conc_max_or_tot_1.npy"))
+    else: 
+        pass
 
 # Convert lists to numpy arrays
 perm_prep_4 = numpy.array(perm_prep_4)
@@ -37,6 +42,9 @@ depo_prep_sd_2 = numpy.std(a=depo_prep_3, axis=0)
 path_results = os.path.join(path_results,"stats")
 if not os.path.exists(path_results):
     os.mkdir(path_results)
+
+# Save x axis 
+numpy.save(file=os.path.join(path_results,"conc_max_or_tot_1.npy"), arr=conc_max_or_tot_1, allow_pickle=True, fix_imports=True)
 
 # Save means
 numpy.save(file=os.path.join(path_results,"perm_prep_av_3.npy"), arr=perm_prep_av_3, allow_pickle=True, fix_imports=True)

@@ -15,13 +15,12 @@ import plotting
 # Parameters 
 # -----
 path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/stats") # paper
-path_results_r = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/r-0") # paper
 
 type_clog = "deposit"
 
 # Load variables
 # -----
-conc_max_or_tot_1 = numpy.load(os.path.join(path_results_r, "conc_max_or_tot_1.npy"))
+conc_max_or_tot_1 = numpy.load(os.path.join(path_results, "conc_max_or_tot_1.npy"))
 
 # Average
 perm_prep_av_3       = numpy.load(os.path.join(path_results, "perm_prep_av_3.npy"))
@@ -71,9 +70,11 @@ ax.plot(f, perm_prep_av_itrp_1-depo_prep_av_itrp_1, color="tab:red") # , label=r
 print(perm_prep_sd_3[0,m,n])
 print(depo_prep_sd_2[0,m])
 ax.plot(f, perm_prep_sd_itrp_1, color="tab:blue",ls="--") # , label=r"$\hat{k}^{11}$"
-#ax.plot(f, depo_prep_sd_itrp_1, color="tab:orange", ls="--") # label=r"$\hat{j}^{1}$ "
+ax.plot(f, depo_prep_sd_itrp_1, color="tab:orange", ls="--") # label=r"$\hat{j}^{1}$ "
 
-# Outline the error
+# Outline the standard deviation
+#ax.plot(f, perm_prep_av_itrp_1-perm_prep_sd_itrp_1, c="k")
+#ax.plot(f, perm_prep_av_itrp_1+perm_prep_sd_itrp_1, c="k")
 #ax.plot(f, depo_prep_av_itrp_1-depo_prep_sd_itrp_1, c="k")
 #ax.plot(f, depo_prep_av_itrp_1+depo_prep_sd_itrp_1, c="k")
 
@@ -84,7 +85,7 @@ ax.fill_between(f, depo_prep_av_itrp_1-depo_prep_sd_itrp_1, depo_prep_av_itrp_1+
 
 # Error bars
 ax.errorbar(x=conc_max_or_tot_1[0::10],y=perm_prep_av_3[0::10,m,n], yerr=perm_prep_sd_3[0::10,m,n], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
-#ax.errorbar(x=conc_max_or_tot_1[0::10],y=depo_prep_av_2[0::10,m], yerr=depo_prep_sd_2[0::10,m], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
+ax.errorbar(x=conc_max_or_tot_1[0::10],y=depo_prep_av_2[0::10,m], yerr=depo_prep_sd_2[0::10,m], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
 
 
 # Construction lines
@@ -93,7 +94,7 @@ ax.errorbar(x=conc_max_or_tot_1[0::10],y=perm_prep_av_3[0::10,m,n], yerr=perm_pr
 
 # Plot the mono-dispersed case
 alph = 1
-beta = 1
+beta = 0.01
 ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls=":")
 
 
