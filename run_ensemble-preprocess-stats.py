@@ -1,10 +1,17 @@
 import numpy
 import os 
+import argparse
 
-#path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/"
-path_results = "/scratch/wey/2023_homogenisation/figures/results_ensemble-preprocess/"
-
-r_max = 20000
+parser = argparse.ArgumentParser()
+parser.add_argument("-pr",    "--path_results", type=str, help="Path to results")
+parser.add_argument("-rm",    "--r_max",         type=int, help="Number of repeated simulations")
+parser.add_argument("-N",     "--num_nodes",      type=int,   help="Number of nodes in cell")
+parser.add_argument("-init",  "--initialisation", type=str,   help="Structure of cell")
+args = parser.parse_args()
+path_results   = args.path_results
+r_max          = args.r_max 
+initialisation = args.initialisation
+num_nodes      = args.num_nodes
 
 perm_prep_4 = [] # [r_max+1,k,m,n] 
 depo_prep_3 = [] # [r_max+1,k,m]
@@ -39,17 +46,26 @@ depo_prep_sd_2 = numpy.std(a=depo_prep_3, axis=0)
 
 # Save statistics
 #path_results = "/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess/stats"
-path_results = os.path.join(path_results,"stats")
-if not os.path.exists(path_results):
-    os.mkdir(path_results)
+path_stats = os.path.join(path_results,"stats_init-{}_N-{}".format(initialisation,num_nodes))
+if not os.path.exists(path_stats):
+    os.mkdir(path_stats)
 
 # Save x axis 
-numpy.save(file=os.path.join(path_results,"conc_max_or_tot_1.npy"), arr=conc_max_or_tot_1, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"conc_max_or_tot_1.npy"), arr=conc_max_or_tot_1, allow_pickle=True, fix_imports=True)
 
 # Save means
-numpy.save(file=os.path.join(path_results,"perm_prep_av_3.npy"), arr=perm_prep_av_3, allow_pickle=True, fix_imports=True)
-numpy.save(file=os.path.join(path_results,"depo_prep_av_2.npy"), arr=depo_prep_av_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"perm_prep_av_3.npy"), arr=perm_prep_av_3, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"depo_prep_av_2.npy"), arr=depo_prep_av_2, allow_pickle=True, fix_imports=True)
 
 # Save stds
-numpy.save(file=os.path.join(path_results,"perm_prep_sd_3.npy"), arr=perm_prep_sd_3, allow_pickle=True, fix_imports=True)
-numpy.save(file=os.path.join(path_results,"depo_prep_sd_2.npy"), arr=depo_prep_sd_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"perm_prep_sd_3.npy"), arr=perm_prep_sd_3, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"depo_prep_sd_2.npy"), arr=depo_prep_sd_2, allow_pickle=True, fix_imports=True)
+
+# Save entire results (for distributions)
+path_fulls = os.path.join(path_results,"fulls_init-{}_N-{}".format(initialisation,num_nodes))
+if not os.path.exists(path_fulls):
+    os.mkdir(path_fulls)
+
+numpy.save(file=os.path.join(path_fulls,"perm_prep_4.npy"), arr=perm_prep_4, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_fulls,"depo_prep_3.npy"), arr=depo_prep_3, allow_pickle=True, fix_imports=True)
+

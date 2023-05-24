@@ -117,7 +117,7 @@ def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, typ
 
 def get_path_to_initial_conductance():
     """
-    In the case where the initial conductance is specified by the network model, 
+    In the case where the initial conductance is 'specified' by the network model, 
     get the path to where the initial cell is stored. 
     """
     path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
@@ -127,19 +127,52 @@ def get_path_to_initial_conductance():
 
 if __name__ == "__main__":
 
+    ensemble = True # True or False
+    if ensemble == False:
+        #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
+        path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+        if not os.path.exists(path_results):
+            os.mkdir(path_results)
+
+        # Define parameters that aren't in default dictionary
+        # -----   
+        num_nodes = 4
+        initialisation = "4-reg" # specified #"4-reg_prescribed" # 4-reg
+        sigma = 0.3
+        type_alpha = "mean"
+        type_clog  = "deposit"
+        path_cond_init_4 = get_path_to_initial_conductance()
+    
+    elif ensemble == True:
+        import argparse
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument("-pr",    "--path_results",   type=str,   help="Path to results")
+        parser.add_argument("-N",     "--num_nodes",      type=int,   help="Number of nodes in cell")
+        parser.add_argument("-init",  "--initialisation", type=str,   help="Structure of cell")
+
+        args = parser.parse_args()
+
+        path_results   = args.path_results
+        num_nodes      = args.num_nodes
+        initialisation = args.initialisation # specified #"4-reg_prescribed" # 4-reg
+        sigma = 0.3
+        type_alpha = "mean"
+        type_clog  = "deposit"
+        path_cond_init_4 = get_path_to_initial_conductance()
+
+        if not os.path.exists(path_results):
+            os.makedirs(path_results)
+
+    else: 
+        raise Exception("ensemble should be a boolean.")
+
 
     begin_time = datetime.datetime.now()
 
+
     # Define parameters that aren't in default dictionary
     # -----   
-    num_nodes = 4
-    initialisation = "4-reg" # specified #"4-reg_prescribed" # 4-reg
-    sigma = 0.3
-    type_alpha = "mean"
-    type_clog  = "deposit"
-    path_cond_init_4 = get_path_to_initial_conductance()
-
-
     alph=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
     beta=0.01#1.0#1.0#10#20.0
 
@@ -162,32 +195,6 @@ if __name__ == "__main__":
 
     # Save results 
     # ----- 
-    ensemble = True#True
-    if ensemble == False:
-        #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
-        path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
-        if not os.path.exists(path_results):
-            os.mkdir(path_results)
-
-
-    elif ensemble == True:
-        import argparse
-        parser = argparse.ArgumentParser()
-
-        parser.add_argument("-pr", "--path_results", help="Path to results")
-
-        args = parser.parse_args()
-
-        path_results = args.path_results
-    
-        if not os.path.exists(path_results):
-            os.makedirs(path_results)
-
-    else: 
-        raise Exception("ensemble should be a boolean.")
-
-
-
 
     numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),       arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),       arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
