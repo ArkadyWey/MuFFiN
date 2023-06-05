@@ -1,6 +1,7 @@
 import numpy
 import datetime
 import os 
+import argparse
 
 import flow
 
@@ -100,11 +101,18 @@ def main(conc_max_or_tot_1,perm_prep_1,depo_prep_1,
 
 if __name__ == "__main__":
 
+    # Parameters 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-pp",    "--path_preprocess",type=str, help="Path to preprocess results")
+    parser.add_argument("-pr",    "--path_results",   type=str, help="Path to results")
 
+    args = parser.parse_args()
+    
     # Preprocess
     # ----------
     #path_results_preprocess = os.path.join(".","results/results_preprocess_2D") # thesis
-    path_results_preprocess = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+    #path_results_preprocess = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
+    path_results_preprocess = args.path_preprocess
 
 
     conc_max_or_tot_1  = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_or_tot_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
@@ -117,11 +125,12 @@ if __name__ == "__main__":
 
     # Parameters 
     # ----------
-    num_times = 2001#1001#5001#10001 # 1001
-    time_1 = numpy.linspace(0,1,num_times)
+    T = 1 #200
+    num_times = 2001#40001#1001#5001#10001 # 1001
+    time_1 = numpy.linspace(0,T,num_times)
     dt = time_1[1] - time_1[0]
 
-    num_positions = 1001#161#101#501#1001 # 101
+    num_positions = 1001#101#161#101#501#1001 # 101
     posi_1 = numpy.linspace(0,1,num_positions)
     dx = posi_1[1]-posi_1[0]
 
@@ -142,7 +151,9 @@ if __name__ == "__main__":
     # Save results 
     # ----- 
     #path_results = os.path.join(".","results/results_flow") # thesis
-    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
+    #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
+    path_results = args.path_results
+
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
