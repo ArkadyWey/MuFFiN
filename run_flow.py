@@ -125,14 +125,18 @@ if __name__ == "__main__":
 
     # Parameters 
     # ----------
-    T = 1 #200
-    num_times = 2001#40001#1001#5001#10001 # 1001
-    time_1 = numpy.linspace(0,T,num_times)
-    dt = time_1[1] - time_1[0]
-
     num_positions = 1001#101#161#101#501#1001 # 101
     posi_1 = numpy.linspace(0,1,num_positions)
     dx = posi_1[1]-posi_1[0]
+
+    T = 1000 #200
+    num_times = T*(num_positions-1)*2+1 #2001#40001#1001#5001#10001 # 1001
+    print("num_times:{}".format(num_times))
+    time_1 = numpy.linspace(0,T,num_times)
+    dt = time_1[1] - time_1[0]
+
+    ## Save result once per time unit
+    #incr_time = (num_times-1)/T
 
     conc_in = 1.0
     phi = 1.0 # TODO: Define this properly
