@@ -137,9 +137,11 @@ if __name__ == "__main__":
     # -----   
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-pr",    "--path_results",   type=str,   help="Path to results")
-    parser.add_argument("-N",     "--num_nodes",      type=int,   help="Number of nodes in cell")
-    parser.add_argument("-init",  "--initialisation", type=str,   help="Structure of cell")
+    parser.add_argument("-pr",   "--path_results",   type=str,   help="Path to results")
+    parser.add_argument("-N",    "--num_nodes",      type=int,   help="Number of nodes in cell")
+    parser.add_argument("-init", "--initialisation", type=str,   help="Structure of cell")
+    parser.add_argument("-a",    "--alph",           type=float,   help="alpha")
+    parser.add_argument("-b",    "--beta",           type=float,   help="beta")
 
     args = parser.parse_args()
 
@@ -151,18 +153,14 @@ if __name__ == "__main__":
     type_clog  = "deposit"
     path_cond_init_4 = get_path_to_initial_conductance()
 
+    alph = args.alph #1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
+    beta = args.beta #0.01#1.0#1.0#10#20.0
+
     if not os.path.exists(path_results):
         os.makedirs(path_results)
 
 
     begin_time = datetime.datetime.now()
-
-
-    # Define parameters that aren't in default dictionary
-    # -----   
-    alph=1.0#1.0#0.3#0.35#0.5#0.3333333333333333#0.5#0.5#1.0#0.1#0.5 (epsi*delt**2)
-    beta=0.01#1.0#1.0#10#20.0
-
     
     # Get permeability and deposition parameter
     # -----
