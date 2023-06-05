@@ -2,6 +2,8 @@ import numpy
 import os
 import datetime
 import matplotlib.pyplot as plt
+import argparse
+
 
 import configure
 import preprocess_2D
@@ -127,45 +129,30 @@ def get_path_to_initial_conductance():
 
 if __name__ == "__main__":
 
-    ensemble = True # True or False
-    if ensemble == False:
-        #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
-        path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
-        if not os.path.exists(path_results):
-            os.mkdir(path_results)
+    #path_results = os.path.join(".","results/results_preprocess_2D") # thesis
+    #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+    #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
 
-        # Define parameters that aren't in default dictionary
-        # -----   
-        num_nodes = 4
-        initialisation = "4-reg" # specified #"4-reg_prescribed" # 4-reg
-        sigma = 0.3
-        type_alpha = "mean"
-        type_clog  = "deposit"
-        path_cond_init_4 = get_path_to_initial_conductance()
-    
-    elif ensemble == True:
-        import argparse
-        parser = argparse.ArgumentParser()
+    # Define parameters that aren't in default dictionary
+    # -----   
+    parser = argparse.ArgumentParser()
 
-        parser.add_argument("-pr",    "--path_results",   type=str,   help="Path to results")
-        parser.add_argument("-N",     "--num_nodes",      type=int,   help="Number of nodes in cell")
-        parser.add_argument("-init",  "--initialisation", type=str,   help="Structure of cell")
+    parser.add_argument("-pr",    "--path_results",   type=str,   help="Path to results")
+    parser.add_argument("-N",     "--num_nodes",      type=int,   help="Number of nodes in cell")
+    parser.add_argument("-init",  "--initialisation", type=str,   help="Structure of cell")
 
-        args = parser.parse_args()
+    args = parser.parse_args()
 
-        path_results   = args.path_results
-        num_nodes      = args.num_nodes
-        initialisation = args.initialisation # specified #"4-reg_prescribed" # 4-reg
-        sigma = 0.3
-        type_alpha = "mean"
-        type_clog  = "deposit"
-        path_cond_init_4 = get_path_to_initial_conductance()
+    path_results   = args.path_results
+    num_nodes      = args.num_nodes
+    initialisation = args.initialisation # specified #"4-reg_prescribed" # 4-reg
+    sigma = 0.3
+    type_alpha = "mean"
+    type_clog  = "deposit"
+    path_cond_init_4 = get_path_to_initial_conductance()
 
-        if not os.path.exists(path_results):
-            os.makedirs(path_results)
-
-    else: 
-        raise Exception("ensemble should be a boolean.")
+    if not os.path.exists(path_results):
+        os.makedirs(path_results)
 
 
     begin_time = datetime.datetime.now()
