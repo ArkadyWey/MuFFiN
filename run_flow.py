@@ -4,6 +4,7 @@ import os
 import argparse
 
 import flow
+import utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
@@ -13,7 +14,8 @@ def main(conc_max_or_tot_1,perm_prep_1,depo_prep_1,
          posi_1,time_1,
          phi,conc_in,
          dt,dx,
-         type_clog):
+         type_clog, 
+         incr_time):
     """
     """
     # Parameters 
@@ -21,16 +23,16 @@ def main(conc_max_or_tot_1,perm_prep_1,depo_prep_1,
     num_positions = len(posi_1)
     num_times     = len(time_1)
 
-    # Storage for solution
+    # Storage for original solution
     # ---------------------
-    conc_2     = numpy.zeros(shape=(num_positions,num_times))
+    conc_2            = numpy.zeros(shape=(num_positions,num_times))
     conc_max_or_tot_2 = numpy.zeros(shape=(num_positions,num_times))
-    perm_2     = numpy.zeros(shape=(num_positions,num_times))
-    depo_2     = numpy.zeros(shape=(num_positions,num_times))
-    depo_pre_2 = numpy.zeros(shape=(num_positions,num_times))
-    velo_1     = numpy.zeros(shape=(num_times))
-    dpdx_2     = numpy.zeros(shape=(num_positions,num_times))
-    psi_2      = numpy.zeros(shape=(num_positions,num_times))
+    perm_2            = numpy.zeros(shape=(num_positions,num_times))
+    depo_2            = numpy.zeros(shape=(num_positions,num_times))
+    depo_pre_2        = numpy.zeros(shape=(num_positions,num_times))
+    velo_1            = numpy.zeros(shape=(num_times))
+    dpdx_2            = numpy.zeros(shape=(num_positions,num_times))
+    psi_2             = numpy.zeros(shape=(num_positions,num_times))
 
     # Initial and boundary conditions are enforced inside solver
 
@@ -97,14 +99,24 @@ def main(conc_max_or_tot_1,perm_prep_1,depo_prep_1,
         
         #print("psi_2[:,i_t]:\n{}".format(psi_2[:,i_t])) 
 
+    # Reduce num_times in solution
+    # ----
+    conc_2            = conc_2[:, 0::incr_time] 
+    conc_max_or_tot_2 = conc_max_or_tot_2[:, 0::incr_time] 
+    perm_2            = perm_2[:, 0::incr_time] 
+    depo_2            = depo_2[:, 0::incr_time] 
+    velo_1            = velo_1[0::incr_time]
+    dpdx_2            = dpdx_2[:, 0::incr_time] 
+    psi_2             = psi_2[:, 0::incr_time] 
+                
     return (conc_2,conc_max_or_tot_2,perm_2,depo_2,velo_1,dpdx_2,psi_2)
 
 if __name__ == "__main__":
 
     # Parameters 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-pp",    "--path_preprocess",type=str, help="Path to preprocess results")
-    parser.add_argument("-pr",    "--path_results",   type=str, help="Path to results")
+    parser.add_argument("-pp", "--path_preprocess",type=str, help="Path to preprocess results")
+    parser.add_argument("-pr", "--path_results",   type=str, help="Path to results")
 
     args = parser.parse_args()
     
@@ -116,8 +128,8 @@ if __name__ == "__main__":
 
 
     conc_max_or_tot_1  = numpy.load(file=os.path.join(path_results_preprocess,"conc_max_or_tot_1.npy"), mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-    perm_prep_3      = numpy.load(file=os.path.join(path_results_preprocess,"perm_prep_3.npy"),      mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
-    depo_prep_2      = numpy.load(file=os.path.join(path_results_preprocess,"depo_prep_2.npy"),      mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+    perm_prep_3        = numpy.load(file=os.path.join(path_results_preprocess,"perm_prep_3.npy"),      mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
+    depo_prep_2        = numpy.load(file=os.path.join(path_results_preprocess,"depo_prep_2.npy"),      mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII')
 
     perm_prep_1 = perm_prep_3[:,0,0]
     depo_prep_1 = depo_prep_2[:,0]
@@ -125,34 +137,39 @@ if __name__ == "__main__":
 
     # Parameters 
     # ----------
+    # Space
     num_positions = 1001#101#161#101#501#1001 # 101
-    posi_1 = numpy.linspace(0,1,num_positions)
-    dx = posi_1[1]-posi_1[0]
+    posi_1        = numpy.linspace(0,1,num_positions)
+    dx            = posi_1[1]-posi_1[0]
 
-    T = 1000 #200
-    num_times = T*(num_positions-1)*2+1 #2001#40001#1001#5001#10001 # 1001
-    print("num_times:{}".format(num_times))
-    time_1 = numpy.linspace(0,T,num_times)
-    dt = time_1[1] - time_1[0]
+    # Time
+    T         = 1000 #200
+    num_times = T*2*(num_positions-1)+1 # need ~2*num_positions time points per second for CFL #2001#40001#1001#5001#10001 # 1001
+    time_1    = numpy.linspace(0,T,num_times)
+    dt        = time_1[1] - time_1[0]
 
-    ## Save result once per time unit
-    #incr_time = (num_times-1)/T
+    # Save result once per time unit
+    incr_time = int((num_times-1)/T)  # time increment: 2*num_positions, which is time points per second. 
+                                 # So record one result per second
 
+    # Other parameters
     conc_in = 1.0
     phi = 1.0 # TODO: Define this properly
-
     type_clog = "deposit"
 
 
+    # Run
+    # ------
     (conc_2,conc_max_or_tot_2,perm_2,depo_2,velo_1,dpdx_2,psi_2) = main(conc_max_or_tot_1=conc_max_or_tot_1,perm_prep_1=perm_prep_1,depo_prep_1=depo_prep_1,
                                                                         posi_1=posi_1,time_1=time_1,
                                                                         phi=phi,conc_in=conc_in,
                                                                         dt=dt,dx=dx,
-                                                                        type_clog=type_clog)
+                                                                        type_clog=type_clog, 
+                                                                        incr_time=incr_time)
 
 
 
-    # Save results 
+    # Save
     # ----- 
     #path_results = os.path.join(".","results/results_flow") # thesis
     #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
@@ -161,17 +178,32 @@ if __name__ == "__main__":
     if not os.path.exists(path_results):
         os.mkdir(path_results)
 
+    # Save the time and space axes
+    time_1 = time_1[0::incr_time]
     numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
+    
     numpy.save(file=os.path.join(path_results,"posi_1.npy"), arr=posi_1, allow_pickle=True, fix_imports=True)
 
-    numpy.save(file=os.path.join(path_results,"conc_2.npy"),     arr=conc_2, allow_pickle=True, fix_imports=True)
+    # Save the results
+    numpy.save(file=os.path.join(path_results,"conc_2.npy"),            arr=conc_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"conc_max_or_tot_2.npy"), arr=conc_max_or_tot_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"perm_2.npy"),     arr=perm_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"depo_2.npy"),     arr=depo_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"velo_1.npy"),     arr=velo_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"dpdx_2.npy"),     arr=dpdx_2, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"psi_2.npy"),      arr=psi_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"perm_2.npy"),            arr=perm_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"depo_2.npy"),            arr=depo_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"velo_1.npy"),            arr=velo_1, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"dpdx_2.npy"),            arr=dpdx_2, allow_pickle=True, fix_imports=True)
+    numpy.save(file=os.path.join(path_results,"psi_2.npy"),             arr=psi_2, allow_pickle=True, fix_imports=True)
 
+    # Save the parameters used
+    parameters                  = {}
+    parameters["T"]             = T
+    parameters["num_times"]     = num_times
+    parameters["num_positions"] = num_positions
+    parameters["conc_in"]       = conc_in
+    parameters["phi"]           = phi
+    parameters["type_clog"]     = type_clog
+    parameters["incr_time"]     = incr_time
+
+    utils_sl.save_dict(dictname=parameters,filename=os.path.join(path_results,"parameters.pkl"))
 
 
 print(datetime.datetime.now() - begin_time)
