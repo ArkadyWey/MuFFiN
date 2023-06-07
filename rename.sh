@@ -1,6 +1,6 @@
-declare -i num_nodes=4 #81   #100
-declare -i r_max=5     #694  #3106
-declare -i diff=1      #9306 #6894
+declare -i num_nodes=4 #81   #100   #50
+declare -i r_max=5     #694  #3106  #1513
+declare -i diff=1      #9306 #6894  #8487
 
 for ((r=${r_max};r>=0;r-=1)); do
 	echo "Running for r-${r}"
