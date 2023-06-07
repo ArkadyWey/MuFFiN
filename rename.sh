@@ -14,3 +14,5 @@ for ((r=${r_max};r>=0;r-=1)); do
 	#echo new ~/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-4-reg/N-${num_nodes}/r-${r_new}
 	#mv ~/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-4-reg/N-${num_nodes}/r-${r} ~/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-4-reg/N-${num_nodes}/r-${r_new}
 done
+
+echo "done"
