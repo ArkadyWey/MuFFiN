@@ -44,7 +44,7 @@ class Configure():
         self.leng_1            = numpy.array([self.l1, self.l2])
         #self.conc_max_or_tot_1 = numpy.linspace(0, 10.0, self.num_concs)
         #self.conc_max_or_tot_1 = numpy.linspace(0, 20.0, self.num_concs)
-        self.conc_max_or_tot_1 = numpy.linspace(0, 1000.0, self.num_concs)
+        self.conc_max_or_tot_1 = numpy.linspace(0, 10.0, self.num_concs)
         self.refs_2            = preprocess_2D.get_reference(max_ref_dist=self.max_ref_dist,
                                                              num_dims=self.num_dims)
         self.phi               = self.v/(numpy.prod(self.leng_1))
