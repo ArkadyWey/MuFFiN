@@ -106,7 +106,7 @@ def main(cond_init_6,adhe_init_6,conc_init_3,volu_init_3,time_1,boundary_nodes_n
         pres_1        = network_2D.get_pressure_solution(lhs_2=lhs_2,rhs_1=rhs_1)
         pres_2[i_t,:] = pres_1
 
-
+    
     conc_2 = conc_2[0::incr,:] 
     pres_2 = pres_2[0::incr,:]
     volu_2 = volu_2[0::incr,:]
@@ -246,16 +246,18 @@ if __name__ == "__main__":
     else: 
         raise Exception("ensemble should be a boolean.")
     
-
+    # Save the time
     time_1 = time_1[0::incr]
     numpy.save(file=os.path.join(path_results,"time_1.npy"), arr=time_1, allow_pickle=True, fix_imports=True) 
 
+    # Save the results
     numpy.save(file=os.path.join(path_results,"conc_2.npy"), arr=conc_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"pres_2.npy"), arr=pres_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"volu_2.npy"), arr=volu_2, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"cond_3.npy"), arr=cond_3, allow_pickle=True, fix_imports=True)
     numpy.save(file=os.path.join(path_results,"adhe_3.npy"), arr=adhe_3, allow_pickle=True, fix_imports=True)
 
+    # Save the parameters used
     parameters = {}
     parameters["num_nodes"] = num_nodes
     parameters["num_refs"] = num_refs
@@ -273,6 +275,7 @@ if __name__ == "__main__":
 
     utils_sl.save_dict(dictname=parameters,filename=os.path.join(path_results,"parameters.pkl"))
 
+    # Save the cell used
     numpy.save(file=os.path.join(path_results,"cond_init_4.npy"), arr=_cond_init_4, allow_pickle=True, fix_imports=True)
 
     print(datetime.datetime.now() - begin_time)

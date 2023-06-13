@@ -18,7 +18,7 @@ type_clog      = "deposit"
 initialisation = "4-reg"
 num_nodes      = 4
 
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_ensemble-preprocess_init-{}_N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/prep/init-{}/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
 
 
 # Load variables

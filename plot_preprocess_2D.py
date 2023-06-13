@@ -16,6 +16,8 @@ import plotting
 # -----
 #path_results = os.path.join(".","results/results_preprocess_2D")
 path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
+
 
 type_clog = "deposit"
 
@@ -52,9 +54,9 @@ ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=dep
 
 alph = 1
 beta = 0.01
-ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls=":")
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:blue", ls="-")
 
-
+#plt.rcParams['text.latex.preamble'] = r"\usepackage{bm}"
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$f$",
                              y_label=r"$k^{11},j^{1}$",
@@ -103,27 +105,32 @@ print(depo_prep_2[:,0])
 ##ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:blue", marker="o")
 # r = 0
 # -----
-# hori
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,1,0,0]), color="tab:blue", ls="-")
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,2,3,0,0]), color="tab:blue", ls="--")
-# vert
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,0]), color="tab:orange", ls="-")
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,0]), color="tab:orange", ls="--")
-# r = 1
-# -----
-# hori
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,0,1,0]), color="tab:green", ls="-")
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,3,2,1,0]), color="tab:green", ls="--")
-# vert
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,1]), color="tab:red", ls="-")
-ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,1]), color="tab:red", ls="--")
+
+
+
+## hori
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,1,0,0]), color="tab:blue", ls="-")
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,2,3,0,0]), color="tab:blue", ls="--")
+## vert
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,0]), color="tab:orange", ls="-")
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,0]), color="tab:orange", ls="--")
+## r = 1
+## -----
+## hori
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,0,1,0]), color="tab:green", ls="-")
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,3,2,1,0]), color="tab:green", ls="--")
+## vert
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,1]), color="tab:red", ls="-")
+#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,1]), color="tab:red", ls="--")
 
 
 alph = 1
 beta = 0.01
 
-ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls="--")
-ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls=":")
+#ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls="--")
+#ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls=":")
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:blue", ls="-")
+
 
 f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 
@@ -133,10 +140,10 @@ f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$f$",
                              y_label=r"$G_{ij}^{\bm{r}}$",
-                             x_left=None,
-                             x_right=None,
-                             y_bottom=None,
-                             y_top=None)
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=0,
+                             y_top=1)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5_v__conc_max_or_tot_1.svg"), format="svg")
 

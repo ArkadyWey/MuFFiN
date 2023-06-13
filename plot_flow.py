@@ -9,7 +9,8 @@ import plotting
 # Parameters 
 # -----
 #path_results = os.path.join(".","results/results_flow") # thesis
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
+#path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/flow_test") # paper
 #path_results = os.path.join(".","results/results_comparison/epsi-0.025/results_flow")
 
 
@@ -48,22 +49,24 @@ bottom        = -1
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-ax.plot(posi_1,conc_2[:,start], label=r"$t=0$")
-ax.plot(posi_1,conc_2[:,first_quarter], label=r"$t=1/4$")
-ax.plot(posi_1,conc_2[:,second_quarter], label=r"$t=1/2$")
-ax.plot(posi_1,conc_2[:,third_quarter], label=r"$t=3/4$")
-ax.plot(posi_1,conc_2[:,end], label=r"$t=1$")
-ax.plot(posi_1,numpy.exp(-1.0)*numpy.ones_like(posi_1))
-ax.set_xlabel(r"$x^1$")
-ax.set_ylabel(r"$c$")
+alph=1.0
+ax.plot(posi_1,conc_2[:,start],         )#label=r"$t=0$")
+ax.plot(posi_1,conc_2[:,first_quarter], )#label=r"$t=1/4$")
+ax.plot(posi_1,conc_2[:,second_quarter],)#label=r"$t=1/2$")
+ax.plot(posi_1,conc_2[:,third_quarter], )#label=r"$t=3/4$")
+ax.plot(posi_1,conc_2[:,end],           )#label=r"$t=1$")
+
+
+ax.plot(posi_1,numpy.exp(-alph*posi_1),c="black",ls="--")
+ax.plot(posi_1,numpy.exp(-alph)*numpy.ones_like(posi_1), c="black", ls=":")
 
 #ax.legend()
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$x^1$",
+                             x_label=r"$x$",
                              y_label=r"$c$",
-                             x_left=None,
+                             x_left=0,
                              x_right=None,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conc_2__v__posi_1.svg"), format="svg")
@@ -79,9 +82,9 @@ ax.plot(time_1,velo_1)
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$t$",
                              y_label=r"$u$",
-                             x_left=None,
+                             x_left=0,
                              x_right=None,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"velo_1__v__time_1.svg"), format="svg")
@@ -145,11 +148,11 @@ ax.plot(posi_1,perm_2[:,third_quarter])
 ax.plot(posi_1,perm_2[:,end])
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$x^1$",
-                             y_label=r"$k^{11}$",
-                             x_left=None,
+                             x_label=r"$x$",
+                             y_label=r"$k$",
+                             x_left=0,
                              x_right=None,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_2__v__posi_1.svg"), format="svg")
@@ -172,11 +175,11 @@ ax.plot(posi_1, depo_2[:,end])
 #    ax.plot(posi_1, depo_2[:,i_t])
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$x^1$",
-                             y_label=r"$j^1$",
-                             x_left=None,
+                             x_label=r"$x$",
+                             y_label=r"$j$",
+                             x_left=0,
                              x_right=None,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_2__v__posi_1.svg"), format="svg")
@@ -272,12 +275,12 @@ ax.plot(posi_1,conc_max_or_tot_2[:,third_quarter])
 ax.plot(posi_1,conc_max_or_tot_2[:,end])
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$x^1$",
-                             y_label=r"$f$",
-                             x_left=None,
-                             x_right=None,
-                             y_bottom=None,
-                             y_top=None)
+                             x_label=r"$x$",
+                             y_label=r"$s$",
+                             x_left=0,
+                             x_right=1,
+                             y_bottom=0,
+                             y_top=300)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cmax_2__v__posi_1.svg"), format="svg")
 
