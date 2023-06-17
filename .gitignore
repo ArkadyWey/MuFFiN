@@ -10,3 +10,5 @@ password.txt
 scrap2.py
 *.svg
 *.npy
+tokens.txt
+
