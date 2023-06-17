@@ -138,12 +138,12 @@ if __name__ == "__main__":
     # Parameters 
     # ----------
     # Space
-    num_positions = 1001#101#161#101#501#1001 # 101
+    num_positions = 101#1001#101#161#101#501#1001 # 101
     posi_1        = numpy.linspace(0,1,num_positions)
     dx            = posi_1[1]-posi_1[0]
 
     # Time
-    T         = 1000 #200
+    T         = 500 #200
     num_times = T*2*(num_positions-1)+1 # need ~2*num_positions time points per second for CFL #2001#40001#1001#5001#10001 # 1001
     time_1    = numpy.linspace(0,T,num_times)
     dt        = time_1[1] - time_1[0]
