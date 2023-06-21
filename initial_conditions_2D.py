@@ -238,7 +238,15 @@ def four_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
 
     # Divide all conductances by sqrt(N) to make fair test
     #cond_init_4 = cond_init_4 #/numpy.sqrt(num_nodes)
-
+    
+    # For if we want average network:
+    #count  = numpy.count_nonzero(cond_init_4)
+    #print("count:",count)
+    #cond_init_4 = 1.0*numpy.ones_like(cond_init_4)*(cond_init_4!=0)#*1.7246083823764355
+    #count  = numpy.count_nonzero(cond_init_4)
+    #print("count:",count)
+    #print(cond_init_4)
+    
     return cond_init_4
 
 
@@ -264,6 +272,7 @@ def six_ireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, 
 
     #cond_init_4 = cell.cond_init_4/numpy.sqrt(num_nodes)
     cond_init_4 = cell.cond_init_4
+
     
     return cond_init_4
 
@@ -286,6 +295,15 @@ def six_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
                                  sigma=sigma)
 
     cond_init_4 = cell.cond_init_4
+
+
+    # For if we want average network:
+    #count  = numpy.count_nonzero(cond_init_4)
+    #print("count:",count)
+    #cond_init_4 = 1.0*numpy.ones_like(cond_init_4)*(cond_init_4!=0)#*1.7246083823764355
+    #count  = numpy.count_nonzero(cond_init_4)
+    #print("count:",count)
+    #print(cond_init_4)
 
     return cond_init_4
 
