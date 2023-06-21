@@ -15,8 +15,9 @@ import plotting
 # Parameters 
 # -----
 #path_results = os.path.join(".","results/results_preprocess_2D")
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
+#path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+#path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
+path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
 
 
 type_clog = "deposit"
@@ -80,8 +81,7 @@ fig, ax = plt.subplots(1,1)
 #j = 1
 #r1 = 0
 #r2 = 0
-#
-##ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:green", ls="-")
+#ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:green", ls="-")
 
 
 print(conc_max_or_tot_1.shape)
@@ -138,7 +138,7 @@ f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 #ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1,type_clog=type_clog), label=r"$\hat{j}^{1}$", color="blue")
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$f$",
+                             x_label=r"$s$",
                              y_label=r"$G_{ij}^{\bm{r}}$",
                              x_left=0,
                              x_right=1000,
