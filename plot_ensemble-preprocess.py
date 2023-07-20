@@ -18,7 +18,8 @@ type_clog      = "deposit"
 initialisation = "4-reg"
 num_nodes      = 4
 
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/prep/init-{}/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
+# path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/prep/init-{}/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}_delete-me/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
 
 
 # Load variables
@@ -26,18 +27,22 @@ path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figu
 conc_max_or_tot_1 = numpy.load(os.path.join(path_results, "conc_max_or_tot_1.npy"))
 
 # Average
-perm_prep_av_3       = numpy.load(os.path.join(path_results, "perm_prep_av_3.npy"))
-depo_prep_av_2       = numpy.load(os.path.join(path_results, "depo_prep_av_2.npy"))
+perm_prep_av_3 = numpy.load(os.path.join(path_results, "perm_prep_av_3.npy"))
+depo_prep_av_2 = numpy.load(os.path.join(path_results, "depo_prep_av_2.npy"))
+delt_av_5      = numpy.load(os.path.join(path_results, "delt_av_5.npy"))
+cond_tabl_av_5 = numpy.load(os.path.join(path_results, "cond_tabl_av_5.npy"))
 
 # Standard deviation
-perm_prep_sd_3       = numpy.load(os.path.join(path_results, "perm_prep_sd_3.npy"))
-depo_prep_sd_2       = numpy.load(os.path.join(path_results, "depo_prep_sd_2.npy"))
+perm_prep_sd_3 = numpy.load(os.path.join(path_results, "perm_prep_sd_3.npy"))
+depo_prep_sd_2 = numpy.load(os.path.join(path_results, "depo_prep_sd_2.npy"))
+delt_sd_5      = numpy.load(os.path.join(path_results, "delt_sd_5.npy"))
+cond_tabl_sd_5 = numpy.load(os.path.join(path_results, "cond_tabl_sd_5.npy"))
+
 
 # Could add these later
 #cond_tabl_5       = numpy.load(os.path.join(path_results, "cond_tabl_5.npy"))
 #adhe_tabl_5       = numpy.load(os.path.join(path_results, "adhe_tabl_5.npy"))
 #heav_5            = numpy.load(os.path.join(path_results, "heav_5.npy"))
-#delt_5            = numpy.load(os.path.join(path_results, "delt_5.npy"))
 
 
 # Plot permeability and deposition parameter values on one axis 
@@ -109,7 +114,233 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=None,
                              y_top=None)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_or_tot_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__s_1.svg"), format="svg")
+
+
+
+
+
+# Plot permeability
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# Choose dimensions to plot
+m = 0
+n = 0
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+# Interpolate against f
+perm_prep_av_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_av_3[:,m,n],new_x_value=f,type_clog=type_clog)
+perm_prep_sd_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_sd_3[:,m,n],new_x_value=f,type_clog=type_clog)
+
+# Average
+ax.plot(f, perm_prep_av_itrp_1, color="tab:blue") # , label=r"$\hat{k}^{11}$"
+
+# Standard deviation
+#ax.plot(f, perm_prep_sd_itrp_1, color="tab:blue",ls="--") # , label=r"$\hat{k}^{11}$"
+
+# Plus minus standard deviation
+ax.fill_between(f, perm_prep_av_itrp_1-perm_prep_sd_itrp_1, perm_prep_av_itrp_1+perm_prep_sd_itrp_1, alpha=0.5, facecolor="tab:blue")
+
+# Error bars
+#ax.errorbar(x=conc_max_or_tot_1[0::10],y=perm_prep_av_3[0::10,m,n], yerr=perm_prep_sd_3[0::10,m,n], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
+
+# Plot the mono-dispersed case
+alph = 1
+beta = 0.01
+ax.plot(f, 4/((alph*beta*f+2)**2), color="tab:blue", ls="--")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$s$",
+                             y_label=r"$k$",
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=None,
+                             y_top=1.2)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__v__s_1.svg"), format="svg")
+
+
+
+
+# Plot adhesivity
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# Choose dimensions to plot
+m = 0
+n = 0
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+# Interpolate against f
+depo_prep_av_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_av_2[:,m],new_x_value=f,type_clog=type_clog)
+depo_prep_sd_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_sd_2[:,m],new_x_value=f,type_clog=type_clog)
+
+# Average
+ax.plot(f, depo_prep_av_itrp_1, color="tab:blue") # , label=r"$\hat{k}^{11}$"
+
+# Standard deviation
+#ax.plot(f, perm_prep_sd_itrp_1, color="tab:blue",ls="--") # , label=r"$\hat{k}^{11}$"
+
+# Plus minus standard deviation
+ax.fill_between(f, depo_prep_av_itrp_1-depo_prep_sd_itrp_1, depo_prep_av_itrp_1+depo_prep_sd_itrp_1, alpha=0.5, facecolor="tab:blue")
+
+# Error bars
+#ax.errorbar(x=conc_max_or_tot_1[0::10],y=perm_prep_av_3[0::10,m,n], yerr=perm_prep_sd_3[0::10,m,n], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
+
+# Plot the mono-dispersed case
+alph = 1
+beta = 0.01
+ax.plot(f, 4/((alph*beta*f+2)**2), color="tab:blue", ls="--")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$s$",
+                             y_label=r"$j$",
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=None,
+                             y_top=1.2)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_prep_3__v__s_1.svg"), format="svg")
+
+
+
+# Plot delta
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+# Choose dimensions to plot
+i = 2 
+j = 3
+r = 0
+m = 0
+
+colors = ["tab:blue", "tab:orange"]
+for i in [0]:
+    for jj,j in enumerate([1,2]):
+
+        # Interpolate against f
+        delt_av_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=delt_av_5[:,i,j,r,m],new_x_value=f,type_clog=type_clog)
+        delt_sd_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=delt_sd_5[:,i,j,r,m],new_x_value=f,type_clog=type_clog)
+
+
+        # Average
+        ax.plot(f, abs(delt_av_itrp_1), color=colors[jj], ls="-") # , label=r"$\hat{k}^{11}$"
+
+        # Standard deviation
+        #ax.plot(f, abs(delt_sd_itrp_1), color="tab:blue",ls="--") # , label=r"$\hat{k}^{11}$"
+
+        # Outline the standard deviation
+        #ax.plot(f, delt_av_itrp_1-perm_prep_sd_itrp_1, c="k")
+        #ax.plot(f, delt_av_itrp_1+perm_prep_sd_itrp_1, c="k")
+
+        # Plus minus standard deviation
+        ax.fill_between(f, abs(delt_av_itrp_1)-abs(delt_sd_itrp_1), abs(delt_av_itrp_1)+abs(delt_sd_itrp_1), alpha=0.5, facecolor=colors[jj])
+
+
+        # Error bars
+        #ax.errorbar(x=conc_max_or_tot_1[0::10],y=delt_av_5[0::10,i,j,r,m], yerr=delt_sd_5[0::10,i,j,r,m], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
+
+
+# Construction lines
+#ax.plot(f,0.05*numpy.ones_like(f),c="k",ls=":")
+#ax.grid()
+
+# Plot the mono-dispersed case
+#ax.plot(f, numpy.ones_like(f), color="tab:blue", ls="--")
+#ax.plot(f, 0*numpy.ones_like(f), color="tab:orange", ls="--")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$s$",
+                             y_label=r"$\Delta_{ij}^{r}$",
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=None,
+                             y_top=None)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"delt_5__v__s_1.svg"), format="svg")
+
+
+
+
+
+# Plot conductance
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+# Choose dimensions to plot
+r = 0
+m = 0
+
+colors = ["tab:blue", "tab:orange", "tab:green"]
+for i in [0]:
+    for jj,j in enumerate([1,2,3]):
+
+        # Interpolate against f
+        cond_tabl_av_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=cond_tabl_av_5[:,i,j,r,m],new_x_value=f,type_clog=type_clog)
+        cond_tabl_sd_itrp_1 = flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=cond_tabl_sd_5[:,i,j,r,m],new_x_value=f,type_clog=type_clog)
+
+
+        # Average
+        ax.plot(f, cond_tabl_av_itrp_1, color=colors[jj], ls="-") # , label=r"$\hat{k}^{11}$"
+
+        # Standard deviation
+        #ax.plot(f, cond_tabl_sd_itrp_1, color=colors[jj], ls="--") # , label=r"$\hat{k}^{11}$"
+
+        # Outline the standard deviation
+        #ax.plot(f, delt_av_itrp_1-perm_prep_sd_itrp_1, c="k")
+        #ax.plot(f, delt_av_itrp_1+perm_prep_sd_itrp_1, c="k")
+
+        # Plus minus standard deviation
+        ax.fill_between(f, cond_tabl_av_itrp_1-cond_tabl_sd_itrp_1, cond_tabl_av_itrp_1+cond_tabl_sd_itrp_1, alpha=0.5, facecolor=colors[jj])
+
+
+        # Error bars
+        #ax.errorbar(x=conc_max_or_tot_1[0::4],y=cond_tabl_av_5[0::4,i,j,r,m], yerr=cond_tabl_sd_5[0::4,i,j,r,m], xerr=None, color="k", lolims=False,uplims=False, fmt='.', capsize=2.5, elinewidth=1.0)
+
+
+# Construction lines
+#ax.plot(f,0.05*numpy.ones_like(f),c="k",ls=":")
+#ax.grid()
+
+# Plot the mono-dispersed case
+alph = 1
+beta = 0.01
+ax.plot(f, 4/((alph*beta*f+2)**2), color="tab:blue", ls="--")
+ax.plot(f, numpy.ones_like(f), color="tab:orange", ls="--")
+
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$s$",
+                             y_label=r"$G_{ij}^{\bm{r}}$",
+                             x_left=0,
+                             x_right=1001,
+                             y_bottom=-0.0,
+                             y_top=1.40)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5__v__s_1.svg"), format="svg")
+
+
+
+
+
+
+
+
+
 
 
 
@@ -127,9 +358,6 @@ fig, ax = plt.subplots(1,1)
 #
 ##ax.plot(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:green", ls="-")
 
-
-print(conc_max_or_tot_1.shape)
-print(depo_prep_2[:,0])
 
 ##ax.scatter(conc_max_or_tot_1, cond_tabl_5[:,i,j,r1,r2], color="tab:blue", marker="o")
 ## random
