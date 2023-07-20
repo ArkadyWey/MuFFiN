@@ -15,12 +15,13 @@ import plotting
 # -------
 sigma = 0.3 
 type_alpha = "mean"
-initialisation = "6-reg"
+initialisation = "4-reg"
 
-dist = "depo"
+dist = "perm"
 
-path_results = "/home/user/home_temp/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}".format(initialisation)
+path_results = "/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}".format(initialisation)
 
+#path_results = /home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-4-reg/N-4/fulls_init-4-reg_N-4
 
 # Plot histogram clearer method
 # -----------------------    
@@ -58,7 +59,7 @@ else:
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for t, N in enumerate(num_nodes_list):
 
-    path_stats = "/home/user/home_temp/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
+    path_stats = "/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
 
     # Plot parameter distribution
     # ----------------------------
@@ -217,7 +218,7 @@ mean_1 = numpy.zeros(shape=num_tests)
 sd_1   = numpy.zeros(shape=num_tests)
 for t in range(num_tests):
     N = num_nodes_list[t]
-    path_stats = "/home/user/home_temp/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
+    path_stats = "/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
 
     # Get parameter to histogram
     # ------
@@ -298,7 +299,7 @@ colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:b
 eses   = ["0","50","100","150","200"]
 for ss,s in enumerate([0,1,2,3,4]):
     
-    path_stats = "/home/user/home_temp/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
+    path_stats = "/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/fulls_init-{}_N-{}".format(initialisation,N,initialisation,N)
     
     # Plot parameter distribution
     # ----------------------------
