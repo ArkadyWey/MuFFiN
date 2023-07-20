@@ -17,8 +17,8 @@ import plotting
 #path_results = os.path.join(".","results/results_preprocess_2D")
 #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
 #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
-path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
-
+#path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
 
 type_clog = "deposit"
 
@@ -33,7 +33,10 @@ heav_5            = numpy.load(os.path.join(path_results, "heav_5.npy"))
 delt_5            = numpy.load(os.path.join(path_results, "delt_5.npy"))
 
 
-# Plot permeability and deposition parameter values on one axis 
+alph = 0.2
+beta = 0.01
+
+# Plot permeability 
 # -----
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
@@ -42,31 +45,65 @@ fig, ax = plt.subplots(1,1)
 m = 0
 n = 0
 
-print(conc_max_or_tot_1.shape)
-print(depo_prep_2[:,0])
-
 #ax.scatter(conc_max_or_tot_1, perm_prep_3[:,m,n], color="tab:blue",   marker="o"  ) # label=r"$k^{11}$"
 #ax.scatter(conc_max_or_tot_1, depo_prep_2[:,m]  , color="tab:orange", marker="o") # label=r"$j^{1}$" 
 
 f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 
 ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_3[:,m,n],new_x_value=f,type_clog=type_clog), color="tab:blue") # , label=r"$\hat{k}^{11}$"
-ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=f,type_clog=type_clog), color="tab:orange") # label=r"$\hat{j}^{1}$ "
 
-alph = 1
-beta = 0.01
-ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:blue", ls="-")
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:orange", ls="--")
 
 #plt.rcParams['text.latex.preamble'] = r"\usepackage{bm}"
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$f$",
-                             y_label=r"$k^{11},j^{1}$",
-                             x_left=None,
-                             x_right=None,
-                             y_bottom=None,
-                             y_top=None)
+                             x_label=r"$s$",
+                             y_label=r"$k^{11}$",
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=0,
+                             y_top=1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__depo_prep_2__v__conc_max_or_tot_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep__3__v__s_1.svg"), format="svg")
+
+
+
+
+
+
+
+
+
+# Plot deposition parameter
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+# Choose dimensions to plot
+m = 0
+n = 0
+
+
+#ax.scatter(conc_max_or_tot_1, perm_prep_3[:,m,n], color="tab:blue",   marker="o"  ) # label=r"$k^{11}$"
+#ax.scatter(conc_max_or_tot_1, depo_prep_2[:,m]  , color="tab:orange", marker="o") # label=r"$j^{1}$" 
+
+f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
+
+ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=f,type_clog=type_clog), color="tab:blue") # label=r"$\hat{j}^{1}$ "
+
+ax.plot(conc_max_or_tot_1, alph*4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:orange", ls="--")
+
+#plt.rcParams['text.latex.preamble'] = r"\usepackage{bm}"
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$s$",
+                             y_label=r"$j^{1}$",
+                             x_left=0,
+                             x_right=1000,
+                             y_bottom=0,
+                             y_top=1)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_prep__2__v__s_1.svg"), format="svg")
+
+
 
 
 
@@ -109,7 +146,7 @@ print(depo_prep_2[:,0])
 
 
 ## hori
-#ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,1,0,0]), color="tab:blue", ls="-")
+ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,1,0,0]), color="tab:blue", ls="-")
 #ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,2,3,0,0]), color="tab:blue", ls="--")
 ## vert
 #ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,0,2,0,0]), color="tab:orange", ls="-")
@@ -124,12 +161,10 @@ print(depo_prep_2[:,0])
 #ax.plot(conc_max_or_tot_1, (cond_tabl_5[:,1,3,0,1]), color="tab:red", ls="--")
 
 
-alph = 1
-beta = 0.01
 
 #ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="black", ls="--")
 #ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls=":")
-ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:blue", ls="-")
+ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:orange", ls="--")
 
 
 f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
@@ -145,7 +180,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0,
                              y_top=1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5_v__conc_max_or_tot_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5__v__s_1.svg"), format="svg")
 
 
 
@@ -187,19 +222,27 @@ f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 # r = 0
 # -----
 # hori
+#ax.plot(conc_max_or_tot_1, (delt_5[:,1,0,0,0]), color="tab:blue", ls="-")
 ax.plot(conc_max_or_tot_1, (delt_5[:,1,0,0,0]), color="tab:blue", ls="-")
-ax.plot(conc_max_or_tot_1, (delt_5[:,3,2,0,0]), color="tab:blue", ls="--")
+#ax.plot(conc_max_or_tot_1, (delt_5[:,3,2,0,0]), color="tab:blue", ls="--")
+ax.plot(conc_max_or_tot_1, (delt_5[:,3,2,0,0]), color="tab:blue", ls="-")
 # vert
+# ax.plot(conc_max_or_tot_1, (delt_5[:,2,0,0,0]), color="tab:orange", ls="-")
 ax.plot(conc_max_or_tot_1, (delt_5[:,2,0,0,0]), color="tab:orange", ls="-")
-ax.plot(conc_max_or_tot_1, (delt_5[:,3,1,0,0]), color="tab:orange", ls="--")
+# ax.plot(conc_max_or_tot_1, (delt_5[:,2,0,0,0]), color="tab:orange", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,3,1,0,0]), color="tab:orange", ls="-")
 # r = 1
 # -----
 # hori
-ax.plot(conc_max_or_tot_1, (delt_5[:,0,1,-1,0]), color="tab:green", ls="-")
-ax.plot(conc_max_or_tot_1, (delt_5[:,2,3,-1,0]), color="tab:green", ls="--")
+#ax.plot(conc_max_or_tot_1, (delt_5[:,0,1,-1,0]), color="tab:green", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,0,1,-1,0]), color="tab:blue", ls="-")
+#ax.plot(conc_max_or_tot_1, (delt_5[:,2,3,-1,0]), color="tab:green", ls="--")
+ax.plot(conc_max_or_tot_1, (delt_5[:,2,3,-1,0]), color="tab:blue", ls="-")
 # vert
-ax.plot(conc_max_or_tot_1, (delt_5[:,0,2,0,0]), color="tab:red", ls="-")
-ax.plot(conc_max_or_tot_1, (delt_5[:,1,3,0,0]), color="tab:red", ls="--")
+# ax.plot(conc_max_or_tot_1, (delt_5[:,0,2,0,0]), color="tab:red", ls="-")
+ax.plot(conc_max_or_tot_1, (delt_5[:,0,2,0,0]), color="tab:orange", ls="-")
+# ax.plot(conc_max_or_tot_1, (delt_5[:,1,3,0,0]), color="tab:red", ls="--")
+ax.plot(conc_max_or_tot_1, (delt_5[:,1,3,0,0]), color="tab:orange", ls="-")
 
 
 ## r = 0
@@ -230,21 +273,21 @@ ax.plot(conc_max_or_tot_1, (delt_5[:,1,3,0,0]), color="tab:red", ls="--")
 #ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=cond_tabl_5[:,i,j,r1,r2],new_x_value=f,type_clog=type_clog), color="tab:blue")
 #ax.plot(conc_max_1, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=depo_prep_2[:,m]  ,new_x_value=conc_max_1,type_clog=type_clog), label=r"$\hat{j}^{1}$", color="blue")
 
-ax.plot(conc_max_or_tot_1, numpy.zeros_like(conc_max_or_tot_1), color="black", ls=":")
-ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls="--")
+#ax.plot(conc_max_or_tot_1, numpy.zeros_like(conc_max_or_tot_1), color="black", ls=":")
+#ax.plot(conc_max_or_tot_1, numpy.ones_like(conc_max_or_tot_1), color="black", ls="--")
 
 
 plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"$f$",
-                             y_label=r"$\Delta_{ij}^{r^1}$",
-                             x_left=None,
-                             x_right=None,
-                             y_bottom=None,
-                             y_top=None)
+                             x_label=r"$s$",
+                             y_label=r"$\Delta_{ij}^{r}$",
+                             x_left=0,
+                             x_right=1001,
+                             y_bottom=-0.005,
+                             y_top=1.01)
 #                             y_bottom=-0.1,
 #                             y_top=1.1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"delt_5_v__conc_max_or_tot_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"delt_5__v__s_1.svg"), format="svg")
 
 
 # Plot adhe distribution
