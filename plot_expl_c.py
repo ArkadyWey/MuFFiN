@@ -10,7 +10,7 @@ import plotting
 
 # Parameters 
 # -----
-path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/sweep-alph/expl/")
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/sweep-alph/")
 
 
 # Plot concentration
