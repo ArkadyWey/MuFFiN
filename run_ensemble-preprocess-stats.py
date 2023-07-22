@@ -77,6 +77,17 @@ numpy.save(file=os.path.join(path_stats,"depo_prep_sd_2.npy"), arr=depo_prep_sd_
 numpy.save(file=os.path.join(path_stats,"delt_sd_5.npy"),      arr=delt_sd_5,      allow_pickle=True, fix_imports=True)
 numpy.save(file=os.path.join(path_stats,"cond_tabl_sd_5.npy"), arr=cond_tabl_sd_5, allow_pickle=True, fix_imports=True)
 
+# Save mean + sd
+numpy.save(file=os.path.join(path_stats,"perm_prep_abov_3.npy"), arr=perm_prep_av_3+perm_prep_sd_3, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"depo_prep_abov_2.npy"), arr=depo_prep_av_2+depo_prep_sd_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"delt_abov_5.npy"),      arr=delt_av_5+delt_sd_5,      allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"cond_tabl_abov_5.npy"), arr=cond_tabl_av_5+cond_tabl_sd_5, allow_pickle=True, fix_imports=True)
+
+# Save mean - sd
+numpy.save(file=os.path.join(path_stats,"perm_prep_belo_3.npy"), arr=perm_prep_av_3-perm_prep_sd_3, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"depo_prep_belo_2.npy"), arr=depo_prep_av_2-depo_prep_sd_2, allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"delt_belo_5.npy"),      arr=delt_av_5-delt_sd_5,      allow_pickle=True, fix_imports=True)
+numpy.save(file=os.path.join(path_stats,"cond_tabl_belo_5.npy"), arr=cond_tabl_av_5-cond_tabl_sd_5, allow_pickle=True, fix_imports=True)
 
 # Save entire results (for distributions)
 path_fulls = os.path.join(path_results,"fulls_init-{}_N-{}".format(initialisation,num_nodes))
