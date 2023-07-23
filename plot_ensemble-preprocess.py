@@ -19,7 +19,7 @@ initialisation = "4-reg"
 num_nodes      = 4
 
 # path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/prep/init-{}/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}_delete-me/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}/N-{}/stats_init-{}_N-{}".format(initialisation,num_nodes,initialisation,num_nodes)) # paper
 
 
 # Load variables
@@ -158,7 +158,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_label=r"$k$",
                              x_left=0,
                              x_right=1000,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=1.2)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep_3__v__s_1.svg"), format="svg")
@@ -204,7 +204,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_label=r"$j$",
                              x_left=0,
                              x_right=1000,
-                             y_bottom=None,
+                             y_bottom=0,
                              y_top=1.2)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_prep_3__v__s_1.svg"), format="svg")
