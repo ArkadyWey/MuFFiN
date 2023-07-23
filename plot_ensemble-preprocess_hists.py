@@ -126,7 +126,6 @@ else:
     raise Exception("dist must be perm or depo.") 
 
 
-
 plotting.thesisify_post_plot(ax=ax,
                              x_label=dist_character,
                              y_label=r"Probability density",
@@ -135,12 +134,8 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=y_bottom,
                              y_top=y_top)
 
+
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"{}__v__prob__init-{}.svg".format(dist,initialisation)), format="svg")
-
-
-
-
-
 
 
 
@@ -242,7 +237,7 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-conf = configure.Configure(num_nodes=2,
+conf = configure.Configure(num_nodes=4,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
 
@@ -287,6 +282,27 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"stats__v__N__dist-{}_
 
 
 
+# Plot scatter accuracy
+# -----
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.scatter(num_nodes_list,numpy.ones_like(mean_1)-abs(mean_1-mean_1[-1]))
+
+# Cleanup graph 
+# -------------
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$N$",
+                             y_label=r"Accuracy",
+                             x_left=0,
+                             x_right=102,
+                             y_bottom=0.95,
+                             y_top=1.001)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"accu__v__N__dist-{}_init-{}.svg".format(dist,initialisation)), format="svg")
+
+
+
 
 # Sweep s 
 # --------
@@ -294,7 +310,7 @@ plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
 
-N = 2
+N = 4
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 eses   = ["0","50","100","150","200"]
 for ss,s in enumerate([0,1,2,3,4]):
