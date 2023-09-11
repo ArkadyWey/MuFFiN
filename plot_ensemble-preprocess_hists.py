@@ -15,9 +15,9 @@ import plotting
 # -------
 sigma = 0.3 
 type_alpha = "mean"
-initialisation = "4-reg"
+initialisation = "6-ireg"
 
-dist = "perm"
+dist = "perm" # depo or perm
 
 path_results = "/home/user/projects/papers/2023_homogenisation/figures/poly/esbl_prep/init-{}".format(initialisation)
 
@@ -45,7 +45,7 @@ elif initialisation == "6-reg":
     y_top    = 12.0
 
 elif initialisation == "6-ireg":
-    num_nodes_list =  [4,16,36,64]#,100]  # 6-ireg
+    num_nodes_list =  [4,16,36,64,81]#,81]#,100]  # 6-ireg
 
     x_left   = 1.0
     x_right  = 2.5
@@ -236,8 +236,12 @@ for t in range(num_tests):
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
+if initialisation == "4-reg" or initialisation == "6-ireg":
+    num_nodes=4
+elif initialisation == "6-reg":
+    num_nodes=2
 
-conf = configure.Configure(num_nodes=4,
+conf = configure.Configure(num_nodes=num_nodes,
                            initialisation=initialisation,
                            sigma=sigma, type_alpha=type_alpha)
 
@@ -262,6 +266,9 @@ if initialisation == "4-reg":
     x_right_stats = 102
     y_top_stats = 1.1
 elif initialisation == "6-reg":
+    x_right_stats = 102
+    y_top_stats = 2.2
+elif initialisation == "6-ireg":
     x_right_stats = 102
     y_top_stats = 2.2
 
@@ -309,8 +316,10 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"accu__v__N__dist-{}_i
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-
-N = 4
+if initialisation == "4-reg" or initialisation == "6-ireg":
+    N=4
+elif initialisation == "6-reg":
+    N=2
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 eses   = ["0","50","100","150","200"]
 for ss,s in enumerate([0,1,2,3,4]):
