@@ -8,70 +8,29 @@ import sys
 sys.path.append("/home/user/utils_python")
 import plotting
 
+import performance
+
 # Parameters 
 # -----
 #path_results = os.path.join(".","results/results_flow") # thesis
 #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_flow") # paper
 #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/flow_test") # paper
 #path_results = os.path.join(".","results/results_comparison/epsi-0.025/results_flow")
-#path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/flow") # paper
+path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/sweep-beta/beta-0.01/flow") # paper
 
-variables = {}
-stat_1 = ["mean", "abov", "belo"]
-vari_1 = ["time_1",
-          "posi_1",
-          "conc_2",
-          "conc_max_or_tot_2",
-          "perm_2",
-          "depo_2",
-          "velo_1",
-          "dpdx_2",
-          "psi_2"]
-
-for stat in stat_1:
-    variables[stat] = {}
-    path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/flow/N-4/{}".format(stat)) # paper
-    for vari in vari_1:
-
-        # Load variables 
-        # -----
-        vari_X = numpy.load(os.path.join(path_results, vari+".npy"))
-        variables[stat][vari] = vari_X
-    #time_1 = numpy.load(os.path.join(path_results, "time_1.npy"))
-    #posi_1 = numpy.load(os.path.join(path_results, "posi_1.npy"))
-    #conc_2     = numpy.load(os.path.join(path_results, "conc_2.npy"))
-    #conc_max_or_tot_2 = numpy.load(os.path.join(path_results, "conc_max_or_tot_2.npy"))
-    #perm_2     = numpy.load(os.path.join(path_results, "perm_2.npy"))
-    #depo_2     = numpy.load(os.path.join(path_results, "depo_2.npy"))
-    #velo_1     = numpy.load(os.path.join(path_results, "velo_1.npy"))
-    #dpdx_2     = numpy.load(os.path.join(path_results, "dpdx_2.npy"))
-    #psi_2      = numpy.load(os.path.join(path_results, "psi_2.npy"))
+time_1 = numpy.load(os.path.join(path_results, "time_1.npy"))
+posi_1 = numpy.load(os.path.join(path_results, "posi_1.npy"))
+conc_2     = numpy.load(os.path.join(path_results, "conc_2.npy"))
+conc_max_or_tot_2 = numpy.load(os.path.join(path_results, "conc_max_or_tot_2.npy"))
+perm_2     = numpy.load(os.path.join(path_results, "perm_2.npy"))
+depo_2     = numpy.load(os.path.join(path_results, "depo_2.npy"))
+velo_1     = numpy.load(os.path.join(path_results, "velo_1.npy"))
+dpdx_2     = numpy.load(os.path.join(path_results, "dpdx_2.npy"))
+psi_2      = numpy.load(os.path.join(path_results, "psi_2.npy"))
 
 
-cond = "poly" # change limits of plots depending on whether initial conductances are mono-dispersed or poly-dispersed 
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/poly/flow/N-4/") # paper
+cond = "mono" # change limits of plots depending on whether initial conductances are mono-dispersed or poly-dispersed 
 
-#num_times = len(time_1)
-# start          = 0
-# first_quarter  = int(1*(num_times-1)/4)
-# second_quarter = int(2*(num_times-1)/4)
-# third_quarter  = int(3*(num_times-1)/4)
-# end            = -1
-
-# num_posis = len(posi_1)
-# top           = 0
-# upper_quarter = int(1*(num_posis-1)/4)
-# middle        = int(2*(num_posis-1)/4)
-# lower_quarter = int(3*(num_posis-1)/4)
-# bottom        = -1
-
-# Then use...
-#ax.plot(posi_1,conc_2[:,start],         )#label=r"$t=0$")
-#ax.plot(posi_1,conc_2[:,first_quarter], )#label=r"$t=1/4$")
-#ax.plot(posi_1,conc_2[:,second_quarter],)#label=r"$t=1/2$")
-#ax.plot(posi_1,conc_2[:,third_quarter], )#label=r"$t=3/4$")
-#ax.plot(posi_1,conc_2[:,end],           )#label=r"$t=1$")
-#ax.legend()
 
 
 # Plot concentration
@@ -79,34 +38,17 @@ path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figu
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 490
-    x_right = 500
-elif cond == "poly":
-    T = 400
-    x_right = 400
-
 alph=1.0
-for stat in stat_1:
-    time_1 = variables[stat]["time_1"]
-    posi_1 = variables[stat]["posi_1"]
-    conc_2 = variables[stat]["conc_2"]
-    for t in [1]:
-        t = int(t)
-        ax.plot(posi_1,conc_2[:,1:T:50],c="tab:blue",ls="-")
-#ax.plot(posi_1,numpy.exp(-alph*posi_1),c="tab:blue",ls="-")
 ax.plot(posi_1,numpy.exp(-alph*posi_1),c="tab:blue",ls="--")
-#ax.plot(posi_1,numpy.exp(-alph)*numpy.ones_like(posi_1), c="black", ls="--")
+ax.plot(posi_1,numpy.exp(-alph)*numpy.ones_like(posi_1), c="black", ls="--")
 
-
-
-# plotting.thesisify_post_plot(ax=ax,
-#                              x_label=r"$x$",
-#                              y_label=r"$c$",
-#                              x_left=0,
-#                              x_right=1,
-#                              y_bottom=0,
-#                              y_top=1.01)
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$x$",
+                             y_label=r"$c$",
+                             x_left=0,
+                             x_right=1,
+                             y_bottom=0,
+                             y_top=1.01)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conc_2__v__posi_1.svg"), format="svg")
 
@@ -115,26 +57,19 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"conc_2__v__posi_1.svg
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 490
-    x_right = 500
-elif cond == "poly":
-    T = 400
-    x_right = 400
+T = 490
+x_right = 500
 
-for stat in stat_1:
-    time_1 = variables[stat]["time_1"]
-    velo_1 = variables[stat]["velo_1"]
-    ax.plot(time_1[0:T],velo_1[0:T]) # mono
-    ax.plot(time_1[0:T], 0.1*numpy.ones_like(time_1[0:T]), color="tab:orange", ls=":")
+ax.plot(time_1[0:T],velo_1[0:T]) # mono
+ax.plot(time_1[0:T], 0.1*numpy.ones_like(time_1[0:T]), color="tab:orange", ls=":")
 
-# plotting.thesisify_post_plot(ax=ax,
-#                              x_label=r"$t$",
-#                              y_label=r"$u$",
-#                              x_left=0,
-#                              x_right=x_right,
-#                              y_bottom=0,
-#                              y_top=1.01)
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$t$",
+                             y_label=r"$u$",
+                             x_left=0,
+                             x_right=x_right,
+                             y_bottom=0,
+                             y_top=1.01)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"velo_1__v__time_1.svg"), format="svg")
 
@@ -145,12 +80,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"velo_1__v__time_1.svg
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 500
-    y_top = 1.01
-elif cond == "poly":
-    T = 450
-    y_top = 1.1
+T = 500
+y_top = 1.01
 
 for t in time_1[0:T:50]:
     t = int(t)
@@ -173,14 +104,9 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"psi_2__v__posi_1.svg"
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 490
-    x_right = 500
-    y_top = 1
-elif cond == "poly":
-    T = 400
-    x_right = 400
-    y_top = 1.1
+T = 490
+x_right = 500
+y_top = 1
 
 ax.plot(time_1[0:T],psi_2[1,0:T])
 
@@ -201,12 +127,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"psi_2__v__time_1.svg"
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 500
-    y_top = 1.01
-elif cond == "poly":
-    T = 450
-    y_top = 1.1
+T = 500
+y_top = 1.01
 
 for t in time_1[0:T:50]:
     t = int(t)
@@ -229,12 +151,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_2__v__posi_1.svg
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 500
-    y_top = 1
-elif cond == "poly":
-    T = 450
-    y_top = 1.1
+T = 500
+y_top = 1.01
 
 for t in time_1[0:T:50]:
     t = int(t)
@@ -251,19 +169,13 @@ plotting.thesisify_post_plot(ax=ax,
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_2__v__posi_1.svg"), format="svg")
 
 
-
-
 # Plot pressure gradient 
 # -----
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    T = 500
-    y_bottom = -8 
-elif cond == "poly":
-    T = 450
-    y_bottom = -20
+T = 500
+y_bottom = -8 
 
 for t in time_1[0:T:50]:
     t = int(t)
@@ -285,12 +197,8 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"dpdx_2__v__posi_1.svg
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-if cond == "mono":
-    tau = 450
-    T   = 500
-elif cond == "poly":
-    tau = 399
-    T   = 450
+tau = 450
+T   = 500
 
 pres_2 = numpy.ones_like(dpdx_2)
 for i_t in numpy.linspace(0,tau,tau+1,endpoint=True,dtype=int):
@@ -314,19 +222,18 @@ plotting.thesisify_post_plot(ax=ax,
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"pres_2__v__posi_1.svg"), format="svg")
 
 
-
 # Plot permeability ad deposition on on graph
 # -----
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
 
-ax.plot(posi_1,perm_2[:,start], label=r"$k^{11}$", color="tab:red")
+ax.plot(posi_1,perm_2[:,0], label=r"$k^{11}$", color="tab:red")
 #ax.plot(posi_1,perm_2[:,first_quarter])
 #ax.plot(posi_1,perm_2[:,second_quarter])
 #ax.plot(posi_1,perm_2[:,third_quarter])
 #ax.plot(posi_1,perm_2[:,end])
 
-ax.plot(posi_1,depo_2[:,start], label=r"$j^{1}$", color="tab:blue")
+ax.plot(posi_1,depo_2[:,0], label=r"$j^{1}$", color="tab:blue")
 #ax.plot(posi_1, depo_2[:,first_quarter])
 #ax.plot(posi_1, depo_2[:,second_quarter])
 #ax.plot(posi_1, depo_2[:,third_quarter])
@@ -347,16 +254,10 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_2_and_depo_1__v_
 
 
 
-# Plot conc_max_or_tot vs position
+# Plot mass flux vs position
 # -----
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-
-#ax.plot(posi_1,conc_max_or_tot_2[:,start])
-#ax.plot(posi_1,conc_max_or_tot_2[:,first_quarter])
-#ax.plot(posi_1,conc_max_or_tot_2[:,second_quarter])
-#ax.plot(posi_1,conc_max_or_tot_2[:,third_quarter])
-#ax.plot(posi_1,conc_max_or_tot_2[:,end])
 
 for t in time_1[0:500:50]:
     t = int(t)
@@ -371,4 +272,159 @@ plotting.thesisify_post_plot(ax=ax,
                              y_top=1300)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cmax_2__v__posi_1.svg"), format="svg")
+
+
+
+
+
+
+
+# Get terminal time and lifetime
+# -----------------
+mu_1 = numpy.linspace(0.1,0.5,101)
+term_1 = numpy.zeros_like(mu_1)
+life_1 = numpy.zeros_like(mu_1)
+
+for i_mu,mu in enumerate(mu_1):
+    term_1[i_mu] = performance.get_termination(velo_1=velo_1,time_1=time_1,mu=mu)
+
+    life = performance.get_lifetime(velo_1=velo_1,time_1=time_1,tau=int(term_1[i_mu]))
+    life_1[i_mu] = life
+
+
+
+# Plot terminal time v velocity threshold
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(mu_1, term_1)
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$\mu$",
+                             y_label=r"$\tau$",
+                             x_left=0.1,
+                             x_right=0.5,
+                             y_bottom=100,
+                             y_top=500)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"term_1__v__thre_1.svg"), format="svg")
+
+
+# Plot life time v termination
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(term_1, life_1)
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$\tau$",
+                             y_label=r"$\lambda$",
+                             x_left=100,
+                             x_right=500,
+                             y_bottom=80,
+                             y_top=180)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"life_1__v__term_1.svg"), format="svg")
+
+
+# Plot life time v velocity threshold
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(mu_1, life_1)
+m = -220
+c = 198
+ax.plot(mu_1,m*mu_1+c, color="tab:orange", ls=":")
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$\mu$",
+                             y_label=r"$\lambda$",
+                             x_left=0.1,
+                             x_right=0.5,
+                             y_bottom=80,
+                             y_top=180)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"life_1__v__thre_1.svg"), format="svg")
+
+
+
+
+# Terminal time (for mu = 0.1)
+T = int(term_1[0])
+
+
+# Get efficiency and throughput
+# --------------
+thro_1 = numpy.zeros_like(time_1) # thro_1[t]
+effi_1 = numpy.zeros_like(time_1) # effi_1[t]
+for t in time_1: 
+    t = int(t)
+    
+    thro_1[t] = performance.get_throughput(velo_1,time_1=time_1,t=t)
+
+effi_1[:] = performance.get_efficiency(conc_2=conc_2)
+
+
+# Plot efficiency v time
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(time_1[0:T+1],effi_1[0:T+1])
+ax.vlines(x=term_1[0], ymin=0, ymax=effi_1[-1], colors='tab:orange', linestyles=':')
+
+plotting.thesisify_post_plot(ax=ax,
+                            x_label=r"$t$",
+                            y_label=r"$\eta$",
+                            x_left=0,
+                            x_right=500,
+                             y_bottom=0.62,
+                             y_top=0.64)
+
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"effi_1__v__time_1.svg"), format="svg")
+
+
+# Plot throughput v time
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(time_1[0:T+1],thro_1[0:T+1])
+ax.plot(time_1[0:T+1], thro_1[-1]*numpy.ones_like(time_1[0:T+1]),ls=":", c="tab:orange")
+#ax.plot(time_1[0:T+1], life_1[0]*numpy.ones_like(time_1[0:T+1]),ls=":", c="tab:green")
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$t$",
+                             y_label=r"$\theta$",
+                             x_left=0,
+                             x_right=501,
+                             y_bottom=0,
+                             y_top=200)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"thro_1__v__time_1.svg"), format="svg")
+
+
+# Plot throughput v efficiency
+# ---------------
+plotting.thesisify_pre_ax_creation()
+fig, ax = plt.subplots(1,1)
+
+ax.plot(thro_1[0:T+1], effi_1[0:T+1])
+ax.vlines(x=thro_1[-1], ymin=0, ymax=effi_1[-1], colors='tab:orange', linestyles=':')
+
+plotting.thesisify_post_plot(ax=ax,
+                             x_label=r"$\theta$",
+                             y_label=r"$\eta$",
+                             x_left=0,
+                             x_right=200,
+                             y_bottom=0.62,
+                             y_top=0.64)
+
+plotting.save_fig(fig=fig,fname=os.path.join(path_results,"effi_1__v__thro_1.svg"), format="svg")
+
+
 
