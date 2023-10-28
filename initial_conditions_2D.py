@@ -246,6 +246,10 @@ def four_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
     #count  = numpy.count_nonzero(cond_init_4)
     #print("count:",count)
     #print(cond_init_4)
+
+    # To get average perm -- paper:
+    #cond_init_4 = cond_init_4>0
+
     
     return cond_init_4
 
@@ -295,6 +299,9 @@ def six_reg(num_nodes: int, num_refs: int, mu: float, sigma: float):
                                  sigma=sigma)
 
     cond_init_4 = cell.cond_init_4
+    
+    # To get average perm -- paper:
+    #cond_init_4 = cond_init_4>0
 
 
     # For if we want average network:
