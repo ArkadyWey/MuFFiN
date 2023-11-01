@@ -205,4 +205,4 @@ plotting.thesisify_post_plot(ax=ax_sd,
                              y_top=y_top_stats)
 
 
-plotting.save_fig(fig=fig_sd,fname=os.path.join(path_results,"stats__v__N__stat-sd_dist-{}---.svg".format(dist)), format="svg")
+plotting.save_fig(fig=fig_sd,fname=os.path.join(path_results,"stats__v__N__stat-sd_dist-{}.svg".format(dist)), format="svg")
