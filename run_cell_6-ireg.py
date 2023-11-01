@@ -171,7 +171,7 @@ for edge in edges:
 
 
 import cells
-import configure
+import multiscale_models.configure as configure
 num_nodes = 4
 sigma     = 0.3
 initialisation = "6-ireg"

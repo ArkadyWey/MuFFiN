@@ -2,11 +2,12 @@ from matplotlib import pyplot as plt
 import os 
 import numpy
 
-import utils_plot_exp_param_dist
-
 import sys
 sys.path.append("/home/user/utils_python")
 import plotting
+
+import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
+
 
 
 # Parameters 
@@ -16,7 +17,7 @@ path_results = os.path.join(".","results/results_experiment_param-dist_structure
 if not os.path.exists(path_results):
     os.mkdir(path_results)
 
-parameter_name = "perm"
+parameter_name = "depo"
 
 # Paths to param experiment results for each structure
 path_results_square_struc = os.path.join(".","results/results_exp_param-dist_4-reg_reps-10000_sigma-0.3_alpha-mean")
@@ -28,7 +29,6 @@ path_results_rand_struc = os.path.join(".","results/results_exp_param-dist_6-ire
 #path_results_rand_struc =  os.path.join(".","results/results_exp_param-dist_6-rand_reps-1002_sigma-0.3_alpha-mean") #random connectivity
 #path_results_rand_struc = os.path.join(".","results/results_exp_param-dist_6-ireglikereg_reps-10000_sigma-0.3_alpha-mean")
 #path_results_rand_struc = os.path.join(".","results/results_exp_param-dist_6-ireglikereg_reps-105_sigma-0.3_alpha-mean")
-
 
 paths_results = [
     path_results_square_struc,
@@ -42,28 +42,25 @@ markers = ["s","h",(6, 2, 0)]
 
 # Each structure was trialed for different numbers of nodes
 num_nodes_list_square_struc = [1,4,9,16,25,36,49,64,81,100]
-num_nodes_list_hexag_struc = [2,8,18,32,50,72,98,128,162,200]
-#num_nodes_list_hexag_struc = [4,9,16]
-#num_nodes_list_rand_struc = [8,18,32,50]
-num_nodes_list_rand_struc = [4,9,16,25,36,49,64,81,100]
+num_nodes_list_hexag_struc = [8,18,32,50,72,98,128,162,200]
 #num_nodes_list_rand_struc =  [8,18,32,50]
+num_nodes_list_rand_struc =  [4,9,16,25,36,49,64,81,100]
 num_nodes_lists = [num_nodes_list_square_struc, 
                    num_nodes_list_hexag_struc,
                    num_nodes_list_rand_struc]
 
 # Each structure needs its own labels in plot
-labels_mean = [r"$\mathbb{E}[k^{11}]$ - 4-regular", r"$\mathbb{E}[k^{11}]$ - 6-regular", r"$\mathbb{E}[k^{11}]$ - 6-irregular"]
-labels_sd = [r"$\mathbb{S}[k^{11}]$ - 4-regular", r"$\mathbb{S}[k^{11}]$ - 6-regular", r"$\mathbb{S}[k^{11}]$ - 6-irregular"]
+labels_mean = [r"$\mathbb{E}[j^{1}]$ - 4-regular", r"$\mathbb{E}[j^{1}]$ - 6-regular", r"$\mathbb{E}[j^{1}]$ - 6-irregular"]
+labels_sd = [r"$\mathbb{S}[j^{1}]$ - 4-regular", r"$\mathbb{S}[j^{1}]$ - 6-regular", r"$\mathbb{S}[j^{1}]$ - 6-irregular"]
 
-sd_constants_and_powers = [[0.498,-0.5],[0.577, -0.5],[1.1, -0.5]]  # first index is constant out front, second is power
-labels_sd_fit = [r"$0.498N^{-\frac{1}{2}}$", 
-                 r"$0.577N^{-\frac{1}{2}}$",
-                 r"$1.100N^{-\frac{1}{2}}$"
+sd_constants_and_powers = [[0.670,-0.5],[0.905, -0.5],[1.010, -0.5]]  # first index is constant out front, second is power
+labels_sd_fit = [r"$0.670N^{-\frac{1}{2}}$", 
+                 r"$0.905N^{-\frac{1}{2}}$",
+                 r"$1.010N^{-\frac{1}{2}}$"
                 ]
 
 # For guidelines, need smooth x axis
 N_smooth = numpy.linspace(1,200,1000) # For guide lines
-
 
 
 
@@ -86,8 +83,9 @@ plot_parameter_mean_and_sd = utils_plot_exp_param_dist.PlotParameterMeanAndSD(pa
                                                                      ax_mean=ax_mean,
                                                                      ax_sd=ax_sd)
 
-ax_mean.plot(N_smooth, 1.7246083823764355*numpy.ones_like(N_smooth), label=r"$\bar{k}_4$")
-ax_mean.plot(N_smooth, 2.6587931103444693*numpy.ones_like(N_smooth), label=r"$\bar{k}_6$")
+ax_mean.plot(N_smooth, 0.9651213631878779*numpy.ones_like(N_smooth), label=r"$\bar{j}_4$")
+ax_mean.plot(N_smooth, 2.0741807948844833*numpy.ones_like(N_smooth), label=r"$\bar{j}_6$")
+
 
 # Cleanup graph 
 # ----
@@ -99,7 +97,7 @@ plotting.thesisify_post_plot(ax=plot_parameter_mean_and_sd.ax_mean,
                              y_bottom=0.0,
                              y_top=None)
 
-plotting.save_fig(fig=fig_mean,fname=os.path.join(path_results,"compare__mean-k__v__N.svg"))
+plotting.save_fig(fig=fig_mean,fname=os.path.join(path_results,"compare__mean-j__v__N.svg"))
 
 # Cleanup graph 
 # ----
@@ -111,4 +109,4 @@ plotting.thesisify_post_plot(ax=plot_parameter_mean_and_sd.ax_sd,
                              y_bottom=0.0,
                              y_top=None)
 
-plotting.save_fig(fig=fig_sd,fname=os.path.join(path_results,"compare__sd-k__v__N.svg"))
+plotting.save_fig(fig=fig_sd,fname=os.path.join(path_results,"compare__sd-j__v__N.svg"))

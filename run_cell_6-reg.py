@@ -2,7 +2,7 @@ import cells
 import numpy
 import os
 
-import configure
+import multiscale_models.configure as configure
 
 # Parameters 
 # -----

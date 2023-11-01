@@ -4,8 +4,8 @@ import numpy
 from scipy import interpolate
 import math
 
-import configure
-import utils_plot_exp_param_dist
+import multiscale_models.configure as configure
+import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")
@@ -16,7 +16,7 @@ import plotting
 # -----
 initialisation = "6-reg"
 num_reps       = 10000
-sigma          = 0.03
+sigma          = 0.3
 type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
@@ -31,8 +31,7 @@ Then over the top of each histogram we fit a normal distribution.
 """
 plotting.thesisify_pre_ax_creation()
 fig, ax = plt.subplots(1,1)
-
-num_nodes_list = [2,8,18,32,50]#[2,18,50]#2*numpy.array([4,16,36,64,100])
+num_nodes_list = [2,8,18,32,50]
 colors = ["tab:blue","tab:orange","tab:green","tab:red","tab:purple"]
 # Get number of each number of edges blocked
 for t,N in enumerate(num_nodes_list):
@@ -190,14 +189,6 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0.0,
                              y_top=None)
 
-#plotting.thesisify_post_plot(ax=ax,
-#                             x_label=r"$b^{1\parallel}$",
-#                             y_label=r"Probability density",
-#                             x_left=None,
-#                             x_right=None,
-#                             y_bottom=None,
-#                             y_top=None)
-
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__adhe_hori.svg"), format="svg")
 
 
@@ -290,8 +281,6 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__adhe
 
 
 
-
-
 # Plot mean and standard deviation of blocked edge count.
 # -----------------------
 """
@@ -318,7 +307,8 @@ for t in range(num_tests):
     count_adhe_1 = numpy.load(os.path.join(path_results, "count_adhe_1_N-{}.npy".format(N)))
     mean_1[t]   = numpy.mean(a=count_adhe_1, axis=0)
     sd_1[t]     = numpy.std( a=count_adhe_1, axis=0)
-    
+
+print(mean_1)    
 # Plot scatter for distribution means
 ax.scatter(num_nodes_list, mean_1, label=r"$\mathbb{E}[b^{1}]$")
 ax.scatter(num_nodes_list, sd_1,   label=r"$\mathbb{S}[b^{1}]$")
@@ -383,6 +373,6 @@ plotting.thesisify_post_plot(ax=ax,
                              x_left=-5.0,
                              x_right=205.0,
                              y_bottom=-10.0,
-                             y_top=360.0)
+                             y_top=400.0)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")

@@ -139,7 +139,7 @@ count, bins_1, ignored = ax.hist(x=perm_effe_2[0,:], bins=75, density=True, alig
 # ...and compare with log-normal distribution that edges are drawn from 
 # # -----
 
-import configure
+import multiscale_models.configure as configure
 mu = configure.Configure(num_nodes=1,initialisation="4-reg").mean
 sigma = configure.Configure(num_nodes=1,initialisation="4-reg").sd
 x = numpy.linspace(min(bins_1), max(bins_1), 1_000)

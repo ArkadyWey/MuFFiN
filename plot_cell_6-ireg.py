@@ -5,7 +5,7 @@ import numpy
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D  
 
-import configure
+import multiscale_models.configure as configure
 
 # Parameters 
 # -----

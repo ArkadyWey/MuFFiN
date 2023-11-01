@@ -4,8 +4,8 @@ import numpy
 from scipy import interpolate
 import math
 
-import configure
-import utils_plot_exp_param_dist
+import multiscale_models.configure as configure
+import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")
@@ -16,10 +16,11 @@ import plotting
 # -----
 initialisation = "4-reg"
 num_reps       = 10000
-sigma          = 0.3
+sigma          = 0.03
 type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
+
 
 
 # Make density v number of edges blocked plot
@@ -80,13 +81,10 @@ plt.gca().set_prop_cycle(None)
 sigmas = [1,2,3,4,5]
 for i,N in enumerate(num_nodes_list):
 
-    #mu = N/2
-    #sigma = sigmas[i]
-    mu = N*conf.get_cdf(conf.mean)
-    sigma = numpy.sqrt(N*conf.get_cdf(conf.mean)*(1-conf.get_cdf(conf.mean)))
+    mu = N/2
+    sigma = sigmas[i]
     x = numpy.linspace(mu-30, mu+30, 1_000)
     pdf = (numpy.exp(-(x - mu)**2 / (2 * sigma**2))  / (sigma * numpy.sqrt(2 * numpy.pi))) 
-    #ax.plot(x, pdf, linewidth=2, label=r"$\sigma={}$".format(sigma))
     ax.plot(x, pdf, linewidth=2)
 
 # Fit binomial distribution
@@ -102,6 +100,7 @@ for i,N in enumerate(num_nodes_list):
     ax.scatter(ks,bs, marker=".")
 
 plotting.thesisify_post_plot(ax=ax,
+
                              x_label=r"$b^{1\parallel}$",
                              y_label=r"Probability density",
                              x_left=-1.0,
@@ -152,6 +151,11 @@ ax.plot(N_smooth, numpy.sqrt(N_smooth*conf.get_cdf(x=conf.mean)*(1-conf.get_cdf(
 ax.plot(N_smooth, numpy.sqrt(N_smooth)/2, color="tab:green", ls=":", label=r"$\frac{\sqrt{N}}{2}$")
 ax.plot(N_smooth, N_smooth/2, color="tab:blue", ls="--", label=r"$\frac{N}{2}$")
 
+aprx = conf.mean*conf.get_cdf(conf.mean)
+rslt = mean_1[-1]
+pcnt = aprx/rslt*100
+print("pcnt:{}".format(pcnt))
+
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$N$",
                              y_label=r"Blocked edges statistics",
@@ -161,3 +165,5 @@ plotting.thesisify_post_plot(ax=ax,
                              y_top=52.0)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-b_and_std-b__v__N.svg"), format="svg")
+
+

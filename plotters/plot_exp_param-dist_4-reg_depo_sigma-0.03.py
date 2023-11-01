@@ -3,8 +3,8 @@ import os
 import numpy
 from scipy import interpolate
 
-import configure
-import utils_plot_exp_param_dist
+import multiscale_models.configure as configure
+import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")
@@ -15,7 +15,7 @@ import plotting
 # -----
 initialisation = "4-reg"
 num_reps       = 10000
-sigma          = 0.3
+sigma          = 0.03
 type_alpha     = "mean"
 
 path_results = os.path.join(".","results/results_exp_param-dist_{}_reps-{}_sigma-{}_alpha-{}".format(initialisation,num_reps,sigma,type_alpha))
@@ -50,8 +50,7 @@ ax_parameter_distribution =  utils_plot_exp_param_dist.PlotParameterDistribution
 
 conf = configure.Configure(num_nodes=1,
                            initialisation=initialisation,
-                           sigma=sigma,
-                           type_alpha=type_alpha)
+                           sigma=sigma, type_alpha=type_alpha)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$j^{1}$",
@@ -65,17 +64,7 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"prob_density__v__depo
 
 
 
-# Cleanup graph for poster
-# ----
-plotting.thesisify_post_plot(ax=ax,
-                             x_label=r"Adhesivity",
-                             y_label=r"Probability density",
-                             x_left=0.0,
-                             x_right=conf.mean+0.1,
-                             y_bottom=0.0,
-                             y_top=None)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"adhesivity.svg"))
 
 
 
@@ -90,12 +79,12 @@ for t, N in enumerate(num_nodes_list):
     # ----------------------------
     # Get parameters
     # --------
-    conf = configure.Configure(num_nodes=1,
+    conf = configure.Configure(num_nodes=N,
                                initialisation=initialisation,
                                sigma=sigma, type_alpha=type_alpha)
 
 
-    num_bins = 100
+    num_bins = 500
     min_val = 0.0
     max_val = conf.mean
 
@@ -114,7 +103,7 @@ for t, N in enumerate(num_nodes_list):
     count_param_1, bins_param, _ignored = ax.hist(x=param_effe_1, 
                                                   bins=bin_edges.bin_edges, 
                                                   density=True, 
-                                                  align='mid',
+                                                  align='mid', 
                                                   alpha=0.4, color=colors[0])
    
     
@@ -161,10 +150,19 @@ for t, N in enumerate(num_nodes_list):
 
 
     # Plot dashed line at mean
+    #for i in range(len(plot_depo_aprx_v_density.x_j_aprx_1)):
+    #    ax.vlines(x=plot_depo_aprx_v_density.x_j_aprx_1[i], 
+    #              ymin=0.0, 
+    #              ymax=plot_depo_aprx_v_density.height_adhe_1[i], 
+    #              color=colors[1], 
+    #              linewidth=2.0, 
+    #              linestyle="--", 
+    #              alpha=1.0)
+    # Plot dashed line at mean
     for i in range(len(plot_depo_aprx_v_density.x_j_aprx_1)):
         ax.vlines(x=plot_depo_aprx_v_density.x_j_aprx_1[i], 
                   ymin=0.0, 
-                  ymax=2.7, 
+                  ymax=19.0, 
                   color=colors[1], 
                   linewidth=2.0, 
                   linestyle="--", 
@@ -239,17 +237,14 @@ N_smooth =  numpy.linspace(1,100,500)
 ax.plot(N_smooth, (conf.mean*conf.get_cdf(conf.mean))*numpy.ones_like(N_smooth), color="tab:blue",ls="-",label=r"$\bar{G}\mathrm{cdf}(\bar{G})$")
 ax.plot(N_smooth, (mean_1[-1])*numpy.ones_like(N_smooth), color="tab:blue",ls="--", label=r"$\bar{j}^{1}_{N \rightarrow \infty}$")
 #ax.plot(N_smooth, (conf.mean/2)*numpy.ones_like(N_smooth), color="tab:blue",ls="-",label=r"$\frac{\bar{G}}{2}$")
-ax.plot(N_smooth, 0.6703200460356393*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.670N^{-\frac{1}{2}}$",ls="-")
+ax.plot(N_smooth, 0.81873075307*numpy.power(N_smooth,-0.5), color="tab:orange", label=r"$0.819N^{-\frac{1}{2}}$",ls="-")
+# exp(-0.2)= 0.81873075307
 
 aprx = conf.mean*conf.get_cdf(conf.mean)
 rslt = mean_1[-1]
 pcnt = aprx/rslt*100
 print("pcnt:{}".format(pcnt))
 
-
-
-
-#print(numpy.exp(-0.40)) = 0.6703200460356393
 # Cleanup plot
 # Cleanup graph 
 # -------------
@@ -282,16 +277,12 @@ fig, ax = plt.subplots(1,1)
 x = numpy.linspace(0,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(mean_1), label=r"log(mean $j^{1}$$)$")
 ax.scatter(numpy.log(num_nodes_list),numpy.log(sd_1), label=r"log(std. dev. $j^{1}$$)$")
-ax.plot(x, -0.5*x + (-0.40*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.40$")
+ax.plot(x, -0.5*x + (-0.2*numpy.ones_like(x)), color="tab:orange", label=r"$-\frac{1}{2}$log$(N)-0.2$")
 
 # Cleanup plot
 plotting.thesisify_post_plot(ax=ax,x_label=r"log$(N)$")
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-j_and_logstd-j__v__logN.svg"), format="svg")
-
-
-
-
 
 
 
@@ -323,22 +314,22 @@ ax.scatter(num_nodes_list, abs(mean_1-mean_1[-1])/mean_1[-1], label=r"$E_\mathrm
 # Plot guide lines
 # ------
 N_smooth = numpy.linspace(1.25,100,500)
-ax.plot(N_smooth, numpy.exp(-1.7)*numpy.power(N_smooth,-1.0), color="tab:blue", label=r"$0.18N^{-1}$",ls="-")
-print("numpy.exp(-1.7)",numpy.exp(-1.7))
+ax.plot(N_smooth, numpy.exp(-3.5)*numpy.power(N_smooth,-1.0), color="tab:blue", label=r"$0.03N^{-1}$",ls="-")
+print("numpy.exp(-1.7)",numpy.exp(-3.5))
 
 
 colors = ["tab:orange","tab:green","tab:red"]
 for i,N in enumerate([4,9,16]):
     ax.vlines(x=N, 
               ymin=-0.0001, 
-              ymax=numpy.exp(-1.7)*numpy.power(N,-1.0), 
+              ymax=numpy.exp(-3.5)*numpy.power(N,-1.0), 
               color=colors[i], 
               linewidth=2.0, 
               linestyle="--", 
               alpha=1.0, 
               label=r"$N={}$".format(N))
     N_smooth = numpy.linspace(-0.01,N,1000)
-    ax.plot(N_smooth, numpy.exp(-1.7)*numpy.power(N,-1.0)*numpy.ones_like(N_smooth), color=colors[i],linestyle="--")
+    ax.plot(N_smooth, numpy.exp(-3.5)*numpy.power(N,-1.0)*numpy.ones_like(N_smooth), color=colors[i],linestyle="--")
 
 
 # Cleanup graph 
@@ -355,9 +346,6 @@ plotting.save_fig(fig=fig,fname=os.path.join(path_results,"mean-j_diff__v__N.svg
 
 
 
-
-
-
 # Plot Log Log to check gradient of mean diff
 # -------
 plotting.thesisify_pre_ax_creation()
@@ -365,7 +353,7 @@ fig, ax = plt.subplots(1,1)
 
 N_smoother = numpy.linspace(0.01,5,500)
 ax.scatter(numpy.log(num_nodes_list),numpy.log(abs(mean_1-mean_1[-1])/mean_1[-1]), label=r"log(mean $j^1$$)$")
-ax.plot(N_smoother, -1.0*N_smoother + ((-1.7)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
+ax.plot(N_smoother, -1.0*N_smoother + ((-3.5)*numpy.ones_like(N_smoother)), color="tab:orange", label=r"$-\frac{1}{2}log(N)-0.697$")
 
 # Cleanup graph 
 # -------------
@@ -378,5 +366,3 @@ plotting.thesisify_post_plot(ax=ax,
                              y_top=None)
 
 plotting.save_fig(fig=fig,fname=os.path.join(path_results,"logmean-j_diff__v__logN.svg"), format="svg")
-
-print(conf.mean*conf.get_cdf(conf.mean))

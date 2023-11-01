@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 
-import configure
+import multiscale_models.configure as configure
 import preprocess_2D
 import preprocess_blocking_2D
 import preprocess_deposition_2D
