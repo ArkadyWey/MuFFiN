@@ -6,7 +6,7 @@ import argparse
 
 
 import multiscale_models.configure as configure
-import preprocess_2D
+import multiscale_models.preprocess_2D as preprocess_2D
 import preprocess_blocking_2D
 import preprocess_deposition_2D
 
