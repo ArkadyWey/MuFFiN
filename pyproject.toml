@@ -1,0 +1,39 @@
+[project]
+name = "MuFFiN"
+version = "0.1.0"
+description = "A package to simulate Multiscale Fluid Flow in Networks."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE.txt"}
+keywords = ["Multiscale", "Fluid", "Flow", "Networks"]
+authors = [
+  {email = "arkady.wey@maths.ox.ac.uk"},
+  {name = "Arkady Wey"}
+]
+maintainers = [
+  {name = "Arkady Wey", email = "arkady.wey@maths.ox.ac.uk"}
+]
+dependencies = [
+  "matplotlib",
+  "numpy",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest < 5.0.0",
+]
+
+[project.urls]
+homepage = "https://example.com"
+documentation = "https://readthedocs.org"
+repository = "https://github.com"
+changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+#[project.scripts]
+#spam-cli = "spam:main_cli"
+
+#[project.gui-scripts]
+#spam-gui = "spam:main_gui"
+
+#[project.entry-points."spam.magical"]
+#tomatoes = "spam:main_tomatoes"
