@@ -3,9 +3,9 @@ from matplotlib import pyplot as plt
 import os
 import datetime
 
-import utils_indexing
-import network_2D
-import utils_sl
+import multiscale_models.utils_indexing as utils_indexing
+import multiscale_models.network_2D as network_2D
+import multiscale_models.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())

@@ -1,7 +1,7 @@
 import numpy
 import os
 
-import preprocess_2D
+import multiscale_models.preprocess_2D as preprocess_2D
 
 def main(conc_max_disc_1,
          cond_init_4,
