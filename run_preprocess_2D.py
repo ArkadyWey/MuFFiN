@@ -8,7 +8,7 @@ import argparse
 import multiscale_models.configure as configure
 import multiscale_models.preprocess_2D as preprocess_2D
 import multiscale_models.preprocess_blocking_2D as preprocess_blocking_2D
-import preprocess_deposition_2D
+import multiscale_models.preprocess_deposition_2D as preprocess_deposition_2D
 
 
 def main(num_nodes: int, initialisation: str, sigma: float, type_alpha: str, type_clog: str, path_cond_init_4: str, alph: int, beta: int):
