@@ -2,7 +2,7 @@ import os
 import numpy
 from matplotlib import pyplot as plt
 
-import network_2D
+import multiscale_models.network_2D as network_2D
 import multiscale_models.utils_sl as utils_sl
 
 import sys

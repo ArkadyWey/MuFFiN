@@ -1,6 +1,6 @@
 import numpy
 
-import network_2D
+import multiscale_models.network_2D as network_2D
 
 """
 This module collects functions that map cell indexes to grid indexes

@@ -4,7 +4,7 @@ import numpy
 from scipy import interpolate
 
 import multiscale_models.utils_sl as utils_sl
-import network_2D
+import multiscale_models.network_2D as network_2D
 
 import sys
 sys.path.append("/home/user/utils_python")
