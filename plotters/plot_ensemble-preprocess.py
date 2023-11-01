@@ -3,7 +3,7 @@ import os
 import numpy 
 import copy 
 
-import utils_preprocess_2D
+import multiscale_models.utils_preprocess_2D as utils_preprocess_2D
 import multiscale_models.configure as configure
 import flow 
 
