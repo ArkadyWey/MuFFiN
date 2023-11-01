@@ -3,8 +3,8 @@ import numpy
 import json
 import math
 
-import preprocess_2D
-import initial_conditions_2D
+import multiscale_models.preprocess_2D as preprocess_2D
+import multiscale_models.initial_conditions_2D as initial_conditions_2D
 
 
 class Configure():

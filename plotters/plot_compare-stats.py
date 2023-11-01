@@ -3,13 +3,8 @@ import os
 import numpy 
 import scipy.interpolate as interpolate
 
-#import sys
-
-#print(sys.path)
-#sys.path.append("..")
-import multiscale_models.configure
-import configure
-import utils_plot_exp_param_dist
+import multiscale_models.configure as configure
+import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 
 import sys
