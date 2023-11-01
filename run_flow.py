@@ -3,7 +3,7 @@ import datetime
 import os 
 import argparse
 
-import flow
+import multiscale_models.flow as flow
 import multiscale_models.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()

@@ -5,7 +5,7 @@ import copy
 
 import multiscale_models.utils_preprocess_2D as utils_preprocess_2D
 import multiscale_models.configure as configure
-import flow 
+import multiscale_models.flow as flow 
 
 
 import sys
