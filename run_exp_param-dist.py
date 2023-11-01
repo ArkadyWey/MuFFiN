@@ -4,7 +4,7 @@ import datetime
 import argparse
 import json 
 
-import run_preprocess_2D
+import multiscale_models.run_preprocess_2D as run_preprocess_2D
 import multiscale_models.utils_preprocess_2D as utils_preprocess_2D
 
 """
