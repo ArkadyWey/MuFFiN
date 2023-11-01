@@ -3,7 +3,7 @@ import os
 import numpy
 
 
-import utils_sl
+import multiscale_models.utils_sl as utils_sl
 import network_2D
 
 import sys

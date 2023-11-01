@@ -3,7 +3,7 @@ import numpy
 from matplotlib import pyplot as plt
 
 import network_2D
-import utils_sl
+import multiscale_models.utils_sl as utils_sl
 
 import sys
 sys.path.append("/home/user/utils_python")
