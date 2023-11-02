@@ -1,12 +1,11 @@
-import numpy
 import os
 import datetime
-import argparse
 
 import multiscale_models.configure as configure
 import multiscale_models.preprocess_2D as preprocess_2D
 import multiscale_models.preprocess_blocking_2D as preprocess_blocking_2D
 import multiscale_models.preprocess_deposition_2D as preprocess_deposition_2D
+import multiscale_models.load_and_save as load_and_save
 
 def main(num_nodes: int, 
          initialisation: str, 
@@ -93,6 +92,7 @@ def get_path_to_initial_conductance():
     path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
     path_head, path_tail = os.path.split(path_results)
     path_cond_init_4 = os.path.join(path_head,"results_network") + "/cond_init_4.npy"
+    print(path_cond_init_4)
     return path_cond_init_4
 
 if __name__ == "__main__":
@@ -101,55 +101,55 @@ if __name__ == "__main__":
     #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
     #path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
 
-    # Define parameters that aren't in default dictionary
-    # -----   
-    parser = argparse.ArgumentParser()
+    # Parameters
+    # -----
 
-    parser.add_argument("-pr",   "--path_results",   type=str,   help="Path to results")
-    parser.add_argument("-N",    "--num_nodes",      type=int,   help="Number of nodes in cell")
-    parser.add_argument("-init", "--initialisation", type=str,   help="Structure of cell")
-    parser.add_argument("-a",    "--alph",           type=float,   help="alpha")
-    parser.add_argument("-b",    "--beta",           type=float,   help="beta")
+    # List required parameters
+    parameters_required = [
+        "path_results",
+        "num_nodes",
+        "initialisation",
+        "alph",
+        "beta", 
+        "sigma",
+        "type_alpha",
+        "type_clog",
+        "path_cond_init_4",
+    ]
 
-    args = parser.parse_args()
+    # Load required parameters 
+    parameters_used = load_and_save.load_required_parameters(parameters_required=parameters_required)
 
-    path_results   = args.path_results
-    num_nodes      = args.num_nodes
-    initialisation = args.initialisation # specified #"4-reg_prescribed" # 4-reg
-    sigma = 0.3
-    type_alpha = "mean"
-    type_clog  = "deposit"
-    path_cond_init_4 = get_path_to_initial_conductance()
+    # Make simulation output directory
+    if not os.path.exists(parameters_used["path_results"]):
+        os.makedirs(parameters_used["path_results"])
 
-    alph = args.alph #1.0
-    beta = args.beta #0.01
-
-    if not os.path.exists(path_results):
-        os.makedirs(path_results)
-
+    # Save parameters used at simulation output
+    load_and_save.save_dict_as_json(d=parameters_used, path_json=parameters_used["path_results"]+"/parameters.json")
 
     begin_time = datetime.datetime.now()
     
-    # Get permeability and deposition parameter
+    # Get solution variables as functions of mass flux
     # -----
-    perm_prep_3, depo_prep_2, conc_max_or_tot_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = main(num_nodes=num_nodes, 
-                                                                                                 initialisation=initialisation,
-                                                                                                 sigma=sigma,
-                                                                                                 type_alpha=type_alpha,
-                                                                                                 type_clog=type_clog, 
-                                                                                                 path_cond_init_4=path_cond_init_4, 
-                                                                                                 alph=alph, 
-                                                                                                 beta=beta)
+    perm_prep_3, depo_prep_2, conc_max_or_tot_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = main(num_nodes        = parameters_used["num_nodes"], 
+                                                                                                 initialisation   = parameters_used["initialisation"],
+                                                                                                 sigma            = parameters_used["sigma"],
+                                                                                                 type_alpha       = parameters_used["type_alpha"],
+                                                                                                 type_clog        = parameters_used["type_clog"], 
+                                                                                                 path_cond_init_4 = parameters_used["path_cond_init_4"], 
+                                                                                                 alph             = parameters_used["alph"], 
+                                                                                                 beta             = parameters_used["beta"]
+                                                                                                 )
 
     end_time = datetime.datetime.now()
     print("sim_time:\n {}".format(end_time-begin_time))
 
     # Save results 
     # ----- 
-    numpy.save(file=os.path.join(path_results,"perm_prep_3.npy"),       arr=perm_prep_3,     allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"depo_prep_2.npy"),       arr=depo_prep_2,     allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"conc_max_or_tot_1.npy"), arr=conc_max_or_tot_1, allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"cond_tabl_5.npy"),       arr=cond_tabl_5,     allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"adhe_tabl_5.npy"),       arr=adhe_tabl_5,     allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"heav_5.npy"),            arr=heav_5,          allow_pickle=True, fix_imports=True)
-    numpy.save(file=os.path.join(path_results,"delt_5.npy"),            arr=delt_5,          allow_pickle=True, fix_imports=True)
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=perm_prep_3,       name="perm_prep_3")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=depo_prep_2,       name="depo_prep_2")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=conc_max_or_tot_1, name="conc_max_or_tot_1")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=cond_tabl_5,       name="cond_tabl_5")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=adhe_tabl_5,       name="adhe_tabl_5")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=heav_5,            name="heav_5")
+    load_and_save.save_nparray_as_npy(path_results=parameters_used["path_results"], a=delt_5,            name="delt_5")
