@@ -1,8 +1,17 @@
 {
-    "max_ref_dist"   : 1,
-    "num_dims"       : 2,
-    "num_concs"      : 1001,
-    "v"              : 0.5,  
-    "mu"             : -0.045, 
-    "_comments"      : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822, sigma=0.3, then alpha: 1.0/1.72461=0.579841. sigma=0.01, then alpha=1/1.649=0.6065."
+    "path_results"     : "~", 
+    "path_cond_init_4" : "/home/user/projects/papers/2023_homogenisation/figures/results_network/cond_init_4.npy",
+    "num_nodes"        : 9,
+    "initialisation"   : "4-ireg",
+    "alph"             : 1.0,
+    "beta"             : 0.01,
+    "max_ref_dist"     : 1,
+    "num_dims"         : 2,
+    "num_concs"        : 1001,
+    "v"                : 0.5,  
+    "mu"               : -0.045, 
+    "sigma"            : 0.3,
+    "type_alpha"       : "mean",
+    "type_clog"        : "deposit",
+    "_comments"        : "l1 for 6-reg: 1.07456993183, l2 for 6-reg: 1.86120971822, sigma=0.3, then alpha: 1.0/1.72461=0.579841. sigma=0.01, then alpha=1/1.649=0.6065."
 }
