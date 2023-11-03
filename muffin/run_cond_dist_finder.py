@@ -1,6 +1,6 @@
 import numpy 
 import cells
-import multiscale_models.configure as configure 
+import muffin.configure as configure 
 import os
 import argparse
 

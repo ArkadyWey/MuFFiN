@@ -5,8 +5,8 @@ from scipy import interpolate
 import math
 import scipy
 
-import multiscale_models.configure as configure
-import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
+import muffin.configure as configure
+import muffin.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")

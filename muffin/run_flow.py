@@ -3,8 +3,8 @@ import datetime
 import os 
 import argparse
 
-import multiscale_models.flow as flow
-import multiscale_models.utils_sl as utils_sl
+import muffin.flow as flow
+import muffin.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())

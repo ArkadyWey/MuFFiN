@@ -2,7 +2,7 @@ import cells
 import numpy
 import os
 
-import multiscale_models.configure as configure
+import muffin.configure as configure
 
 # Parameters 
 # -----
