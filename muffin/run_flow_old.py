@@ -8,7 +8,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 import os 
 
-import multiscale_models.flow as flow
+import muffin.flow as flow
 
 
 begin_time = datetime.datetime.now()

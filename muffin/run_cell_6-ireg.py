@@ -171,7 +171,7 @@ for edge in edges:
 
 
 import cells
-import multiscale_models.configure as configure
+import muffin.configure as configure
 num_nodes = 4
 sigma     = 0.3
 initialisation = "6-ireg"

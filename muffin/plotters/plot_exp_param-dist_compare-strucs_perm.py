@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 import os 
 import numpy
 
-import multiscale_models.utils_plot_exp_param_dist as utils_plot_exp_param_dist
+import muffin.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")

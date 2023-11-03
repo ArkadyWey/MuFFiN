@@ -8,7 +8,7 @@ import sys
 sys.path.append("/home/user/utils_python")
 import plotting
 
-import multiscale_models.performance as performance
+import muffin.performance as performance
 
 # Parameters 
 # -----
