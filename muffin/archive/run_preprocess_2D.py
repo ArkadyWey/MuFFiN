@@ -1,7 +1,7 @@
 import numpy
 import os
 
-import muffin.preprocess_2D as preprocess_2D
+import muffin.preprocess.preprocess_2D as preprocess_2D
 
 def main(conc_max_disc_1,
          cond_init_4,
