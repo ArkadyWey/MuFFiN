@@ -4,7 +4,7 @@ import os
 import datetime
 
 import muffin.utils.utils_indexing as utils_indexing
-import muffin.network_2D as network_2D
+import import muffin.network.network_2D as network_2D
 import muffin.utils.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()

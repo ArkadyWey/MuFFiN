@@ -5,7 +5,7 @@ import numpy
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D  
 
-import muffin.configure as configure
+import muffin.configure.configure as configure
 
 # Parameters 
 # -----

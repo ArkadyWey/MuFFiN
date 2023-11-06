@@ -9,7 +9,7 @@ from matplotlib.lines import Line2D
 import networkx as nx
 from matplotlib import pyplot as plt
 
-import muffin.configure as configure
+import muffin.configure.configure as configure
 
 # Parameters 
 # -----

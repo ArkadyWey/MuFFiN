@@ -8,7 +8,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 import os 
 
-import muffin.flow as flow
+import muffin.flow.flow as flow
 
 
 begin_time = datetime.datetime.now()
