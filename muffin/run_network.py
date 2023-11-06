@@ -5,7 +5,7 @@ import datetime
 
 import muffin.utils.utils_indexing as utils_indexing
 import muffin.network_2D as network_2D
-import muffin.utils_sl as utils_sl
+import muffin.utils.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())

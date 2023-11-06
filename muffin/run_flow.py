@@ -4,7 +4,7 @@ import os
 import argparse
 
 import muffin.flow as flow
-import muffin.utils_sl as utils_sl
+import muffin.utils.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
