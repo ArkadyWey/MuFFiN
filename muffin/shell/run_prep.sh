@@ -1,1 +1,1 @@
-python run_preprocess_2D.py -pr ~/tests/preprocess/ -N 4 -init "4-reg" -a 0.1 -b 0.1
+python run/run_preprocess_2D.py -pr ~/tests/preprocess/ -N 4 -init "4-reg" -a 0.1 -b 0.1
