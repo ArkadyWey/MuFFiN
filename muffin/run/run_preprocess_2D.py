@@ -1,7 +1,7 @@
 import os
 import datetime
 
-import muffin.configure as configure
+import muffin.configure.configure as configure
 import muffin.preprocess.preprocess_2D as preprocess_2D
 import muffin.preprocess.preprocess_blocking_2D as preprocess_blocking_2D
 import muffin.preprocess.preprocess_deposition_2D as preprocess_deposition_2D

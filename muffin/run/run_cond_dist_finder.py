@@ -1,6 +1,6 @@
 import numpy 
 import cells
-import muffin.configure as configure 
+import muffin.configure.configure as configure 
 import os
 import argparse
 
