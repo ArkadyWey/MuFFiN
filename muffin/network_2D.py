@@ -3,7 +3,7 @@ import scipy.sparse.linalg as linalg
 from scipy import interpolate
 
 import initial_conditions_2D
-import muffin.utils_indexing as utils_indexing
+import muffin.utils.utils_indexing as utils_indexing
 
 import matplotlib
 from matplotlib import pyplot as plt

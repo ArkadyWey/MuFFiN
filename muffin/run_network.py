@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import os
 import datetime
 
-import muffin.utils_indexing as utils_indexing
+import muffin.utils.utils_indexing as utils_indexing
 import muffin.network_2D as network_2D
 import muffin.utils_sl as utils_sl
 
