@@ -3,7 +3,7 @@ import numpy
 from matplotlib import pyplot as plt
 
 import muffin.network_2D as network_2D
-import muffin.utils_sl as utils_sl
+import muffin.utils.utils_sl as utils_sl
 
 import sys
 sys.path.append("/home/user/utils_python")

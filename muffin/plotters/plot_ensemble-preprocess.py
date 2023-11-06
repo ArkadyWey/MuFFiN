@@ -3,7 +3,7 @@ import os
 import numpy 
 import copy 
 
-import muffin.utils_preprocess_2D as utils_preprocess_2D
+import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
 import muffin.configure as configure
 import muffin.flow as flow 
 

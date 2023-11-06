@@ -3,7 +3,7 @@ import os
 import numpy
 
 
-import muffin.utils_sl as utils_sl
+import muffin.utils.utils_sl as utils_sl
 import muffin.network_2D as network_2D
 
 import sys

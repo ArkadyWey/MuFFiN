@@ -6,7 +6,7 @@ import math
 import scipy
 
 import muffin.configure as configure
-import muffin.utils_plot_exp_param_dist as utils_plot_exp_param_dist
+import muffin.utils.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys
 sys.path.append("/home/user/utils_python")
