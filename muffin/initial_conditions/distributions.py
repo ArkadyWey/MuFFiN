@@ -34,16 +34,23 @@ def map_function_name_to_func():
     name_to_func = {func.__name__: func for func in functions_1}
     return name_to_func
 
-def get_sample(dist:str, **kwargs):
+def get_sample(**dist):
     name_to_args = map_function_name_to_args()
     name_to_func = map_function_name_to_func()
     
-    if dist not in name_to_args.keys():
-        raise Exception("{} is not an implemented distribution.".format(dist))
+    if "name" in dist.keys():
+        func_name = dist.pop("name")
+    else: 
+        raise Exception("Distribution dictionary {} is missing the key 'name'.".format(dist))
+    
+    if func_name not in name_to_args.keys():
+        raise Exception("{} is not an implemented distribution.".format(func_name))
     else :
         # Execute function with parameters 
-        func = name_to_func[dist]
-        sample = func(**kwargs)
+        func = name_to_func[func_name]
+        
+        # If kwargs match required arguments then use them
+        sample = func(**dist)
         return sample
     
 
