@@ -3,51 +3,36 @@ import scipy
 
 import muffin.initial_conditions.distributions as distributions
 
-class Four_Regular():
+class FourRegular():
     """
     """
-    def __init__(self, num_nodes:int, 
-                       dist_cond:str,
-                       dist_adhe:str,
-                       mu:float, 
-                       sigma:float, 
-                       num_refs:int=3):
+    def __init__(self, num_nodes:int=4, 
+                       num_refs:int=3,
+                       dist_cond:dict={"name":"lognormal", "mu":0.5, "sigma":0.3},
+                       dist_adhe:dict={"name":"delta",     "mu":0.5}
+                       ):
         """
         """
 
         # Parameters
-        self.num_nodes:int = num_nodes
-        self.n:int         = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
-        self.num_refs:int  = num_refs
+        self.num_nodes:int    = num_nodes
+        self.n:int            = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
+        self.num_refs:int     = num_refs
+        self.dist_cond:dict   = dist_cond
+        self.dist_adhe:dict   = dist_adhe
 
-        # Sampling
-        self.dist_cond:str = dist_cond
-        self.dist_adhe:str = dist_adhe
-        self.mu:float      = mu
-        self.sigma:float   = sigma
-
-        # Execute methods
+        # Make cell
         self.conn_4:numpy.ndarray = self.make_conn_4()
-        self.cond_4:numpy.ndarray = self.fill_edges(dist="lognormal")
-        self.adhe_4:numpy.ndarray = self.fill_edges(dist="ones")
+        self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)
+        self.adhe_4:numpy.ndarray = self.fill_edges(dist=dist_adhe)
 
 
-    def get_sample(self, dist):
-        
-        if dist == "ones":
-            sample_1 = distributions.ones(num_samples=1)
-
-        elif dist == "lognormal":
-            sample_1 = distributions.lognormal(mu=self.mu, 
-                                              sigma=self.sigma, 
-                                              num_samples=1)
-        else:
-            raise Exception("""A function corresponding to this distribution choice does not exist. \ 
-                               See muffin.initial_conditions.distributions""")
-        return sample_1
+    def get_sample(self,dist):
+        sample = distributions.get_sample(**dist)
+        return sample
 
 
-    def fill_edges(self, dist):
+    def fill_edges(self,dist):
         """
         """
         a_4 = numpy.zeros_like(self.conn_4)
@@ -56,9 +41,9 @@ class Four_Regular():
                 for i in numpy.arange(start=0,stop=self.num_nodes,step=1):
                     for j in numpy.arange(start=i,stop=self.num_nodes,step=1):
                         if self.conn_4[i,j,r,s] != 0.0 and a_4[i,j,r,s] == 0:
-                            sample_1 = self.get_sample(dist=dist)
-                            a_4[i,j,r,s]   = sample_1[0]
-                            a_4[j,i,-r,-s] = sample_1[0]
+                            sample = self.get_sample(dist=dist)
+                            a_4[i,j,r,s]   = sample
+                            a_4[j,i,-r,-s] = sample
         return a_4
 
     def make_conn_4(self):
@@ -151,13 +136,13 @@ class Four_Regular():
 
 if __name__ == "__main__":
 
-
-    cell = Four_Regular(num_nodes=4, 
-                            dist_cond="lognormal",
-                            dist_adhe="ones",
-                            mu=0.5, 
-                            sigma=0.3, 
-                            num_refs=3)
+    mu = 0.5 
+    sigma = 0.3 
+    cell = FourRegular(num_nodes=4, 
+                        num_refs=3,
+                        dist_cond={"name":"lognormal", "mu":mu, "sigma":sigma},
+                        dist_adhe={"name":"delta", "mu":1},
+                        )
 
     for i in range(4):
         for j in range(4):
