@@ -28,7 +28,7 @@ class FourRegular():
 
 
     def get_sample(self,dist):
-        sample = distributions.get_sample(**dist)
+        sample = initial_conditions.get_sample(**dist)
         return sample
 
 
