@@ -14,19 +14,21 @@ class FourRegular():
         """
         """
 
-        # Parameters
+    # Attributes
+    # -----
         self.num_nodes:int    = num_nodes
         self.n:int            = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
         self.num_refs:int     = num_refs
         self.dist_cond:dict   = dist_cond
         self.dist_adhe:dict   = dist_adhe
 
-        # Make cell
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=dist_adhe)
 
 
+    # Methods 
+    # -----
     def get_sample(self,dist):
         sample = initial_conditions.get_sample(**dist)
         return sample
