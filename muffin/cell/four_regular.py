@@ -1,7 +1,7 @@
 import numpy 
 import scipy
 
-import muffin.initial_conditions.distributions as distributions
+import muffin.initial_conditions.initial_conditions as initial_conditions
 
 class FourRegular():
     """
