@@ -171,7 +171,7 @@ for edge in edges:
 
 
 import cells
-import muffin.configure as configure
+import muffin.configure.configure as configure
 num_nodes = 4
 sigma     = 0.3
 initialisation = "6-ireg"

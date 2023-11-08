@@ -4,7 +4,7 @@ import datetime
 import argparse
 import json 
 
-import muffin.run_preprocess_2D as run_preprocess_2D
+import muffin.run.run_preprocess_2D as run_preprocess_2D
 import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
 
 """

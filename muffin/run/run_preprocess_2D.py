@@ -1,11 +1,11 @@
 import os
 import datetime
 
-import muffin.configure as configure
-import muffin.preprocess_2D as preprocess_2D
-import muffin.preprocess_blocking_2D as preprocess_blocking_2D
-import muffin.preprocess_deposition_2D as preprocess_deposition_2D
-import muffin.load_and_save as load_and_save
+import muffin.configure.configure as configure
+import muffin.preprocess.preprocess_2D as preprocess_2D
+import muffin.preprocess.preprocess_blocking_2D as preprocess_blocking_2D
+import muffin.preprocess.preprocess_deposition_2D as preprocess_deposition_2D
+import muffin.utils.load_and_save as load_and_save
 
 def main(num_nodes: int, 
          initialisation: str, 

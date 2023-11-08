@@ -3,7 +3,7 @@ import datetime
 import os 
 import argparse
 
-import muffin.flow as flow
+import muffin.flow.flow as flow
 import muffin.utils.utils_sl as utils_sl
 
 begin_time = datetime.datetime.now()

@@ -4,8 +4,8 @@ import numpy
 import copy 
 
 import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
-import muffin.configure as configure
-import muffin.flow as flow 
+import muffin.configure.configure as configure
+import muffin.flow.flow as flow 
 
 
 import sys

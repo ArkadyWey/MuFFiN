@@ -8,7 +8,7 @@ import sys
 sys.path.append("/home/user/utils_python")
 import plotting
 
-import muffin.performance as performance
+import muffin.variables.performance as performance
 
 # Parameters 
 # -----

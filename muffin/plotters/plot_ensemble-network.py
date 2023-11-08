@@ -4,7 +4,7 @@ import numpy
 from scipy import interpolate
 
 import muffin.utils.utils_sl as utils_sl
-import muffin.network_2D as network_2D
+import import muffin.network.network_2D as network_2D
 
 import sys
 sys.path.append("/home/user/utils_python")

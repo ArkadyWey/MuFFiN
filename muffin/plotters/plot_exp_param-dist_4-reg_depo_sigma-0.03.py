@@ -3,7 +3,7 @@ import os
 import numpy
 from scipy import interpolate
 
-import muffin.configure as configure
+import muffin.configure.configure as configure
 import muffin.utils.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
 import sys

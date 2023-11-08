@@ -2,7 +2,7 @@ import cells
 import numpy
 import os
 
-import muffin.configure as configure
+import muffin.configure.configure as configure
 
 # Parameters 
 # -----

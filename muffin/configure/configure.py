@@ -3,8 +3,8 @@ import numpy
 import json
 import math
 
-import muffin.preprocess_2D as preprocess_2D
-import muffin.initial_conditions_2D as initial_conditions_2D
+import muffin.preprocess.preprocess_2D as preprocess_2D
+import muffin.initial_conditions.initial_conditions_2D as initial_conditions_2D
 
 
 class Configure():
