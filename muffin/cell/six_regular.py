@@ -6,8 +6,7 @@ import muffin.initial_conditions.initial_conditions as initial_conditions
 class SixRegular():
     """
     """ 
-    def __init__(self, num_nodes:int=8, 
-                       num_refs:int=3,
+    def __init__(self, num_nodes:int=2, 
                        dist_cond:dict={"name":"lognormal", "mu":0.5, "sigma":0.3},
                        dist_adhe:dict={"name":"delta",     "mu":0.5}
                        ):
@@ -15,13 +14,14 @@ class SixRegular():
         """
     # Attributes
     # -----
+        self.num_nodes:int  = num_nodes
+        self.n:int          = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
+        self.dist_cond:dict = dist_cond
+        self.dist_adhe:dict = dist_adhe
+        self.num_refs:int   = 3
+
+        self.num_dims:int = 2
         self.scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-        
-        self.num_nodes:int    = num_nodes
-        self.n:int            = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
-        self.num_refs:int     = num_refs
-        self.dist_cond:dict   = dist_cond
-        self.dist_adhe:dict   = dist_adhe
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)/self.scale_factor
@@ -136,7 +136,7 @@ class SixRegular():
         pts_x_m1   = self.pts_x_m1
         pts_y_m1   = self.pts_y_m1
 
-        num_dims = 2
+        num_dims = self.num_dims
 
         # Make empty array
         # ------
@@ -355,7 +355,6 @@ if __name__ == "__main__":
     mu = 0.5 
     sigma = 0.3 
     cell = SixRegular(num_nodes=num_nodes, 
-                      num_refs=3,
                       dist_cond={"name":"lognormal", "mu":mu, "sigma":sigma},
                       dist_adhe={"name":"delta", "mu":1},
                         )
