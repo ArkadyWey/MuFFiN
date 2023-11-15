@@ -7,7 +7,6 @@ class FourRegular():
     """
     """
     def __init__(self, num_nodes:int=4, 
-                       num_refs:int=3,
                        dist_cond:dict={"name":"lognormal", "mu":0.5, "sigma":0.3},
                        dist_adhe:dict={"name":"delta",     "mu":0.5}
                        ):
@@ -16,11 +15,13 @@ class FourRegular():
 
     # Attributes
     # -----
-        self.num_nodes:int    = num_nodes
-        self.n:int            = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
-        self.num_refs:int     = num_refs
-        self.dist_cond:dict   = dist_cond
-        self.dist_adhe:dict   = dist_adhe
+        self.num_nodes:int  = num_nodes
+        self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
+        self.dist_cond:dict = dist_cond
+        self.dist_adhe:dict = dist_adhe
+        
+        self.num_refs:int = 3
+
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)
@@ -141,11 +142,10 @@ if __name__ == "__main__":
     mu = 0.5 
     sigma = 0.3 
     cell = FourRegular(num_nodes=4, 
-                        num_refs=3,
                         dist_cond={"name":"lognormal", "mu":mu, "sigma":sigma},
                         dist_adhe={"name":"delta", "mu":1},
                         )
-
+    print(cell.cond_4[:,:,0,0])
     for i in range(4):
         for j in range(4):
             for r in [0,1,-1]:
