@@ -15,15 +15,20 @@ class FourRegular():
 
     # Attributes
     # -----
-        self.initialisation = "4-reg"
-        self.num_nodes:int  = num_nodes
-        self.check_valid_num_nodes()
-        self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
-        self.dist_cond:dict = dist_cond
-        self.dist_adhe:dict = dist_adhe
+        self.initialisation:str    = "4-reg"
+        self.num_nodes:int         = num_nodes
+        self.n:int                 = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
+        self.dist_cond:dict        = dist_cond
+        self.dist_adhe:dict        = dist_adhe  
+        self.num_refs:int          = 3
+        self.num_dims:int          = 2
         
-        self.num_refs:int = 3
+        self.scale_factor:NoneType = None
+        self.l1:float              = self.n*1.0
+        self.l2:float              = self.n*1.0
+        self.leng_1:numpy.ndarray  = self.get_leng_1()
 
+        self.check_valid_num_nodes()
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)
@@ -154,8 +159,12 @@ class FourRegular():
         else: 
             pass
 
-
-
+        
+    def get_leng_1(self):
+        """
+        """
+        leng_1 = numpy.array([self.l1,self.l2])
+        return leng_1
 
 if __name__ == "__main__":
     num_nodes = 4

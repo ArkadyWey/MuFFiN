@@ -14,20 +14,25 @@ class SixRegular():
         """
     # Attributes
     # -----
-        self.initialisation = "6-reg"
-        self.num_nodes:int  = num_nodes
-        self.check_valid_num_nodes()
-        self.n:int          = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
-        self.dist_cond:dict = dist_cond
-        self.dist_adhe:dict = dist_adhe
-        self.num_refs:int   = 3
+        self.initialisation:str   = "6-reg"
+        self.num_nodes:int        = num_nodes
+        self.n:int                = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
+        self.dist_cond:dict       = dist_cond
+        self.dist_adhe:dict       = dist_adhe
+        self.num_refs:int         = 3
+        self.num_dims:int         = 2
+        
+        self.scale_factor:float   = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+        self.l1:float             = self.n*self.scale_factor
+        self.l2:float             = self.n*numpy.sqrt(3.0)*self.scale_factor
+        self.leng_1:numpy.ndarray = self.get_leng_1()
 
-        self.num_dims:int = 2
-        self.scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+        self.check_valid_num_nodes()
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)/self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)/self.scale_factor
+
 
     # Methods 
     # -----
@@ -377,12 +382,16 @@ class SixRegular():
         n = numpy.sqrt(N/2)
         
         if n-int(n) != 0.0:
-            raise Exception("""A six regular cell cannot be constructed using num_nodes={} 
-            because it required that n=sqrt(num_nodes/2) is square.""".format(self.num_nodes))
+            raise Exception("""A six regular cell cannot be constructed using num_nodes={} \\
+                               because it required that n=sqrt(num_nodes/2) is square.""".format(self.num_nodes))
         else: 
             pass
 
-
+    def get_leng_1(self):
+        """
+        """
+        leng_1 = numpy.array([self.l1,self.l2])
+        return leng_1
 
 
 if __name__ == "__main__":

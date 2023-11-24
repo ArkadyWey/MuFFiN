@@ -35,21 +35,21 @@ class SixIrregular():
 
     # Attributes
     # -----
-        self.initialisation = "6-ireg"
-        self.num_nodes:int  = num_nodes
+        self.initialisation:str = "6-ireg"
+        self.num_nodes:int      = num_nodes
+        self.n:int              = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
+        self.dist_cond:dict     = {} # specified for each edge in self.fill_edges()
+        self.dist_adhe:dict     = {"name":"delta", "mu":1.0}
+        self.num_refs:int       = 3
+        self.num_dims:int       = 2
+        
+        self.scale_factor:float   = mean
+        self.l1:float             = self.n*1.0
+        self.l2:float             = self.n*1.0
+        self.leng_1:numpy.ndarray = self.get_leng_1()
+
         self.check_valid_num_nodes()
-        self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
-        self.dist_cond:dict = {} # specified for each edge in self.fill_edges()
-        self.dist_adhe:dict = {"name":"delta", "mu":1.0}
-        self.mean:float     = mean
-        self.num_refs:int   = 3
 
-        self.num_dims:int = 2
-        self.scale_factor = self.mean
-
-        self.l1 = self.n*1.0
-        self.l2 = self.n*1.0
-    
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)*self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
@@ -379,6 +379,12 @@ class SixIrregular():
         Raise no Exception. Any integer is a valid number of nodes for a six irregular cell.
         """
         pass
+
+    def get_leng_1(self):
+        """
+        """
+        leng_1 = numpy.array([self.l1,self.l2])
+        return leng_1
 
 if __name__ == "__main__":
     num_nodes = 4 
