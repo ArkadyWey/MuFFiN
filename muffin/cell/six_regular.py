@@ -15,6 +15,7 @@ class SixRegular():
     # Attributes
     # -----
         self.num_nodes:int  = num_nodes
+        self.check_valid_num_nodes()
         self.n:int          = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
         self.dist_cond:dict = dist_cond
         self.dist_adhe:dict = dist_adhe
@@ -361,8 +362,29 @@ class SixRegular():
         return conn_4
 
 
+    def check_valid_num_nodes(self):
+        """
+        Raise Exception if n=sqrt(num_nodes/2) is not a square integer.
+
+        Parameters
+        -----
+        - num_nodes: int 
+            Number of nodes in the cell. 
+            n = sqrt(num_nodes/2) must be a square integer.     
+        """
+        N = self.num_nodes
+        n = numpy.sqrt(N/2)
+        
+        if n-int(n) != 0.0:
+            raise Exception("""A six regular cell cannot be constructed using num_nodes={}.
+                               A six regular cell requires that n=sqrt(N/2) is a
+                               square integer.""".format(num_nodes))
+
+
+
+
 if __name__ == "__main__":
-    num_nodes = 2
+    num_nodes = 8
     mu = 0.5 
     sigma = 0.3 
     cell = SixRegular(num_nodes=num_nodes, 
