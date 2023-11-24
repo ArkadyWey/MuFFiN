@@ -378,7 +378,7 @@ class SixRegular():
         if n-int(n) != 0.0:
             raise Exception("""A six regular cell cannot be constructed using num_nodes={}.
                                A six regular cell requires that n=sqrt(N/2) is a
-                               square integer.""".format(num_nodes))
+                               square integer.""".format(self.num_nodes))
         else: 
             pass
 
