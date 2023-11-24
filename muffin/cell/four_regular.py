@@ -157,7 +157,7 @@ class FourRegular():
 
 
 if __name__ == "__main__":
-    num_nodes = 5
+    num_nodes = 4
     mu = 0.5 
     sigma = 0.3 
     cell = FourRegular(num_nodes=num_nodes, 
@@ -165,8 +165,8 @@ if __name__ == "__main__":
                         dist_adhe={"name":"delta", "mu":1},
                         )
     print(cell.cond_4[:,:,0,0])
-    for i in range(4):
-        for j in range(4):
+    for i in range(num_nodes):
+        for j in range(num_nodes):
             for r in [0,1,-1]:
                 for s in [0,1,-1]:
                     if cell.cond_4[i,j,r,s] != cell.cond_4[j,i,-r,-s]:
