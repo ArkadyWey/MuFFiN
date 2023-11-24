@@ -16,6 +16,7 @@ class FourRegular():
     # Attributes
     # -----
         self.num_nodes:int  = num_nodes
+        self.check_valid_num_nodes()
         self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
         self.dist_cond:dict = dist_cond
         self.dist_adhe:dict = dist_adhe
@@ -133,15 +134,33 @@ class FourRegular():
 
         return conn_4
 
+    def check_valid_num_nodes(self):
+        """
+        Raise Exception if n=sqrt(num_nodes) is not square.
+
+        Parameters
+        -----
+        - num_nodes: int 
+            Number of nodes in the cell. 
+            n = sqrt(num_nodes) must be square.     
+        """
+        N = self.num_nodes
+        n = numpy.sqrt(N)
+        
+        if n-int(n) != 0.0:
+            raise Exception("""A four regular cell cannot be constructed using num_nodes={}.
+                               because it requires that n=sqrt(num_nodes) is square.""".format(self.num_nodes))
+        else: 
+            pass
 
 
 
 
 if __name__ == "__main__":
-
+    num_nodes = 5
     mu = 0.5 
     sigma = 0.3 
-    cell = FourRegular(num_nodes=4, 
+    cell = FourRegular(num_nodes=num_nodes, 
                         dist_cond={"name":"lognormal", "mu":mu, "sigma":sigma},
                         dist_adhe={"name":"delta", "mu":1},
                         )
