@@ -25,3 +25,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/
           force_orphan: true
+
+strategy:
+  fail-fast: false
+  matrix: ...
