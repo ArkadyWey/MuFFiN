@@ -15,6 +15,7 @@ class FourRegular():
 
     # Attributes
     # -----
+        self.initialisation = "4-reg"
         self.num_nodes:int  = num_nodes
         self.check_valid_num_nodes()
         self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell

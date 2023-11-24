@@ -35,6 +35,7 @@ class SixIrregular():
 
     # Attributes
     # -----
+        self.initialisation = "6-ireg"
         self.num_nodes:int  = num_nodes
         self.check_valid_num_nodes()
         self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
