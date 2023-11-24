@@ -370,15 +370,14 @@ class SixRegular():
         -----
         - num_nodes: int 
             Number of nodes in the cell. 
-            n = sqrt(num_nodes/2) must be a square integer.     
+            n = sqrt(num_nodes/2) must be square.     
         """
         N = self.num_nodes
         n = numpy.sqrt(N/2)
         
         if n-int(n) != 0.0:
-            raise Exception("""A six regular cell cannot be constructed using num_nodes={}.
-                               A six regular cell requires that n=sqrt(N/2) is a
-                               square integer.""".format(self.num_nodes))
+            raise Exception("""A six regular cell cannot be constructed using num_nodes={} 
+            because it required that n=sqrt(num_nodes/2) is square.""".format(self.num_nodes))
         else: 
             pass
 
