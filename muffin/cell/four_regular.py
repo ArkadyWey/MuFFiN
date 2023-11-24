@@ -24,8 +24,8 @@ class FourRegular():
 
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
-        self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)
-        self.adhe_4:numpy.ndarray = self.fill_edges(dist=dist_adhe)
+        self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)
+        self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
 
 
     # Methods 
