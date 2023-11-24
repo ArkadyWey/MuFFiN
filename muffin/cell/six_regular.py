@@ -24,15 +24,14 @@ class SixRegular():
         self.scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
-        self.cond_4:numpy.ndarray = self.fill_edges(dist=dist_cond)/self.scale_factor
-        self.adhe_4:numpy.ndarray = self.fill_edges(dist=dist_adhe)/self.scale_factor
+        self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)/self.scale_factor
+        self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)/self.scale_factor
 
     # Methods 
     # -----
     def get_sample(self,dist):
         sample = initial_conditions.get_sample(**dist)
         return sample
-
 
     def fill_edges(self,dist):
         """
@@ -48,15 +47,27 @@ class SixRegular():
                             a_4[j,i,-r,-s] = sample
         return a_4
 
+
     def make_conn_4(self):
         """
         """
-        (self.pts_x_0, self.pts_y_0, self.pts_x_1, self.pts_y_1, self.pts_x_m1, self.pts_y_m1) = self.get_node_coordinates()
-        self.pts_4 = self.get_points_tensor()
+        (self.pts_x_0, 
+         self.pts_y_0, 
+         self.pts_x_1, 
+         self.pts_y_1, 
+         self.pts_x_m1, 
+         self.pts_y_m1) = self.get_node_coordinates()
+
+        self.pts_4  = self.get_points_tensor()
         self.dist_6 = self.get_distance_between_points()
-        (self.simplices, self.key, self.pts_to_tri_2) = self.get_simplices_of_triangulation()
-        self.edges = self.get_edges()
+
+        (self.simplices, 
+         self.key, 
+         self.pts_to_tri_2) = self.get_simplices_of_triangulation()
+
+        self.edges  = self.get_edges()
         self.conn_4 = self.connect_edges()
+
         return self.conn_4
         
 
