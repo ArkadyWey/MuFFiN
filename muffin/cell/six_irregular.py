@@ -36,6 +36,7 @@ class SixIrregular():
     # Attributes
     # -----
         self.num_nodes:int  = num_nodes
+        self.check_valid_num_nodes()
         self.n:int          = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
         self.dist_cond:dict = {} # specified for each edge in self.fill_edges()
         self.dist_adhe:dict = {"name":"delta", "mu":1.0}
@@ -372,6 +373,11 @@ class SixIrregular():
         return cond_init_4
 
 
+    def check_valid_num_nodes(self):
+        """
+        Raise no Exception. Any integer is a valid number of nodes for a six irregular cell.
+        """
+        pass
 
 if __name__ == "__main__":
     num_nodes = 4 
