@@ -364,7 +364,7 @@ class SixRegular():
 
     def check_valid_num_nodes(self):
         """
-        Raise Exception if n=sqrt(num_nodes/2) is not a square integer.
+        Raise Exception if n=sqrt(num_nodes/2) is not square.
 
         Parameters
         -----
