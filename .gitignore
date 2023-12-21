@@ -11,4 +11,4 @@ scrap2.py
 *.svg
 *.npy
 tokens.txt
-
+/docs/_build/

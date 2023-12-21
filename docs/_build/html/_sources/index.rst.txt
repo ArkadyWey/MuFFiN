@@ -10,6 +10,8 @@ Welcome to MuFFiN's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   modules
+
 Muffin subtitle
 -------------------
 .. image:: _static/muffin.jpg
