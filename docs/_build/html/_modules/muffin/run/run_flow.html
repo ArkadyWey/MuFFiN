@@ -1,0 +1,293 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>muffin.run.run_flow &#8212; MuFFiN 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for muffin.run.run_flow</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span> 
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="kn">import</span> <span class="nn">muffin.flow.flow</span> <span class="k">as</span> <span class="nn">flow</span>
+<span class="kn">import</span> <span class="nn">muffin.utils.utils_sl</span> <span class="k">as</span> <span class="nn">utils_sl</span>
+
+<span class="n">begin_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../muffin.run.html#muffin.run.run_flow.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">conc_max_or_tot_1</span><span class="p">,</span><span class="n">perm_prep_1</span><span class="p">,</span><span class="n">depo_prep_1</span><span class="p">,</span>
+         <span class="n">posi_1</span><span class="p">,</span><span class="n">time_1</span><span class="p">,</span>
+         <span class="n">phi</span><span class="p">,</span><span class="n">conc_in</span><span class="p">,</span>
+         <span class="n">dt</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span>
+         <span class="n">type_clog</span><span class="p">,</span> 
+         <span class="n">incr_time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parameters </span>
+    <span class="c1"># ------</span>
+    <span class="n">num_positions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">posi_1</span><span class="p">)</span>
+    <span class="n">num_times</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_1</span><span class="p">)</span>
+
+    <span class="c1"># Storage for original solution</span>
+    <span class="c1"># ---------------------</span>
+    <span class="n">conc_2</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">conc_max_or_tot_2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">perm_2</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">depo_2</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">depo_pre_2</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">velo_1</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">dpdx_2</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+    <span class="n">psi_2</span>             <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_positions</span><span class="p">,</span><span class="n">num_times</span><span class="p">))</span>
+
+    <span class="c1"># Initial and boundary conditions are enforced inside solver</span>
+
+    <span class="k">for</span> <span class="n">i_t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_times</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating solution at time step </span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_t</span><span class="p">,</span> <span class="n">num_times</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_positions</span><span class="p">):</span> 
+            <span class="c1">#conc_2,conc_max_or_tot_2,perm_2,depo_2,velo_1,dpdx_2,psi_2 = flow.step(conc_2=conc_2,conc_max_or_tot_2=conc_max_or_tot_2,perm_2=perm_2,depo_2=depo_2,velo_1=velo_1,dpdx_2=dpdx_2,psi_2=psi_2,</span>
+            <span class="c1">#                                                                conc_max_or_tot_1=conc_max_or_tot_1,perm_prep_1=perm_prep_1,depo_prep_1=depo_prep_1,</span>
+            <span class="c1">#                                                                posi_1=posi_1,</span>
+            <span class="c1">#                                                                phi=phi,conc_in=conc_in,</span>
+            <span class="c1">#                                                                dt=dt,dx=dx,</span>
+            <span class="c1">#                                                                i_x=i_x,i_t=i_t)</span>
+
+            <span class="n">conc_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_concentration_at_time_and_position</span><span class="p">(</span><span class="n">conc_2</span><span class="o">=</span><span class="n">conc_2</span><span class="p">,</span>
+                                                                          <span class="n">velo_1</span><span class="o">=</span><span class="n">velo_1</span><span class="p">,</span>
+                                                                          <span class="n">psi_2</span><span class="o">=</span><span class="n">psi_2</span><span class="p">,</span>
+                                                                          <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
+                                                                          <span class="n">conc_in</span><span class="o">=</span><span class="n">conc_in</span><span class="p">,</span>
+                                                                          <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
+                                                                          <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span>
+                                                                          <span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span>
+                                                                          <span class="n">i_x</span><span class="o">=</span><span class="n">i_x</span><span class="p">)</span>
+
+            <span class="n">conc_max_or_tot_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_maximum_or_total_concentration_at_time_and_position</span><span class="p">(</span><span class="n">conc_2</span><span class="o">=</span><span class="n">conc_2</span><span class="p">,</span>
+                                                                                                      <span class="n">dpdx_2</span><span class="o">=</span><span class="n">dpdx_2</span><span class="p">,</span>
+                                                                                                      <span class="n">time_1</span><span class="o">=</span><span class="n">time_1</span><span class="p">,</span>
+                                                                                                      <span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span>
+                                                                                                      <span class="n">i_x</span><span class="o">=</span><span class="n">i_x</span><span class="p">,</span>
+                                                                                                      <span class="n">type_clog</span><span class="o">=</span><span class="n">type_clog</span><span class="p">)</span>
+
+            <span class="c1"># replace depo_2[i_x,i_t] with depo_pre_2[i_x,i_t] if blocking</span>
+            <span class="n">perm_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">],</span> <span class="n">depo_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_permeability_and_deposition_at_time_and_position</span><span class="p">(</span><span class="n">conc_max_or_tot_1</span><span class="o">=</span><span class="n">conc_max_or_tot_1</span><span class="p">,</span>
+                                                                                                         <span class="n">perm_prep_1</span><span class="o">=</span><span class="n">perm_prep_1</span><span class="p">,</span>
+                                                                                                         <span class="n">depo_prep_1</span><span class="o">=</span><span class="n">depo_prep_1</span><span class="p">,</span>
+                                                                                                         <span class="n">conc_2</span><span class="o">=</span><span class="n">conc_2</span><span class="p">,</span>
+                                                                                                         <span class="n">dpdx_2</span><span class="o">=</span><span class="n">dpdx_2</span><span class="p">,</span>
+                                                                                                         <span class="n">time_1</span><span class="o">=</span><span class="n">time_1</span><span class="p">,</span>
+                                                                                                         <span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span>
+                                                                                                         <span class="n">i_x</span><span class="o">=</span><span class="n">i_x</span><span class="p">,</span>
+                                                                                                         <span class="n">type_clog</span><span class="o">=</span><span class="n">type_clog</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">type_clog</span> <span class="o">==</span> <span class="s2">&quot;block&quot;</span><span class="p">:</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                If adhesivity value is not new, then this deposition value has already removed necessary</span>
+<span class="sd">                particles and reaction should be turned off until next time it is new.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="c1">#for ii_t in range(i_t+1):</span>
+                <span class="k">if</span> <span class="n">i_t</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">depo_pre_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">depo_pre_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">depo_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>                   
+                        <span class="n">depo_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">depo_pre_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span>                                                                   
+            <span class="k">elif</span> <span class="n">type_clog</span> <span class="o">==</span> <span class="s2">&quot;deposit&quot;</span><span class="p">:</span>
+                <span class="c1">#print(&quot;depo&quot;)</span>
+                <span class="k">pass</span> 
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;type_clog must be either &#39;block&#39; or &#39;deposit&#39;.&quot;</span><span class="p">)</span>
+            
+        <span class="n">velo_1</span><span class="p">[</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_velocity_at_time</span><span class="p">(</span><span class="n">perm_2</span><span class="o">=</span><span class="n">perm_2</span><span class="p">,</span><span class="n">posi_1</span><span class="o">=</span><span class="n">posi_1</span><span class="p">,</span><span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_positions</span><span class="p">):</span> 
+            <span class="n">dpdx_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_pressure_gradient_at_time_and_position</span><span class="p">(</span><span class="n">perm_2</span><span class="o">=</span><span class="n">perm_2</span><span class="p">,</span><span class="n">velo_1</span><span class="o">=</span><span class="n">velo_1</span><span class="p">,</span><span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span><span class="n">i_x</span><span class="o">=</span><span class="n">i_x</span><span class="p">)</span>
+
+            <span class="n">psi_2</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span><span class="n">i_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_reactivity_at_time_and_position</span><span class="p">(</span><span class="n">depo_2</span><span class="o">=</span><span class="n">depo_2</span><span class="p">,</span><span class="n">dpdx_2</span><span class="o">=</span><span class="n">dpdx_2</span><span class="p">,</span><span class="n">i_t</span><span class="o">=</span><span class="n">i_t</span><span class="p">,</span><span class="n">i_x</span><span class="o">=</span><span class="n">i_x</span><span class="p">)</span>
+        
+        <span class="c1">#print(&quot;psi_2[:,i_t]:\n{}&quot;.format(psi_2[:,i_t])) </span>
+
+    <span class="c1"># Reduce num_times in solution</span>
+    <span class="c1"># ----</span>
+    <span class="n">conc_2</span>            <span class="o">=</span> <span class="n">conc_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+    <span class="n">conc_max_or_tot_2</span> <span class="o">=</span> <span class="n">conc_max_or_tot_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+    <span class="n">perm_2</span>            <span class="o">=</span> <span class="n">perm_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+    <span class="n">depo_2</span>            <span class="o">=</span> <span class="n">depo_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+    <span class="n">velo_1</span>            <span class="o">=</span> <span class="n">velo_1</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span>
+    <span class="n">dpdx_2</span>            <span class="o">=</span> <span class="n">dpdx_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+    <span class="n">psi_2</span>             <span class="o">=</span> <span class="n">psi_2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span> 
+                
+    <span class="k">return</span> <span class="p">(</span><span class="n">conc_2</span><span class="p">,</span><span class="n">conc_max_or_tot_2</span><span class="p">,</span><span class="n">perm_2</span><span class="p">,</span><span class="n">depo_2</span><span class="p">,</span><span class="n">velo_1</span><span class="p">,</span><span class="n">dpdx_2</span><span class="p">,</span><span class="n">psi_2</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Parameters </span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-pp&quot;</span><span class="p">,</span> <span class="s2">&quot;--path_preprocess&quot;</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to preprocess results&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-pr&quot;</span><span class="p">,</span> <span class="s2">&quot;--path_results&quot;</span><span class="p">,</span>   <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to results&quot;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    
+    <span class="c1"># Preprocess</span>
+    <span class="c1"># ----------</span>
+    <span class="c1">#path_results_preprocess = os.path.join(&quot;.&quot;,&quot;results/results_preprocess_2D&quot;) # thesis</span>
+    <span class="c1">#path_results_preprocess = os.path.join(&quot;/home/user/projects/papers/2023_homogenisation/figures/mono/prep&quot;) # paper</span>
+    <span class="n">path_results_preprocess</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">path_preprocess</span>
+
+
+    <span class="n">conc_max_or_tot_1</span>  <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results_preprocess</span><span class="p">,</span><span class="s2">&quot;conc_max_or_tot_1.npy&quot;</span><span class="p">),</span> <span class="n">mmap_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;ASCII&#39;</span><span class="p">)</span>
+    <span class="n">perm_prep_3</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results_preprocess</span><span class="p">,</span><span class="s2">&quot;perm_prep_3.npy&quot;</span><span class="p">),</span>      <span class="n">mmap_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;ASCII&#39;</span><span class="p">)</span>
+    <span class="n">depo_prep_2</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results_preprocess</span><span class="p">,</span><span class="s2">&quot;depo_prep_2.npy&quot;</span><span class="p">),</span>      <span class="n">mmap_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;ASCII&#39;</span><span class="p">)</span>
+
+    <span class="n">perm_prep_1</span> <span class="o">=</span> <span class="n">perm_prep_3</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">depo_prep_1</span> <span class="o">=</span> <span class="n">depo_prep_2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+
+    <span class="c1"># Parameters </span>
+    <span class="c1"># ----------</span>
+    <span class="c1"># Space</span>
+    <span class="n">num_positions</span> <span class="o">=</span> <span class="mi">101</span><span class="c1">#1001#101#161#101#501#1001 # 101</span>
+    <span class="n">posi_1</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">num_positions</span><span class="p">)</span>
+    <span class="n">dx</span>            <span class="o">=</span> <span class="n">posi_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">posi_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Time</span>
+    <span class="n">T</span>         <span class="o">=</span> <span class="mi">500</span> <span class="c1">#200</span>
+    <span class="n">num_times</span> <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">num_positions</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> <span class="c1"># need ~2*num_positions time points per second for CFL #2001#40001#1001#5001#10001 # 1001</span>
+    <span class="n">time_1</span>    <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">num_times</span><span class="p">)</span>
+    <span class="n">dt</span>        <span class="o">=</span> <span class="n">time_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Save result once per time unit</span>
+    <span class="n">incr_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num_times</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># time increment: 2*num_positions, which is time points per second. </span>
+                                 <span class="c1"># So record one result per second</span>
+
+    <span class="c1"># Other parameters</span>
+    <span class="n">conc_in</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># TODO: Define this properly</span>
+    <span class="n">type_clog</span> <span class="o">=</span> <span class="s2">&quot;deposit&quot;</span>
+
+
+    <span class="c1"># Run</span>
+    <span class="c1"># ------</span>
+    <span class="p">(</span><span class="n">conc_2</span><span class="p">,</span><span class="n">conc_max_or_tot_2</span><span class="p">,</span><span class="n">perm_2</span><span class="p">,</span><span class="n">depo_2</span><span class="p">,</span><span class="n">velo_1</span><span class="p">,</span><span class="n">dpdx_2</span><span class="p">,</span><span class="n">psi_2</span><span class="p">)</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">conc_max_or_tot_1</span><span class="o">=</span><span class="n">conc_max_or_tot_1</span><span class="p">,</span><span class="n">perm_prep_1</span><span class="o">=</span><span class="n">perm_prep_1</span><span class="p">,</span><span class="n">depo_prep_1</span><span class="o">=</span><span class="n">depo_prep_1</span><span class="p">,</span>
+                                                                        <span class="n">posi_1</span><span class="o">=</span><span class="n">posi_1</span><span class="p">,</span><span class="n">time_1</span><span class="o">=</span><span class="n">time_1</span><span class="p">,</span>
+                                                                        <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span><span class="n">conc_in</span><span class="o">=</span><span class="n">conc_in</span><span class="p">,</span>
+                                                                        <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span>
+                                                                        <span class="n">type_clog</span><span class="o">=</span><span class="n">type_clog</span><span class="p">,</span> 
+                                                                        <span class="n">incr_time</span><span class="o">=</span><span class="n">incr_time</span><span class="p">)</span>
+
+
+
+    <span class="c1"># Save</span>
+    <span class="c1"># ----- </span>
+    <span class="c1">#path_results = os.path.join(&quot;.&quot;,&quot;results/results_flow&quot;) # thesis</span>
+    <span class="c1">#path_results = os.path.join(&quot;/home/user/projects/papers/2023_homogenisation/figures/results_flow&quot;) # paper</span>
+    <span class="n">path_results</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">path_results</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_results</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path_results</span><span class="p">)</span>
+
+    <span class="c1"># Save the time and space axes</span>
+    <span class="n">time_1</span> <span class="o">=</span> <span class="n">time_1</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="n">incr_time</span><span class="p">]</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;time_1.npy&quot;</span><span class="p">),</span> <span class="n">arr</span><span class="o">=</span><span class="n">time_1</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+    
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;posi_1.npy&quot;</span><span class="p">),</span> <span class="n">arr</span><span class="o">=</span><span class="n">posi_1</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Save the results</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;conc_2.npy&quot;</span><span class="p">),</span>            <span class="n">arr</span><span class="o">=</span><span class="n">conc_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;conc_max_or_tot_2.npy&quot;</span><span class="p">),</span> <span class="n">arr</span><span class="o">=</span><span class="n">conc_max_or_tot_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;perm_2.npy&quot;</span><span class="p">),</span>            <span class="n">arr</span><span class="o">=</span><span class="n">perm_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;depo_2.npy&quot;</span><span class="p">),</span>            <span class="n">arr</span><span class="o">=</span><span class="n">depo_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;velo_1.npy&quot;</span><span class="p">),</span>            <span class="n">arr</span><span class="o">=</span><span class="n">velo_1</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;dpdx_2.npy&quot;</span><span class="p">),</span>            <span class="n">arr</span><span class="o">=</span><span class="n">dpdx_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;psi_2.npy&quot;</span><span class="p">),</span>             <span class="n">arr</span><span class="o">=</span><span class="n">psi_2</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fix_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Save the parameters used</span>
+    <span class="n">parameters</span>                  <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>             <span class="o">=</span> <span class="n">T</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;num_times&quot;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">num_times</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;num_positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_positions</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;conc_in&quot;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">conc_in</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span>           <span class="o">=</span> <span class="n">phi</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;type_clog&quot;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">type_clog</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;incr_time&quot;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">incr_time</span>
+
+    <span class="n">utils_sl</span><span class="o">.</span><span class="n">save_dict</span><span class="p">(</span><span class="n">dictname</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_results</span><span class="p">,</span><span class="s2">&quot;parameters.pkl&quot;</span><span class="p">))</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">begin_time</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Arkady Wey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

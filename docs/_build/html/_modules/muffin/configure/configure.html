@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.configure.configure &mdash; MuFFiN 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            MuFFiN
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">MuFFiN</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">muffin.configure.configure</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for muffin.configure.configure</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">muffin.preprocess.preprocess_2D</span> <span class="k">as</span> <span class="nn">preprocess_2D</span>
+<span class="kn">import</span> <span class="nn">muffin.initial_conditions.initial_conditions_2D</span> <span class="k">as</span> <span class="nn">initial_conditions_2D</span>
+
+
+<div class="viewcode-block" id="Configure">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure">[docs]</a>
+<span class="k">class</span> <span class="nc">Configure</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> 
+                       <span class="n">initialisation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                       <span class="n">type_alpha</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+                       <span class="n">path_cond_init_4</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>      
+
+        <span class="c1"># Get class parameters </span>
+        <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span>        <span class="o">=</span> <span class="n">num_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span>   <span class="o">=</span> <span class="n">initialisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>            <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_alpha</span>       <span class="o">=</span> <span class="n">type_alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_cond_init_4</span> <span class="o">=</span> <span class="n">path_cond_init_4</span>
+
+        <span class="c1"># Get input parameters from parameters dictionary or classself.num_concs parameters</span>
+        <span class="c1"># -----</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;parameters.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_ref_dist</span>   <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;max_ref_dist&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_dims</span>       <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;num_dims&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_concs</span>      <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;num_concs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span>              <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">]</span>    <span class="c1"># 2.0 # Sum of volumes of nodes in cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span>             <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span> 
+
+
+        <span class="c1"># Do secondary configuration </span>
+        <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l2</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lengths</span><span class="p">()</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span>            <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">l1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l2</span><span class="p">])</span>
+        <span class="c1">#self.conc_max_or_tot_1 = numpy.linspace(0, 10.0, self.num_concs)</span>
+        <span class="c1">#self.conc_max_or_tot_1 = numpy.linspace(0, 20.0, self.num_concs)</span>
+        <span class="c1">#self.conc_max_or_tot_1 = numpy.linspace(0, 10.0, self.num_concs)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conc_max_or_tot_1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_concs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refs_2</span>            <span class="o">=</span> <span class="n">preprocess_2D</span><span class="o">.</span><span class="n">get_reference</span><span class="p">(</span><span class="n">max_ref_dist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_ref_dist</span><span class="p">,</span>
+                                                             <span class="n">num_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dims</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span>               <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">/</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span><span class="p">))</span>
+
+
+        <span class="c1"># Get params</span>
+        <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mean</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_median</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">type_alpha</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Can turn off so that can find mean and median of unscaled conductnace </span>
+<span class="sd">            distribution without needing scaled mean.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scaled_mean</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scaled_median</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">()</span>
+
+        <span class="c1"># Get initial conditions: conducta  nce and adhesivity </span>
+        <span class="c1"># -----</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs_2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adhe_init_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">))</span> <span class="c1">## might need to change to ones</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cond_init_4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_conductance</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Configure.get_lengths">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_lengths">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The length of the cell depends on the initialisation and the </span>
+<span class="sd">        number of nodes in the cell, because of scalings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span>
+        <span class="n">initialisation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span>
+
+        <span class="k">if</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg_prescribed&quot;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+            <span class="n">n</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>    
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">scale_factor</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="n">scale_factor</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">)</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireglikereg&quot;</span><span class="p">:</span>
+            <span class="n">n</span>  <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>    
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">scale_factor</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="n">scale_factor</span>
+            <span class="c1">#n = numpy.sqrt(num_nodes)</span>
+            <span class="c1">#l1 = n*1.0</span>
+            <span class="c1">#l2 = n*1.0</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reglikeireg&quot;</span><span class="p">:</span>
+            <span class="n">n</span>  <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>    
+            <span class="c1">#l1 = n*1.0</span>
+            <span class="c1">#l2 = n*numpy.sqrt(3.0)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">scale_factor</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="n">scale_factor</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-rand&quot;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">)</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+        <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;specified&quot;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">))</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;initialisation must be &#39;4-reg&#39;, &#39;6-reg&#39;, &#39;6-ireg&#39;, &#39;6-reglikeireg&#39;, or &#39;specified.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_mean">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_mean">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get mean of resulting log-normal distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">+</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mean</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_median">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_median">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_median</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get mean of resulting log-normal distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">median</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_pdf">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_pdf">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>  <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)))</span> 
+        <span class="k">return</span> <span class="n">pdf</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_cdf">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_cdf">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>  <span class="p">))</span>
+        <span class="k">return</span> <span class="n">cdf</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_scaled_mean">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_scaled_mean">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_scaled_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The mean above is not the mean unless the structure is 4-reg, </span>
+<span class="sd">        since otherwise the conductances are scaled for a fair test. </span>
+<span class="sd">        Here we scale the mean by the correct scale factor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg_prescribed&quot;</span><span class="p">:</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">/</span><span class="n">scale_factor</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+            <span class="c1">#scale_factor = 2.0/self.l1#self.l1/2.0 # edge length is uniform so average is half</span>
+            <span class="c1">#scale_factor = numpy.sqrt(numpy.sqrt(3.0))/numpy.sqrt(2.0)</span>
+            <span class="c1"># Scale factor is average length of edge</span>
+            <span class="c1"># See https://math.stackexchange.com/questions/208666/average-distance-between-random-points-in-a-rectangle</span>
+            <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">l1</span>
+            <span class="n">lh</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">l2</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">lh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">lh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">lh</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">t2</span> <span class="o">=</span> <span class="n">d</span><span class="o">*</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">lh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">lh</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+            <span class="n">t3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.0</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span> <span class="p">(</span><span class="n">lh</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">lw</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">lw</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">l2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">lw</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">lh</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">lh</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="n">lw</span><span class="p">)</span>  <span class="p">)</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">15.0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">t1</span><span class="o">+</span><span class="n">t2</span><span class="o">+</span><span class="n">t3</span><span class="p">)</span>
+            <span class="c1">#scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.2</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">/</span><span class="n">scale_factor</span> <span class="c1"># mean/length for length uniformly distributed</span>
+
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>               
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.871389085821546</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.8273194155276555</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.018996118941066</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.066710746623104</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.2080041802724817</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">25</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.1118597827108325</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.0846242099702512</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">36</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.14799194260467</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">49</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.161514899791776</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.1727393516346836</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">81</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.189568000338446</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">2.198423880031176</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;There is no scaled_mean for this num_nodes.&quot;</span><span class="p">)</span>  
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireglikereg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge in reg case</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">/</span><span class="n">scale_factor</span>
+            <span class="c1">#scaled_mean = self.mean</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reglikeireg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="c1">#scale_factor = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))</span>
+            <span class="c1">#scaled_mean = self.mean/scale_factor</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.3374119028739853</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.2192023958069975</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+                <span class="n">scaled_mean</span> <span class="o">=</span> <span class="mf">1.0950280678479565</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;There is no scaled_mean for this num_nodes.&quot;</span><span class="p">)</span>  
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-rand&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;specified&quot;</span><span class="p">:</span>
+            <span class="n">scaled_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;initialisation must be &#39;4-reg&#39;, &#39;6-reg&#39;, &#39;6-ireg&#39;, &#39;specified&#39;.&quot;</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">scaled_mean</span></div>
+
+
+
+<div class="viewcode-block" id="Configure.get_scaled_median">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_scaled_median">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_scaled_median</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The mean above is not the mean unless the structure is 4-reg, </span>
+<span class="sd">        since otherwise the conductances are scaled for a fair test. </span>
+<span class="sd">        Here we scale the mean by the correct scale factor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg_prescribed&quot;</span><span class="p">:</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="o">/</span><span class="n">scale_factor</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.3660568651646265</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.441922764619922</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.4752637571897684</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">0.656494415209621</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">25</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.4959911760321492</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">0.552792165039536</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">36</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.5097381075644065</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">49</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.5219542630185445</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.5305661672129145</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">81</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.5356810990598735</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                <span class="n">scaled_median</span> <span class="o">=</span> <span class="mf">1.5407607827960603</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;There is no scaled_median for this num_nodes.&quot;</span><span class="p">)</span>    
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireglikereg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="o">/</span><span class="n">scale_factor</span>
+            <span class="c1">#scaled_median = self.median</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reglikeireg&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">))</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="o">/</span><span class="n">scale_factor</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-rand&quot;</span><span class="p">:</span>
+            <span class="c1"># Scale factor is length of edge</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;specified&quot;</span><span class="p">:</span>
+            <span class="n">scaled_median</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span>
+
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;initialisation must be &#39;4-reg&#39;, &#39;6-reg&#39;, &#39;6-ireg&#39;, &#39;6-reglikeireg&#39;, or &#39;specified&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">scaled_median</span></div>
+
+
+
+<div class="viewcode-block" id="Configure.get_alpha">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_alpha">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the conductance distribution&#39;s mu and sigma variables, </span>
+<span class="sd">        get alpha. </span>
+<span class="sd">        At the moment, we calculate alpha such that the incominig concentration, </span>
+<span class="sd">        which is 1, blocks an edge with 50% chance. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parameters </span>
+        <span class="c1"># -----------</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_alpha</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">scaled_mean</span>
+            <span class="c1">#alpha = 1.0</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_alpha</span> <span class="o">==</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">scaled_median</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;type_alpha must be &#39;mean&#39; or &#39;median&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alpha</span></div>
+
+
+<div class="viewcode-block" id="Configure.get_initial_conductance">
+<a class="viewcode-back" href="../../../muffin.configure.html#muffin.configure.configure.Configure.get_initial_conductance">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_initial_conductance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The initial conductance depends on the parameter </span>
+<span class="sd">        initialisation, which is prescribed in the parameters </span>
+<span class="sd">        dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg_prescribed&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">four_reg_prescribed</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                                                                    <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">four_reg</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> 
+                                                         <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span> 
+                                                         <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span>
+                                                         <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">six_reg</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> 
+                                                        <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span> 
+                                                        <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> 
+                                                        <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">six_ireg</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                                                         <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span>
+                                                         <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> 
+                                                         <span class="n">leng_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span><span class="p">,</span>
+                                                         <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span>
+                                                         <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireglikereg&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">six_ireglikereg</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                                                                <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span> 
+                                                                <span class="n">num_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dims</span><span class="p">,</span>
+                                                                <span class="n">leng_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span><span class="p">,</span>
+                                                                <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> 
+                                                                <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reglikeireg&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">six_ireg</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                                                         <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span>
+                                                         <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> 
+                                                         <span class="n">leng_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span><span class="p">,</span>
+                                                         <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span>
+                                                         <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-rand&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">six_rand</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                                                         <span class="n">num_refs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_refs</span><span class="p">,</span>
+                                                         <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> 
+                                                         <span class="n">leng_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leng_1</span><span class="p">,</span>
+                                                         <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span>
+                                                         <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>    
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;specified&quot;</span><span class="p">:</span>
+            <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">initial_conditions_2D</span><span class="o">.</span><span class="n">specified</span><span class="p">(</span><span class="n">path_cond_init_4</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_cond_init_4</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;initialisation must be: 4-reg_prescribed or </span><span class="se">\</span>
+<span class="s2">                               4-reg or 6-ireg or 6-reg or &#39;6-reglikeireg&#39;.&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cond_init_4</span></div>
+</div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">Configure</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

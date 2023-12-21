@@ -1,0 +1,269 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>muffin.utils.utils_preprocess_2D &#8212; MuFFiN 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for muffin.utils.utils_preprocess_2D</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> 
+
+<div class="viewcode-block" id="count_num_edges_blocked"><a class="viewcode-back" href="../../../muffin.utils.html#muffin.utils.utils_preprocess_2D.count_num_edges_blocked">[docs]</a><span class="k">def</span> <span class="nf">count_num_edges_blocked</span><span class="p">(</span><span class="n">initialisation</span><span class="p">,</span> <span class="n">cond_tabl_5</span><span class="p">,</span> <span class="n">adhe_tabl_5</span><span class="p">,</span> <span class="n">delt_5</span><span class="p">,</span> <span class="n">heav_5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count the number of edges that are blocked in particular run.</span>
+<span class="sd">    Also count the number of these that are horizontal and vertical. </span>
+<span class="sd">    I think the latter part of this method only works for 4-reg structure.</span>
+
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parameters </span>
+    <span class="c1"># -----------</span>
+    <span class="n">m</span>         <span class="o">=</span> <span class="mi">0</span> <span class="c1"># interested in flow in horizontal direction</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cond_tabl_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cond_tabl_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">n</span>         <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">))</span> <span class="c1"># num_rows_or_cols</span>
+
+
+    <span class="n">count_adhe</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count_adhe_hori</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#sum_a = 0]</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+            
+            <span class="c1"># All edges</span>
+            <span class="c1"># ---------</span>
+            <span class="c1"># Get integrand of adhesivity</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">cond_tabl_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">delt_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">])</span><span class="o">*</span><span class="n">adhe_tabl_5</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="n">heav_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">cond_tabl_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">delt_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">])</span>
+            <span class="c1">#sum_a = sum_a + numpy.sum(a)</span>
+            <span class="c1">#print(b)</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="c1"># Count number of unique edges where adhesivity is 1</span>
+            <span class="n">count_adhe</span> <span class="o">=</span> <span class="n">count_adhe</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1">#print(&quot;r={},s={}&quot;.format(r,s))</span>
+            <span class="c1">#print(&quot;a:\n{}&quot;.format(a))</span>
+            <span class="c1">#print(&quot;delt:\n{}&quot;.format((-delt_5[0,:,:,r,m])*adhe_tabl_5[-1,:,:,r,s]*heav_5[0,:,:,r,m]))</span>
+            <span class="c1">#print(&quot;cond:\n{}&quot;.format(cond_tabl_5[0,:,:,r,s]))</span>
+
+            <span class="k">if</span> <span class="n">initialisation</span><span class="o">==</span><span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                If initialisation==&quot;4-reg&quot; then get the number of horizontal edges that are blocked.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="c1"># NOTE: Below is only valid  fpr 4-reg:</span>
+                <span class="c1"># Horizontal edges </span>
+                <span class="c1"># -----------------</span>
+                <span class="c1"># Count number of horizontal edges</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># Only hozizontal if s==0</span>
+                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                        <span class="c1"># Get integrand of adhesivity</span>
+                        <span class="n">a_hori</span> <span class="o">=</span> <span class="n">cond_tabl_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">delt_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">])</span><span class="o">*</span><span class="n">adhe_tabl_5</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="n">heav_5</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">]</span>
+
+                        <span class="c1"># Count number of horizontal edges where adhesivity is 1</span>
+                        <span class="c1"># This is number of non zeros in block diagonals</span>
+                        <span class="n">count_adhe_hori</span> <span class="o">=</span> <span class="n">count_adhe_hori</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a_hori</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                If initialisation==&quot;6-reg, then check if how many horizontal edges are blocked. </span>
+<span class="sd">                To do this, get the list of pairs of indices that we know will </span>
+<span class="sd">                be between horizontal edges. </span>
+<span class="sd">                Then for each horizontal edge pair, check whether this is blocked </span>
+<span class="sd">                by checking whether there is a non-zero entry in a at this index pair.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">horizontal_edge_pairs</span> <span class="o">=</span> <span class="n">get_horizontal_index_pairs</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">horizontal_edge_pairs</span><span class="p">:</span>
+                    <span class="n">left_index</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">right_index</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c1">#print(a[left_index,right_index])</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">left_index</span><span class="p">,</span><span class="n">right_index</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="n">count_adhe_hori</span> <span class="o">=</span> <span class="n">count_adhe_hori</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span> 
+                        <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="n">initialisation</span> <span class="o">==</span> <span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+                <span class="n">count_adhe_hori</span> <span class="o">=</span> <span class="kc">None</span> 
+            
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;initilisation must be 4-reg, 6-reg, or 6-ireg.&quot;</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">initialisation</span><span class="o">==</span><span class="s2">&quot;4-reg&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If initialisation==&quot;4-reg&quot; then get the number of vertical edges that are blocked.</span>
+<span class="sd">        Use horizontal count to save computational time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Count vertical edges </span>
+        <span class="n">count_adhe_not_hori</span> <span class="o">=</span> <span class="n">count_adhe</span><span class="o">-</span><span class="n">count_adhe_hori</span>
+    
+    <span class="k">if</span> <span class="n">initialisation</span><span class="o">==</span><span class="s2">&quot;6-reg&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If initialisation==&quot;6-reg&quot; then get the number of diagonal edges that are blocked. </span>
+<span class="sd">        This is the total number of edges that are blocked minus the number of horizontal edges </span>
+<span class="sd">        that are blocked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Count diagonal edges </span>
+        <span class="n">count_adhe_not_hori</span> <span class="o">=</span> <span class="n">count_adhe</span><span class="o">-</span><span class="n">count_adhe_hori</span>
+    <span class="k">elif</span> <span class="n">initialisation</span><span class="o">==</span><span class="s2">&quot;6-ireg&quot;</span><span class="p">:</span>
+        <span class="n">count_adhe_not_hori</span> <span class="o">=</span> <span class="kc">None</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Initialisation must be 4-reg,6-reg, or 6-ireg.&quot;</span><span class="p">)</span>
+
+    <span class="c1">#print(count_adhe, count_adhe_hori, count_adhe_not_hori)</span>
+    <span class="c1">#print(sum_a/numpy.sqrt(3))</span>
+    <span class="c1">#if -sum_a/numpy.sqrt(3) &gt; 4.0:</span>
+    <span class="c1">#    exit()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cnt: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cnt</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">count_adhe</span><span class="p">,</span> <span class="n">count_adhe_hori</span><span class="p">,</span> <span class="n">count_adhe_not_hori</span></div>
+
+
+
+<div class="viewcode-block" id="get_horizontal_index_pairs"><a class="viewcode-back" href="../../../muffin.utils.html#muffin.utils.utils_preprocess_2D.get_horizontal_index_pairs">[docs]</a><span class="k">def</span> <span class="nf">get_horizontal_index_pairs</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of all pairs of node indices that are either end </span>
+<span class="sd">    of a horizontal edge in a 6-reg structure with a cell containing num_nodes</span>
+<span class="sd">    nodes.</span>
+<span class="sd">    Each pair is itself a list.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">num_nodes</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">num_nodes</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a special case, but luckily </span>
+<span class="sd">        pairs are easy to identify, since there </span>
+<span class="sd">        are only two.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For every other case there is an algorithm. </span>
+<span class="sd">        See notes from 7.8.22 for details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Define index list </span>
+        <span class="c1"># -------</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        index_list is a list of constructor indices that make up a constructor </span>
+<span class="sd">        set from which all index pairs are derived. </span>
+<span class="sd">        This should be the set [0,1,2,...,n-1,0]</span>
+<span class="sd">        The zero on the end is there because we need a cycle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="n">n</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">n</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="c1"># use argument unpacker</span>
+        <span class="n">index_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the set of constructor indices above, </span>
+<span class="sd">        the below algorithm defines all possible pairs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="c1"># [0,...,n-1]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="c1"># [0,...,n-1]</span>
+                <span class="n">index_left</span> <span class="o">=</span> <span class="n">index_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">index_right</span> <span class="o">=</span> <span class="n">index_list</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="c1"># Even pair</span>
+                <span class="c1"># ------</span>
+                <span class="n">even_left_node_index</span>  <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">index_left</span>
+                <span class="n">even_right_node_index</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">index_right</span>
+
+                <span class="n">even_pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">even_left_node_index</span><span class="p">,</span> <span class="n">even_right_node_index</span><span class="p">]</span>
+
+                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">even_pair</span><span class="p">)</span>
+                
+
+                <span class="c1"># Odd pair</span>
+                <span class="c1"># -----</span>
+                <span class="n">odd_left_node_index</span>  <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">index_left</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">odd_right_node_index</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">index_right</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="n">odd_pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">odd_left_node_index</span><span class="p">,</span> <span class="n">odd_right_node_index</span><span class="p">]</span>
+
+                <span class="c1">#print(&quot;odd_pair:{}&quot;.format(odd_pair))</span>
+
+                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odd_pair</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">pairs</span></div>
+        
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Arkady Wey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.preprocess.preprocess_deposition_2D &mdash; MuFFiN 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            MuFFiN
+          </a>
+              <div class="version">
+                0.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">MuFFiN</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">muffin.preprocess.preprocess_deposition_2D</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for muffin.preprocess.preprocess_deposition_2D</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">as</span> <span class="nn">linalg</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">optimize</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module of functions that are used specifically for preprocessing in the</span>
+<span class="sd">deposition case. </span>
+<span class="sd">These functions are used in the run_preprocess module with </span>
+<span class="sd">preprocess functions that are common between </span>
+<span class="sd">blocking and deposition, which are stored in the preprocess_2D module.</span>
+
+<span class="sd">These functions are used to return </span>
+<span class="sd">- conductance </span>
+<span class="sd">- adherence</span>
+<span class="sd">- delta </span>
+<span class="sd">- csol </span>
+
+<span class="sd">at particular values of ctot, which are indexed by k.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="get_cell_problem">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_cell_problem">[docs]</a>
+<span class="k">def</span> <span class="nf">get_cell_problem</span><span class="p">(</span><span class="n">cond_4</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">refs_2</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">leng_1</span><span class="p">:</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----</span>
+<span class="sd">    - cond_4[i,j,r0,r1]</span>
+<span class="sd">    - refs_2[rm,m]</span>
+<span class="sd">    - leng_1[m]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns </span>
+<span class="sd">    -----</span>
+<span class="sd">    - lhs_2[i,j]</span>
+<span class="sd">    - rhs_3[i,j,m]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Define params </span>
+    <span class="c1"># -----</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cond_4</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cond_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">leng_1</span><span class="p">[:])</span>
+
+
+    <span class="c1"># Define integrands to fill</span>
+    <span class="c1"># -----</span>
+    <span class="n">rhs_inte_5</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_dims</span><span class="p">))</span>
+    <span class="c1"># rhs_inte_5[i,j,r0,r1,m].</span>
+    <span class="n">lhs_inte_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">))</span>
+    <span class="c1"># lhs_inte_4[i,j,r0,r1].</span>
+
+
+    <span class="c1"># Build lhs and rhs</span>
+    <span class="c1"># ------</span>
+    <span class="k">for</span> <span class="n">r0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+                
+            <span class="c1"># Get lhs integrand</span>
+            <span class="c1"># -----</span>
+            <span class="n">lhs_inte_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cond_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">]</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">cond_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            
+            <span class="c1"># Get rhs integrand</span>
+            <span class="c1"># -----                     </span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_dims</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> 
+                    <span class="n">r</span><span class="o">=</span><span class="n">r0</span>
+                <span class="k">elif</span> <span class="n">m</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">r</span><span class="o">=</span><span class="n">r1</span>
+                <span class="k">else</span><span class="p">:</span> 
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;m != 0,1. This is impossible, since the problem is 2D.&quot;</span><span class="p">)</span>
+            
+                <span class="n">rhs_inte_5</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">cond_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">]</span><span class="o">*</span><span class="n">refs_2</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">]</span><span class="o">*</span><span class="n">leng_1</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+            
+    
+    <span class="c1"># Sum over references</span>
+    <span class="c1"># -----</span>
+    <span class="n">rhs_3</span> <span class="o">=</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">rhs_inte_5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># sum over r1 then r0</span>
+    <span class="c1"># NB: rhs of cell problem has minus sign by definition.</span>
+
+    <span class="n">lhs_2</span> <span class="o">=</span>  <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">lhs_inte_4</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># sum over r1 then r0</span>
+
+    <span class="c1"># Force a unique solution </span>
+    <span class="c1"># -------</span>
+    <span class="c1">#lhs_2[-1,:] = numpy.zeros(num_nodes)</span>
+    <span class="c1">#lhs_2[-1,-1] = 1</span>
+    <span class="c1">#rhs_3[-1,:,0] = numpy.zeros(num_nodes)</span>
+    <span class="c1">#rhs_3[-1,:,1] = numpy.zeros(num_nodes)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">lhs_2</span><span class="p">,</span> <span class="n">rhs_3</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="get_cell_solution">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_cell_solution">[docs]</a>
+<span class="k">def</span> <span class="nf">get_cell_solution</span><span class="p">(</span><span class="n">lhs_2</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rhs_3</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----</span>
+<span class="sd">    - lhs_2[i,j]</span>
+<span class="sd">    - rhs_3[i,j,m]</span>
+
+<span class="sd">    Returns </span>
+<span class="sd">    # -----</span>
+<span class="sd">    - csol_2[i,m]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Define params </span>
+    <span class="c1"># -----</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhs_3</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhs_3</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:])</span>
+
+    
+    <span class="c1"># Define array to be filled</span>
+    <span class="c1"># -----</span>
+    <span class="n">csol_2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_dims</span><span class="p">))</span>
+    
+
+    <span class="c1"># Get solution</span>
+    <span class="c1"># -----</span>
+    <span class="n">a_2</span> <span class="o">=</span> <span class="n">lhs_2</span><span class="p">[:,:]</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_dims</span><span class="p">):</span>
+        <span class="n">b_1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">rhs_3</span><span class="p">[:,:,</span><span class="n">m</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># sum over j</span>
+        <span class="n">csol_2</span><span class="p">[:,</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">lsqr</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="n">a_2</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">b_1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#sol = optimize.lsq_linear(A=a_2,b=b_1)</span>
+        <span class="c1">#csol_3[k,:,m] = sol.x</span>
+
+    <span class="k">return</span> <span class="n">csol_2</span></div>
+
+
+
+<div class="viewcode-block" id="get_delta">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_delta">[docs]</a>
+<span class="k">def</span> <span class="nf">get_delta</span><span class="p">(</span><span class="n">csol_2</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">refs_2</span><span class="p">:</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">leng_1</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the cell problem solution, the references, and the lengths, </span>
+<span class="sd">    return the parameter delta.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - csol_2: numpy.ndarray</span>
+<span class="sd">        The solution of the cell problem, W in notes. csol_3[i,m] = element nodes[i] of the solution of </span>
+<span class="sd">        the cell problem in direction dimensions[m].</span>
+<span class="sd">    - refs_2: numpy.ndarray</span>
+<span class="sd">        refs_2[r,m] = reference-distance references[r] in direction directions[m]. </span>
+<span class="sd">        For example, references = {-1,0,+1} and directions = {0,1} (for 2D problem)    </span>
+<span class="sd">    - leng_1: numpy.ndarray</span>
+<span class="sd">        leng_1[m] = length of filter in direction directions[m].</span>
+<span class="sd">    </span>
+<span class="sd">    Returns </span>
+<span class="sd">    -------</span>
+<span class="sd">    - delt_4: numpy.ndarray</span>
+<span class="sd">        The parameter delta between nodes i and j with reference references[r] in direction directions[m]. </span>
+<span class="sd">        so that delt_5[i,j,r,m] = csol_3[i,m] - (csol_3[j,m] + refs_2[r,m]*leng_1[m]), by defn.</span>
+<span class="sd">        Note that references[r,m] is numerical equivalent to r^m in the notation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get params</span>
+    <span class="c1"># -----</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csol_2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">refs_2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csol_2</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
+
+
+    <span class="c1"># Make array to be filled</span>
+    <span class="c1"># -----</span>
+    <span class="n">delt_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_dims</span><span class="p">))</span>
+    
+    
+    <span class="c1"># Fill using definition of delta</span>
+    <span class="c1"># -----</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_dims</span><span class="p">):</span>
+                    <span class="n">delt_4</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">csol_2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">csol_2</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">+</span> <span class="n">refs_2</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">]</span><span class="o">*</span><span class="n">leng_1</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">delt_4</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="get_conductance_rhs">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_conductance_rhs">[docs]</a>
+<span class="k">def</span> <span class="nf">get_conductance_rhs</span><span class="p">(</span><span class="n">cond_4</span><span class="p">,</span><span class="n">delt_4</span><span class="p">,</span><span class="n">adhe_4</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">alph</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the right hand side of the differential equation for conductance. </span>
+<span class="sd">    In paractice, we will take the arguments at the previous time step, </span>
+<span class="sd">    so that we can spit out the result at the current time step.</span>
+
+<span class="sd">    Parameters </span>
+<span class="sd">    -----</span>
+<span class="sd">    - cond_4[i,j,r0,r1]</span>
+<span class="sd">    - delt_4[i,j,rm,m]</span>
+<span class="sd">    - adhe_4[i,j,r0,r1]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -----</span>
+<span class="sd">    - cond_rhs_4[i,j,r0,r1]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parameters </span>
+    <span class="c1"># ------</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">delt_4</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">delt_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">delt_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:])</span>
+
+    <span class="c1">## sum delta over m</span>
+    <span class="c1">#delt_3 = numpy.sum(a=delt_4,axis=3)</span>
+<span class="c1">#</span>
+    <span class="c1">## repeat delt so can multiply</span>
+    <span class="c1">#delt_4 = numpy.repeat(a=delt_3[:,:,:,numpy.newaxis],repeats=num_refs,axis=3) # delt_4[i,j,r0,r1]</span>
+
+    <span class="c1">#alph = 0.02564102564102564</span>
+    <span class="c1">#epsi = 0.05</span>
+    <span class="c1">#alph=0.5</span>
+    <span class="c1">#delt_2 = delt_4[:,:,0,0]</span>
+    <span class="c1">#delt_3= numpy.repeat(a=delt_2[:,:,numpy.newaxis],repeats=3,axis=2)</span>
+    <span class="c1">#delt_4= numpy.repeat(a=delt_3[:,:,:,numpy.newaxis],repeats=3,axis=3)</span>
+    <span class="c1">#cond_rhs_4  = -2.0*beta*(cond_4**(3.0/2.0))*alph*abs(delt_4) #*abs(delt_4) #*epsi    #*adhe_4*(1/(epsi**(1.0/2.0)))</span>
+    <span class="n">cond_rhs_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">r0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_refs</span><span class="p">):</span>
+            <span class="n">cond_rhs_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span><span class="o">*</span><span class="n">alph</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">delt_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">cond_4</span><span class="p">[:,:,</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="mf">3.0</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="c1">#*0.05</span>
+            <span class="c1">#cond_rhs_4[:,:,r0,r1] = -1*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0)</span>
+            <span class="c1">#print(abs(delt_4[:,:,r0,0]))</span>
+            <span class="c1">#print(beta)</span>
+            <span class="c1">#print(alph)</span>
+            <span class="c1">#print(cond_4)</span>
+            <span class="c1">#print(abs(delt_4[:,:,0,0])*cond_4[:,:,0,00])</span>
+            <span class="c1">#raise Exception </span>
+
+    <span class="c1">#cond_rhs_4 = numpy.zeros_like(cond_rhs_4)</span>
+    <span class="k">return</span> <span class="n">cond_rhs_4</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="get_conductance">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_conductance">[docs]</a>
+<span class="k">def</span> <span class="nf">get_conductance</span><span class="p">(</span><span class="n">cond_4</span><span class="p">,</span><span class="n">cond_rhs_4</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function sppist out the result of one step of the differential </span>
+<span class="sd">    equation for the conductance. </span>
+<span class="sd">    In practice, we will take the argument sat the previous time step, </span>
+<span class="sd">    and we spit out the solution at the current time step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------</span>
+<span class="sd">    - cond_4[i,j,r0,r1]</span>
+<span class="sd">    - cond_rhs_4[i,j,r,s]</span>
+<span class="sd">    - dt</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -----</span>
+<span class="sd">    - cond_4[i,j,r0,r1]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># build delt_4</span>
+
+    <span class="c1"># update cond</span>
+    <span class="n">cond_4</span> <span class="o">=</span> <span class="n">cond_4</span><span class="o">+</span><span class="n">dt</span><span class="o">*</span><span class="n">cond_rhs_4</span> <span class="c1">#beta*adhe_4*delt_4*</span>
+    <span class="k">return</span> <span class="n">cond_4</span></div>
+
+
+
+
+<div class="viewcode-block" id="get_conductance_adherence_csol_delta">
+<a class="viewcode-back" href="../../../muffin.preprocess.html#muffin.preprocess.preprocess_deposition_2D.get_conductance_adherence_csol_delta">[docs]</a>
+<span class="k">def</span> <span class="nf">get_conductance_adherence_csol_delta</span><span class="p">(</span><span class="n">conc_tot_disc_1</span><span class="p">,</span><span class="n">cond_init_4</span><span class="p">,</span><span class="n">adhe_init_4</span><span class="p">,</span><span class="n">refs_2</span><span class="p">,</span><span class="n">leng_1</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">alph</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parameters </span>
+    <span class="c1"># ------</span>
+    <span class="n">num_concs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">conc_tot_disc_1</span><span class="p">)</span>
+    <span class="c1"># k is a time-like index that indexes concentrations</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cond_init_4</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">refs_2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">refs_2</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">conc_tot_disc_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">conc_tot_disc_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+    <span class="n">cond_5</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_concs</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">))</span>
+    <span class="n">csol_3</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_concs</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_dims</span><span class="p">))</span>
+    <span class="n">adhe_5</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_concs</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">))</span>
+    <span class="n">delt_5</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_concs</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_dims</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_concs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># don&#39;t solve differential equation - we already have solution</span>
+
+            <span class="c1"># use cond solution at t=0 to get csol solution at t=0</span>
+            <span class="p">(</span><span class="n">lhs_2</span><span class="p">,</span> <span class="n">rhs_3</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_cell_problem</span><span class="p">(</span><span class="n">cond_4</span><span class="o">=</span><span class="n">cond_init_4</span><span class="p">,</span><span class="n">refs_2</span><span class="o">=</span><span class="n">refs_2</span><span class="p">,</span><span class="n">leng_1</span><span class="o">=</span><span class="n">leng_1</span><span class="p">)</span>
+            <span class="n">csol_2</span> <span class="o">=</span> <span class="n">get_cell_solution</span><span class="p">(</span><span class="n">lhs_2</span><span class="o">=</span><span class="n">lhs_2</span><span class="p">,</span><span class="n">rhs_3</span><span class="o">=</span><span class="n">rhs_3</span><span class="p">)</span>
+
+            <span class="c1"># update solution</span>
+            <span class="n">cond_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">cond_init_4</span>
+            <span class="n">csol_3</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:]</span>     <span class="o">=</span> <span class="n">csol_2</span>
+
+            <span class="n">delt_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">get_delta</span><span class="p">(</span><span class="n">csol_2</span><span class="o">=</span><span class="n">csol_2</span><span class="p">,</span><span class="n">refs_2</span><span class="o">=</span><span class="n">refs_2</span><span class="p">,</span><span class="n">leng_1</span><span class="o">=</span><span class="n">leng_1</span><span class="p">)</span>
+            <span class="n">adhe_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">adhe_init_4</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># use solution cond and csol at t-1 to get rhs of cond eqn at t</span>
+            <span class="n">cond_4</span> <span class="o">=</span> <span class="n">cond_5</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:,:,:]</span>
+            <span class="n">csol_2</span> <span class="o">=</span> <span class="n">csol_3</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:]</span>
+            <span class="n">delt_4</span> <span class="o">=</span> <span class="n">delt_5</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:,:,:]</span>    
+            <span class="n">adhe_4</span> <span class="o">=</span> <span class="n">adhe_5</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,:,:,:,:]</span>
+
+            <span class="c1"># get new conductance</span>
+            <span class="n">cond_rhs_4</span> <span class="o">=</span> <span class="n">get_conductance_rhs</span><span class="p">(</span><span class="n">cond_4</span><span class="o">=</span><span class="n">cond_4</span><span class="p">,</span><span class="n">delt_4</span><span class="o">=</span><span class="n">delt_4</span><span class="p">,</span><span class="n">adhe_4</span><span class="o">=</span><span class="n">adhe_4</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span><span class="n">alph</span><span class="o">=</span><span class="n">alph</span><span class="p">)</span>
+            <span class="n">cond_4</span>     <span class="o">=</span> <span class="n">get_conductance</span><span class="p">(</span><span class="n">cond_4</span><span class="o">=</span><span class="n">cond_4</span><span class="p">,</span><span class="n">cond_rhs_4</span><span class="o">=</span><span class="n">cond_rhs_4</span><span class="p">,</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+
+            <span class="c1"># use solution at t to get lhs and rhs of alg equation</span>
+            <span class="p">(</span><span class="n">lhs_2</span><span class="p">,</span> <span class="n">rhs_3</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_cell_problem</span><span class="p">(</span><span class="n">cond_4</span><span class="o">=</span><span class="n">cond_4</span><span class="p">,</span><span class="n">refs_2</span><span class="o">=</span><span class="n">refs_2</span><span class="p">,</span><span class="n">leng_1</span><span class="o">=</span><span class="n">leng_1</span><span class="p">)</span>
+            <span class="n">csol_2</span>         <span class="o">=</span> <span class="n">get_cell_solution</span><span class="p">(</span><span class="n">lhs_2</span><span class="o">=</span><span class="n">lhs_2</span><span class="p">,</span><span class="n">rhs_3</span><span class="o">=</span><span class="n">rhs_3</span><span class="p">)</span>
+
+            <span class="c1"># update solution</span>
+            <span class="n">cond_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">cond_4</span>
+            <span class="n">csol_3</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:]</span>     <span class="o">=</span> <span class="n">csol_2</span>
+            <span class="n">delt_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">get_delta</span><span class="p">(</span><span class="n">csol_2</span><span class="o">=</span><span class="n">csol_2</span><span class="p">,</span><span class="n">refs_2</span><span class="o">=</span><span class="n">refs_2</span><span class="p">,</span><span class="n">leng_1</span><span class="o">=</span><span class="n">leng_1</span><span class="p">)</span>
+            <span class="n">adhe_5</span><span class="p">[</span><span class="n">k</span><span class="p">,:,:,:,:]</span> <span class="o">=</span> <span class="n">adhe_init_4</span>
+            
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">cond_5</span><span class="p">,</span><span class="n">adhe_5</span><span class="p">,</span><span class="n">csol_3</span><span class="p">,</span><span class="n">delt_5</span><span class="p">)</span></div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Parameters </span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
+
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">num_refs</span>  <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">num_dims</span>  <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">))</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mf">1.0</span>
+
+    <span class="n">refs_2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">],[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">]])</span>
+    <span class="n">refs_2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">refs_2</span><span class="p">)</span>
+    <span class="n">leng_1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">l1</span><span class="p">,</span><span class="n">l2</span><span class="p">])</span>
+
+    <span class="c1"># Initial condition</span>
+    <span class="n">cond_init_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_refs</span><span class="p">,</span><span class="n">num_refs</span><span class="p">))</span>
+    <span class="c1"># Internal edges</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.99#0.1#1.2#1.72461##0.8 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.99#0.1#1.2#1.72461##0.8 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.2#1.2#1.72461#1.0#0.2 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.2#1.2#1.72461#1.0#0.2 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.3#1.2#1.72461#1.0#0.4 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.3#1.2#1.72461#1.0#0.4 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.4#1.2#1.72461#1.0#0.6 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.4#1.2#1.72461#1.0#0.6 #1.0</span>
+    <span class="c1">## External edges</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.5#1.2#1.72461#1.0#1.0 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.5#1.2#1.72461#1.0#1.0 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.6#1.2#1.72461#1.0#1.0 #1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.6#1.2#1.72461#1.0#1.0 #1.0</span>
+    
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.7#1.2#1.72461#1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.7#1.2#1.72461#1.0</span>
+    
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.8#1.2#1.72461#1.0</span>
+    <span class="n">cond_init_4</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="c1">#0.8#1.2#1.72461#1.0</span>
+
+    <span class="n">adhe_init_4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">cond_init_4</span><span class="p">)</span>
+
+    <span class="n">cond_5</span><span class="p">,</span><span class="n">adhe_5</span><span class="p">,</span><span class="n">csol_3</span><span class="p">,</span><span class="n">delt_5</span> <span class="o">=</span> <span class="n">get_conductance_adherence_csol_delta</span><span class="p">(</span><span class="n">conc_tot_disc_1</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
+                                                                       <span class="n">cond_init_4</span><span class="o">=</span><span class="n">cond_init_4</span><span class="p">,</span>
+                                                                       <span class="n">adhe_init_4</span><span class="o">=</span><span class="n">adhe_init_4</span><span class="p">,</span>
+                                                                       <span class="n">refs_2</span><span class="o">=</span><span class="n">refs_2</span><span class="p">,</span>
+                                                                       <span class="n">leng_1</span><span class="o">=</span><span class="n">leng_1</span><span class="p">)</span>
+    <span class="c1">#print(csol_3[0:2,:,:])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">cond_5</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">times</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+    
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
