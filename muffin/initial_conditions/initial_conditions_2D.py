@@ -353,7 +353,18 @@ def six_reglikeireg(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.nd
     cond_init_4 = cell.cond_init_4
     
 def six_rand(num_nodes: int, num_refs: int, mean: float, leng_1: numpy.ndarray, mu: float, sigma: float):
-    """
+    """_summary_
+
+    Args:
+        num_nodes (int): _description_
+        num_refs (int): _description_
+        mean (float): _description_
+        leng_1 (numpy.ndarray): _description_
+        mu (float): _description_
+        sigma (float): _description_
+
+    Returns:
+        _type_: _description_
     """
     num_dims  = 2
 
