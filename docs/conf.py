@@ -34,7 +34,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "classic"#"furo" #from pypi  #from sphinx - "classic" # default - 'alabaster'
+html_theme = "sphinx_rtd_theme"#"furo" #from pypi  #from sphinx - "classic" # default - 'alabaster'
 html_static_path = ['_static']
 
 # -- Add favicon 
