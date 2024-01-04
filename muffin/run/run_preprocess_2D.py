@@ -15,7 +15,23 @@ def main(num_nodes: int,
          path_cond_init_4: str, 
          alph: int, 
          beta: int):
-    """
+    """_summary_
+
+    Args:
+        num_nodes (int): _description_
+        initialisation (str): _description_
+        sigma (float): _description_
+        type_alpha (str): _description_
+        type_clog (str): _description_
+        path_cond_init_4 (str): _description_
+        alph (int): _description_
+        beta (int): _description_
+
+    Raises:
+        Exception: _description_
+
+    Returns:
+        _type_: _description_
     """
 
     # Get paameters needed to find perm and depo
