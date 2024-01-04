@@ -1,7 +1,7 @@
-import cells
 import numpy
 import os
 
+import muffin.cell.cells as cells
 import muffin.configure.configure as configure
 
 # Parameters 

@@ -1,9 +1,9 @@
 import numpy 
-import cells
-import muffin.configure.configure as configure 
 import os
 import argparse
 
+import muffin.cell.cells as cells
+import muffin.configure.configure as configure 
 
 sigma          = 0.3
 initialisation = "6-reg"
