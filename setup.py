@@ -8,5 +8,6 @@ setup(name='MuFFiN',
       packages=['muffin'],
       install_requires = 
       ["numpy", 
-       "matplotlib"],
+       "matplotlib", 
+       "scipy"],
       license='GPLv3')
