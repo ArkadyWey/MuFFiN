@@ -5,7 +5,7 @@ import muffin.initial_conditions.initial_conditions as initial_conditions
 
 class FourRegular():
     """
-    This is a test 22
+    This is a test 3
     """
     def __init__(self, num_nodes:int=4, 
                        dist_cond:dict={"name":"lognormal", "mu":0.5, "sigma":0.3},

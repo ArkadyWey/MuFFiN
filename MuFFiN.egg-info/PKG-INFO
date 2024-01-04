@@ -1,10 +1,10 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: MuFFiN
 Version: 0.1.0
 Summary: A package to simulate Multiscale Fluid Flow in Networks.
 Home-page: https://github.com/ArkadyWey/MuFFiN/
 Author: Arkady Wey
-Author-email: UNKNOWN
 License: GPLv3
-Description: UNKNOWN
-Platform: UNKNOWN
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: matplotlib
