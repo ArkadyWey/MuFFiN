@@ -1,6 +1,6 @@
 import numpy
 
-import import muffin.network.network_2D as network_2D
+import muffin.network.network_2D as network_2D
 
 """
 This module collects functions that map cell indexes to grid indexes

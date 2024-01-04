@@ -4,7 +4,7 @@ import numpy
 
 
 import muffin.utils.utils_sl as utils_sl
-import import muffin.network.network_2D as network_2D
+import muffin.network.network_2D as network_2D
 
 import sys
 sys.path.append("/home/user/utils_python")
