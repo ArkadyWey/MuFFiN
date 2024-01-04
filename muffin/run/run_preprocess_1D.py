@@ -11,7 +11,7 @@ from scipy import integrate
 import os
 
 
-import preprocess_1D
+import muffin.preprocess.preprocess_1D as preprocess_1D
 
 def main(conc_max_or_tot_1,cond_init_3,adhe_init_3,alpha,refs_1,length):
     """
