@@ -11,12 +11,19 @@ A solver for Multiscale Fluid Flow in Networks
    :maxdepth: 2
    :caption: Contents:
 
+   other/installation
+   other/getting-started
    modules
-   other/test
-
-Muffin subtitle
+   other/tutorial
+   other/examples
+   other/contributing
+   other/source-code
+   other/publications
+   
+Subtitle
 -------------------
 .. image:: _static/logo.png
+   :scale: 50%
 
 Indices and tables
 ==================
