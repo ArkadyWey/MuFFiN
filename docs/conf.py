@@ -42,10 +42,10 @@ html_favicon = "./_static/favicon.ico"
 html_logo    = "./_static/logo.png"
 
 
-# html_theme_options = {
+html_theme_options = {
 #    # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
 #    # 'analytics_anonymize_ip': False,
-#     'logo_only': False,
+     'logo_only': False,
 #     'display_version': True,
 #     'prev_next_buttons_location': 'bottom',
 #     'style_external_links': False,
@@ -57,4 +57,4 @@ html_logo    = "./_static/logo.png"
 #     'navigation_depth': 4,
 #     'includehidden': True,
 #     'titles_only': False
-# }
+}
