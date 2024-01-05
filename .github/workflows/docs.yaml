@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install furo
+          pip install sphinx_rtd_theme
       - name: Sphinx build
         run: |
           sphinx-apidoc -o ./docs ./muffin/ --separate
