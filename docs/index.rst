@@ -14,7 +14,7 @@ Welcome to MuFFiN's documentation!
 
 Muffin subtitle
 -------------------
-.. image:: _static/muffin.jpg
+.. image:: _static/logo.pdf
 
 Indices and tables
 ==================
