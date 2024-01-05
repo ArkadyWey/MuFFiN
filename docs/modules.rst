@@ -1,5 +1,5 @@
-muffin
-======
+Documentation
+=============
 
 .. toctree::
    :maxdepth: 4
