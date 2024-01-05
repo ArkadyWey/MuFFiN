@@ -12,6 +12,7 @@ A solver for Multiscale Fluid Flow in Networks
    :caption: Contents:
 
    modules
+   other/test
 
 Muffin subtitle
 -------------------
