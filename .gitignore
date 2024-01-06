@@ -8,7 +8,6 @@ results_old/*
 results/*
 password.txt
 scrap2.py
-*.svg
 *.npy
 tokens.txt
 /docs/_build/
