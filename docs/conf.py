@@ -37,9 +37,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = "sphinx_rtd_theme" # "furo" # from pypi  #from sphinx - "classic" # default - 'alabaster'
 html_static_path = ['_static']
 
-# -- Add favicon 
+# -- Add images
 html_favicon = "./_static/favicon.ico"
-html_logo    = "./_static/logo.svg"
+html_logo    = "./_static/logo.png"
 
 
 html_theme_options = {

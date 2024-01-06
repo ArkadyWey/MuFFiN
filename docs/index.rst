@@ -22,7 +22,7 @@ A solver for Multiscale Fluid Flow in Networks
    
 Subtitle
 -------------------
-.. image:: _static/logo.svg
+.. image:: _static/logo.png
    :scale: 50%
 
 Indices and tables
