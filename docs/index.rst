@@ -9,7 +9,7 @@ A solver for Multiscale Fluid Flow in Networks
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Navigation:
 
    other/installation
    other/getting-started
@@ -22,7 +22,7 @@ A solver for Multiscale Fluid Flow in Networks
    
 Subtitle
 -------------------
-.. image:: _static/logo.png
+.. image:: _static/logo.svg
    :scale: 50%
 
 Indices and tables
