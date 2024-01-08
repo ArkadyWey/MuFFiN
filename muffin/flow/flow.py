@@ -337,9 +337,9 @@ def step(conc_2:numpy.ndarray,
         Array of specified potential particle mass fluxes values. 
         For example, an evenly distributed array of floats between 0 and 100.
     perm_prep_1 : numpy.ndarray
-        _description_
+        Array of permeability values to be interpolated.
     depo_prep_1 : numpy.ndarray
-        _description_
+        Array of adhesivity values to be interpolated.
     posi_1 : numpy.ndarray
         Array of position points. 
         For example, posi_1[i_x] is the position (between 0 and 1) corresponding to index i_x.
@@ -364,9 +364,7 @@ def step(conc_2:numpy.ndarray,
     Returns
     -------
     (conc_2,conc_max_2,perm_2,depo_2,velo_1,dpdx_2,psi_2) : tuple
-        Solution at current time and space indices.
-
-        
+        Solution at current time and space indices.   
     """
     conc_2[i_x,i_t] = get_concentration_at_time_and_position(conc_2=conc_2,
                                                              velo_1=velo_1,
