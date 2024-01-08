@@ -291,16 +291,82 @@ def get_reactivity_at_time_and_position(depo_2,dpdx_2,i_t,i_x):
     return psi
 
 
-def step(conc_2,conc_max_2,perm_2,depo_2,velo_1,dpdx_2,psi_2,
-         conc_max_or_tot_1,perm_prep_1,depo_prep_1,
-         posi_1,
-         phi,conc_in,
-         dt,dx,
-         i_x,i_t):
-    """
-    Given a position point and a time point, 
-    return the solution at this position and time 
-    by taking a step of the numerical scheme.
+def step(conc_2:numpy.ndarray,
+         conc_max_2:numpy.ndarray,
+         perm_2:numpy.ndarray,
+         depo_2:numpy.ndarray,
+         velo_1:numpy.ndarray,
+         dpdx_2:numpy.ndarray,
+         psi_2:numpy.ndarray,
+         conc_max_or_tot_1:numpy.ndarray,
+         perm_prep_1:numpy.ndarray,
+         depo_prep_1:numpy.ndarray,
+         posi_1:numpy.ndarray,
+         phi:float,
+         conc_in:float,
+         dt:float,
+         dx:float,
+         i_x:int,
+         i_t:int)->tuple:
+    """Given a position and a time, return the solution at this position and time 
+    by taking a step of the numerical scheme specified by external functions.
+
+    Parameters
+    ----------
+    conc_2 : numpy.ndarray
+        Concentration as function of position and time. 
+        For example, conc_2[i_x,i_t] is concentration at posi_1[i_x] and time_1[i_t].
+    conc_max_2 : numpy.ndarray
+        _description_
+    perm_2 : numpy.ndarray
+        Permeability as function of position and time. 
+        For example, perm_2[i_x,i_t] is permeability at posi_1[i_x] and time_1[i_t].
+    depo_2 : numpy.ndarray
+        Adhesivity as function of position and time. 
+        For example, depo_2[i_x,i_t] is adhesivity at posi_1[i_x] and time_1[i_t].
+    velo_1 : numpy.ndarray
+        Velocity as function of time. 
+        For example, velo_1[i_t] is velocity at time_1[i_t].
+    dpdx_2 : numpy.ndarray
+        Pressure gradient as function of position and time. 
+        For example, dpdx_2[i_x,i_t] is pressure gradient at posi_1[i_x] and time_1[i_t].
+    psi_2 : numpy.ndarray
+        Reactivity as function of position and time. 
+        For example, psi_2[i_x,i_t] is reactivity at posi_1[i_x] and time_1[i_t].
+    conc_max_or_tot_1 : numpy.ndarray
+        Array of specified potential particle mass fluxes values. 
+        For example, an evenly distributed array of floats between 0 and 100.
+    perm_prep_1 : numpy.ndarray
+        _description_
+    depo_prep_1 : numpy.ndarray
+        _description_
+    posi_1 : numpy.ndarray
+        Array of position points. 
+        For example, posi_1[i_x] is the position (between 0 and 1) corresponding to index i_x.
+    phi : float
+        Porosity. 
+        The ratio of the volume of nodes in a cell to its overall volume.
+        Must be between 0 and 1.
+    conc_in : float
+        Concentration at the inlet. 
+        Must be betwenn 0 and 1.
+    dt : float
+        Time delta.
+        That is, the difference between two consecutive time points.
+    dx : float
+        Space delta. 
+        That is, the difference between two consecutive space points.
+    i_x : int
+        Current space index. 
+    i_t : int
+        Current time index.
+
+    Returns
+    -------
+    (conc_2,conc_max_2,perm_2,depo_2,velo_1,dpdx_2,psi_2) : tuple
+        Solution at current time and space indices.
+
+        
     """
     conc_2[i_x,i_t] = get_concentration_at_time_and_position(conc_2=conc_2,
                                                              velo_1=velo_1,
