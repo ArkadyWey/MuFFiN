@@ -7,34 +7,57 @@ import muffin.preprocess.preprocess_blocking as preprocess_blocking
 import muffin.preprocess.preprocess_deposition as preprocess_deposition
 import muffin.utils.load_and_save as load_and_save
 
-def main(num_nodes: int, 
-         initialisation: str, 
-         sigma: float, 
-         type_alpha: str, 
-         type_clog: str, 
-         path_cond_init_4: str, 
-         alph: int, 
-         beta: int):
-    """_summary_
+def main(num_nodes:int, 
+         initialisation:str, 
+         sigma:float, 
+         type_alpha:str, 
+         type_clog:str, 
+         path_cond_init_4:str, 
+         alph:float, 
+         beta:float)->tuple:
+    """Execute the preprocess algorithm. That is, given parameters, find the solution variables as 
+    functions of the  mass flux.
 
-    Args:
-        num_nodes (int): _description_
-        initialisation (str): _description_
-        sigma (float): _description_
-        type_alpha (str): _description_
-        type_clog (str): _description_
-        path_cond_init_4 (str): _description_
-        alph (int): _description_
-        beta (int): _description_
+    Parameters
+    ----------
+    num_nodes : int
+        Number of nodes in a cell.
+    initialisation : str
+        Connectivity structure of the cell.
+    sigma : float
+        Standard deviation of the initial conductance distribution.
+    type_alpha : str
+        Whether to block an edge when the particle concentration here is above the mean ("mean") or median ("median")
+        of the initial conductance distribution. 
+        TODO: Depricate this parameter.
+    type_clog : str
+        Whether to use blocking ("block") model of deposition ("depo") model.
+        TODO: Depricate blocking. Consider re-adding. Use paremeter 'reaction_type' for exampple. 
+    path_cond_init_4 : str
+        Path to initial conductance file is not being computed. 
+        TODO: Reimplement.
+    alph : float
+        Adherence parameter. A number between zero and one that determines how 'sticky' and edge is, 
+        and therefore the proportion of particles that are removed on an edge they travel down it. 
+        If alph=0 then no particles are removed, while if alph=1 then all particles are removed.
+    beta : int
+        Reaction parameter. A number that determines the how much deposition decreases the conductance of an edge. 
+        If beta=O(1) then we expect O(1) conductance decrease over the time it takes for fludi to traverse the
+        network.
 
-    Raises:
-        Exception: _description_
+    Returns
+    -------
+    tuple
+        The solution as a function of the mass flux.
 
-    Returns:
-        _type_: _description_
+    Raises
+    ------
+    Exception
+        type_clog is "block" or "depo" only.
     """
 
-    # Get paameters needed to find perm and depo
+
+    # Get parameters needed to find perm and depo
     # -----
     conf = configure.Configure(num_nodes=num_nodes, 
                                initialisation=initialisation, 
@@ -63,13 +86,13 @@ def main(num_nodes: int,
 
 
         csol_3 = preprocess_blocking.get_cell_solution(lhs_3=lhs_3, 
-                                                          rhs_4=rhs_4)
+                                                       rhs_4=rhs_4)
 
 
 
         delt_5 = preprocess_blocking.get_delta(csol_3=csol_3, 
-                                         refs_2=refs_2, 
-                                         leng_1=leng_1)
+                                               refs_2=refs_2, 
+                                               leng_1=leng_1)
 
     elif type_clog == "deposit":
         cond_tabl_5,adhe_tabl_5,csol_3,delt_5 = preprocess_deposition.get_conductance_adherence_csol_delta(conc_tot_disc_1=conc_max_or_tot_1,
