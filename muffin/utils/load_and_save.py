@@ -11,7 +11,7 @@ def parse_any_given_args()->dict:
 
     Returns
     -------
-    dict
+    dict_args_no_nones : dict
         Dictionary of all specified parser arguments.
     """
     parser = argparse.ArgumentParser()
@@ -40,7 +40,7 @@ def remove_none_items_from_dict(d:dict)->dict:
 
     Returns
     -------
-    dict
+    d: dict
         Dictionary with key and values corresponding to None values removed.
     """
     del_keys = []
