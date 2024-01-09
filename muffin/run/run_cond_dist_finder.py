@@ -2,7 +2,7 @@ import numpy
 import os
 import argparse
 
-import muffin.cell.cells as cells
+import muffin.cells.cells as cells
 import muffin.configure.configure as configure 
 
 if __name__ == "__main__":

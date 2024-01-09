@@ -1,7 +1,7 @@
-muffin.cell.loaded module
+muffin.cells.loaded module
 =========================
 
-.. automodule:: muffin.cell.loaded
+.. automodule:: muffin.cells.loaded
    :members:
    :undoc-members:
    :show-inheritance:

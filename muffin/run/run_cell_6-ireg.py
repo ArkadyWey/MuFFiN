@@ -170,7 +170,7 @@ for edge in edges:
 
 
 
-import muffin.cell.cells as cells
+import muffin.cells.cells as cells
 import muffin.configure.configure as configure
 num_nodes = 4
 sigma     = 0.3

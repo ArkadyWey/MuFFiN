@@ -1,7 +1,7 @@
-muffin.cell.six\_regular module
+muffin.cells.six\_regular module
 ===============================
 
-.. automodule:: muffin.cell.six_regular
+.. automodule:: muffin.cells.six_regular
    :members:
    :undoc-members:
    :show-inheritance:

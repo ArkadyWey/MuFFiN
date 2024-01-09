@@ -1,6 +1,6 @@
 import numpy
 
-import muffin.cell.cells as cells 
+import muffin.cells.cells as cells 
 
 def four_reg_prescribed(num_nodes: int, num_refs: int):
     """

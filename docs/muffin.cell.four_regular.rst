@@ -1,7 +1,7 @@
-muffin.cell.four\_regular module
+muffin.cells.four\_regular module
 ================================
 
-.. automodule:: muffin.cell.four_regular
+.. automodule:: muffin.cells.four_regular
    :members:
    :undoc-members:
    :show-inheritance:

@@ -7,7 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   muffin.cell
+   muffin.cells
    muffin.configure
    muffin.flow
    muffin.initial_conditions

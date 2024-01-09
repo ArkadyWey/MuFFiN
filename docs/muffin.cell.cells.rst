@@ -1,7 +1,7 @@
-muffin.cell.cells module
+muffin.cells.cells module
 ========================
 
-.. automodule:: muffin.cell.cells
+.. automodule:: muffin.cells.cells
    :members:
    :undoc-members:
    :show-inheritance:

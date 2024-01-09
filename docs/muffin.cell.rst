@@ -1,4 +1,4 @@
-muffin.cell package
+muffin.cells package
 ===================
 
 Submodules
@@ -7,16 +7,16 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   muffin.cell.cells
-   muffin.cell.four_regular
-   muffin.cell.loaded
-   muffin.cell.six_irregular
-   muffin.cell.six_regular
+   muffin.cells.cells
+   muffin.cells.four_regular
+   muffin.cells.loaded
+   muffin.cells.six_irregular
+   muffin.cells.six_regular
 
 Module contents
 ---------------
 
-.. automodule:: muffin.cell
+.. automodule:: muffin.cells
    :members:
    :undoc-members:
    :show-inheritance:
