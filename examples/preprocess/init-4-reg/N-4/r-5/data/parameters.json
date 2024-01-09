@@ -1,0 +1,11 @@
+{
+    "alph": 0.2,
+    "beta": 0.01,
+    "initialisation": "4-reg",
+    "num_nodes": 4,
+    "path_cond_init_4": "/home/user/projects/papers/2023_homogenisation/figures/results_network/cond_init_4.npy",
+    "path_results": "./examples/preprocess/init-4-reg/N-4/r-5/data",
+    "sigma": 0.3,
+    "type_alpha": "mean",
+    "type_clog": "deposit"
+}
