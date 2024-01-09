@@ -1,8 +1,8 @@
 {
-    "path_results"     : "~", 
+    "path_results"     : "./muffin/examples/misc/data", 
     "path_cond_init_4" : "/home/user/projects/papers/2023_homogenisation/figures/results_network/cond_init_4.npy",
-    "num_nodes"        : 9,
-    "initialisation"   : "4-ireg",
+    "num_nodes"        : 4,
+    "initialisation"   : "4-reg",
     "alph"             : 1.0,
     "beta"             : 0.01,
     "max_ref_dist"     : 1,
