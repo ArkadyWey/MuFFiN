@@ -28,7 +28,7 @@ class Configure():
 
         # Get input parameters from parameters dictionary or classself.num_concs parameters
         # -----
-        file = open("parameters.json", "r")
+        file = open("./muffin/parameters.json", "r")
         parameters = json.load(file)
         
         self.max_ref_dist   = parameters["max_ref_dist"]

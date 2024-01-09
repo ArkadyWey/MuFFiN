@@ -6,7 +6,7 @@ import copy
 import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
 import muffin.configure.configure as configure
 import muffin.flow.flow as flow 
-
+import muffin.utils.load_and_save
 
 import sys
 sys.path.append("/home/user/utils_python")
@@ -14,23 +14,29 @@ import plotting
 
 # Parameters 
 # -----
-#path_results = os.path.join(".","results/results_preprocess_2D")
-#path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
-#path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
-#path_results = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
-path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
+#path_data = os.path.join(".","results/results_preprocess_2D")
+#path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
+#path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
+#path_data = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
+#path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
+path_data = os.path.join("./examples/preprocess/init-4-reg/N-4/r-0/data")
+
+path_data_dir  = os.path.dirname(path_data)
+print(path_data_dir)
+path_plot = os.path.join(path_data_dir,"svg")
+muffin.utils.load_and_save.check_and_make_dir(path_plot)
 
 type_clog = "deposit"
 
 # Load variables
 # -----
-conc_max_or_tot_1 = numpy.load(os.path.join(path_results, "conc_max_or_tot_1.npy"))
-perm_prep_3       = numpy.load(os.path.join(path_results, "perm_prep_3.npy"))
-depo_prep_2       = numpy.load(os.path.join(path_results, "depo_prep_2.npy"))
-cond_tabl_5       = numpy.load(os.path.join(path_results, "cond_tabl_5.npy"))
-adhe_tabl_5       = numpy.load(os.path.join(path_results, "adhe_tabl_5.npy"))
-heav_5            = numpy.load(os.path.join(path_results, "heav_5.npy"))
-delt_5            = numpy.load(os.path.join(path_results, "delt_5.npy"))
+conc_max_or_tot_1 = numpy.load(os.path.join(path_data, "conc_max_or_tot_1.npy"))
+perm_prep_3       = numpy.load(os.path.join(path_data, "perm_prep_3.npy"))
+depo_prep_2       = numpy.load(os.path.join(path_data, "depo_prep_2.npy"))
+cond_tabl_5       = numpy.load(os.path.join(path_data, "cond_tabl_5.npy"))
+adhe_tabl_5       = numpy.load(os.path.join(path_data, "adhe_tabl_5.npy"))
+heav_5            = numpy.load(os.path.join(path_data, "heav_5.npy"))
+delt_5            = numpy.load(os.path.join(path_data, "delt_5.npy"))
 
 
 alph = 0.2
@@ -63,7 +69,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0,
                              y_top=1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"perm_prep__3__v__s_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_plot,"perm_prep__3__v__s_1.svg"), format="svg")
 
 
 
@@ -101,7 +107,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0,
                              y_top=1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"depo_prep__2__v__s_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_plot,"depo_prep__2__v__s_1.svg"), format="svg")
 
 
 
@@ -180,7 +186,7 @@ plotting.thesisify_post_plot(ax=ax,
                              y_bottom=0,
                              y_top=1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"cond_5__v__s_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_plot,"cond_5__v__s_1.svg"), format="svg")
 
 
 
@@ -287,7 +293,7 @@ plotting.thesisify_post_plot(ax=ax,
 #                             y_bottom=-0.1,
 #                             y_top=1.1)
 
-plotting.save_fig(fig=fig,fname=os.path.join(path_results,"delt_5__v__s_1.svg"), format="svg")
+plotting.save_fig(fig=fig,fname=os.path.join(path_plot,"delt_5__v__s_1.svg"), format="svg")
 
 
 # Plot adhe distribution

@@ -21,7 +21,7 @@ cond_tabl_6 = [] # [r_max+1,k,i,j,r,m]
 
 # Collect results in lists
 for r in range(r_max+1):
-    path_results_r = os.path.join(path_results,"r-{}".format(r))
+    path_results_r = os.path.join(path_results,"r-{}/data".format(r))
     
     perm_prep_3 = numpy.load(os.path.join(path_results_r, "perm_prep_3.npy"))
     depo_prep_2 = numpy.load(os.path.join(path_results_r, "depo_prep_2.npy"))
