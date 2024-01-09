@@ -39,12 +39,12 @@ def save_dict_as_json(d, path_json):
     with open(path_json, 'w') as json_file:
         json.dump(d, json_file, sort_keys=True, indent=4, separators=(',', ': '))
 
-def load_required_parameters(parameters_required: list):
+def load_required_parameters(parameters_required:list):
     """
     """
     
     # Load default parameters
-    path_parameters_default = "./parameters.json" 
+    path_parameters_default = "./muffin/parameters.json" 
     parameters_default      = load_json_as_dict(path_json=path_parameters_default)
 
     # Unpack any parameters given in parser
@@ -62,3 +62,14 @@ def save_nparray_as_npy(path_results, a, name):
     """
     """
     numpy.save(file=os.path.join(path_results, name), arr=a, allow_pickle=True, fix_imports=True)
+
+def check_and_make_dir(path:str):
+    """Check if directory exists and make it if it does not.
+
+    Parameters
+    ----------
+    path : str
+        String to directory to be checked and made.
+    """
+    if not os.path.exists(path):
+        os.mkdir(path)
