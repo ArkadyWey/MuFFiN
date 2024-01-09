@@ -3,7 +3,7 @@ import os
 import numpy 
 import copy 
 
-import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
+import muffin.utils.utils_preprocess as utils_preprocess
 import muffin.configure.configure as configure
 import muffin.flow.flow as flow 
 
@@ -582,7 +582,7 @@ count_adhe = count_num_edges_blocked(adhe_tabl_5, heav_5, delt_5, cond_tabl_5)
 print(count_adhe)
 
 
-count, count_hori, count_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-ireg",
+count, count_hori, count_not_hori = utils_preprocess.count_num_edges_blocked(initialisation="6-ireg",
                                                                                 cond_tabl_5=cond_tabl_5, 
                                                                                 adhe_tabl_5=adhe_tabl_5, 
                                                                                 delt_5=delt_5, 

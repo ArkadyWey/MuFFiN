@@ -122,7 +122,7 @@ if __name__ == "__main__":
     
     # Preprocess
     # ----------
-    #path_results_preprocess = os.path.join(".","results/results_preprocess_2D") # thesis
+    #path_results_preprocess = os.path.join(".","results/results_preprocess") # thesis
     #path_results_preprocess = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
     path_results_preprocess = args.path_preprocess
 

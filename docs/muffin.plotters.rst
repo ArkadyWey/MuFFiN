@@ -50,7 +50,7 @@ Submodules
    muffin.plotters.plot_network_thro_apprx
    muffin.plotters.plot_numerics
    muffin.plotters.plot_preprocess_1D
-   muffin.plotters.plot_preprocess_2D
+   muffin.plotters.plot_preprocess
    muffin.plotters.plot_utau
 
 Module contents

@@ -10,7 +10,7 @@ Submodules
    muffin.utils.load_and_save
    muffin.utils.utils_indexing
    muffin.utils.utils_plot_exp_param_dist
-   muffin.utils.utils_preprocess_2D
+   muffin.utils.utils_preprocess
    muffin.utils.utils_sl
 
 Module contents

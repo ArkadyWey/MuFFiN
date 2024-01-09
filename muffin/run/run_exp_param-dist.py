@@ -4,8 +4,8 @@ import datetime
 import argparse
 import json 
 
-import muffin.run.run_preprocess_2D as run_preprocess_2D
-import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
+import muffin.run.run_preprocess as run_preprocess
+import muffin.utils.utils_preprocess as utils_preprocess
 
 """
 To run in series:
@@ -86,7 +86,7 @@ for t in range(num_tests):
         
         # Get effective permeability in 0,0 direction and adhesivity in 0 diresction
         # -----
-        perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess_2D.main(num_nodes=num_nodes, 
+        perm_3, depo_2, conc_max_disc_1, cond_tabl_5, adhe_tabl_5, delt_5, heav_5 = run_preprocess.main(num_nodes=num_nodes, 
                                                                                                            initialisation=initialisation,
                                                                                                            sigma=sigma,
                                                                                                            type_alpha=type_alpha)
@@ -103,7 +103,7 @@ for t in range(num_tests):
         #numpy.save(file=os.path.join(path_results+"/cond","cond_init_4_N-{}_R-{}.npy".format(num_nodes, r)), arr=cond_init_4, allow_pickle=True, fix_imports=True)
         #numpy.save(file=os.path.join(path_results+"/adhe","adhe_tabl_5_N-{}_R-{}.npy".format(num_nodes, r)), arr=adhe_tabl_5, allow_pickle=True, fix_imports=True)
 
-        count_adhe, count_adhe_hori, count_adhe_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-reg",
+        count_adhe, count_adhe_hori, count_adhe_not_hori = utils_preprocess.count_num_edges_blocked(initialisation="6-reg",
                                                                                                        cond_tabl_5=cond_tabl_5, 
                                                                                                        adhe_tabl_5=adhe_tabl_5, 
                                                                                                        delt_5=delt_5, 

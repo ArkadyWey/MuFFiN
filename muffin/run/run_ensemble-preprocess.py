@@ -22,8 +22,8 @@ def main(path_start:str,
         path_rep=path_start+path_add_sim+path_add_rep
 
         # Execute inner script
-        #subprocess.run(["python3","run_preprocess_2D.py",        "--path_results", path_rep, "--initialisation", initialisation, "--num_nodes", str(num_nodes)]) 
-        subprocess.run("python3    muffin/run/run_preprocess_2D.py           --path_results " + path_rep + " --num_nodes " + str(num_nodes) + " --initialisation " + initialisation + " --alph " + str(alph) + " --beta " + str(beta), shell=True)
+        #subprocess.run(["python3","run_preprocess.py",        "--path_results", path_rep, "--initialisation", initialisation, "--num_nodes", str(num_nodes)]) 
+        subprocess.run("python3    muffin/run/run_preprocess.py           --path_results " + path_rep + " --num_nodes " + str(num_nodes) + " --initialisation " + initialisation + " --alph " + str(alph) + " --beta " + str(beta), shell=True)
 
     print("Calculating statistics...")
 

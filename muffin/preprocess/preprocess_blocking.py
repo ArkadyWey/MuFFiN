@@ -8,7 +8,7 @@ Module of functions that are used specifically for preprocessing in the
 blocking case. 
 These functions are used in the run_preprocess module with 
 preprocess functions that are common between 
-blocking and deposition, which are stored in the preprocess_2D module.
+blocking and deposition, which are stored in the preprocess module.
 
 These functions are used to return 
 - conductance 

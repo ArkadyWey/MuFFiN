@@ -21,7 +21,7 @@ path_add_rep=/r-${r}
 path_sim=${path_start}${path_add_sim}
 path_rep=${path_start}${path_add_sim}${path_add_rep}
 
-python3 run_preprocess_2D.py --path_results $path_rep --num_nodes $num_nodes --initialisation $initialisation; 
+python3 run_preprocess.py --path_results $path_rep --num_nodes $num_nodes --initialisation $initialisation; 
 
 done
 

@@ -8,9 +8,9 @@ Submodules
    :maxdepth: 4
 
    muffin.preprocess.preprocess_1D
-   muffin.preprocess.preprocess_2D
-   muffin.preprocess.preprocess_blocking_2D
-   muffin.preprocess.preprocess_deposition_2D
+   muffin.preprocess.preprocess
+   muffin.preprocess.preprocess_blocking
+   muffin.preprocess.preprocess_deposition
 
 Module contents
 ---------------

@@ -18,7 +18,7 @@ Submodules
    muffin.run.run_flow_old
    muffin.run.run_network
    muffin.run.run_preprocess_1D
-   muffin.run.run_preprocess_2D
+   muffin.run.run_preprocess
 
 Module contents
 ---------------

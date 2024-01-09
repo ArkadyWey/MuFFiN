@@ -3,7 +3,7 @@ import os
 import numpy 
 import copy 
 
-import muffin.utils.utils_preprocess_2D as utils_preprocess_2D
+import muffin.utils.utils_preprocess as utils_preprocess
 import muffin.configure.configure as configure
 import muffin.flow.flow as flow 
 import muffin.utils.load_and_save
@@ -14,7 +14,7 @@ import plotting
 
 # Parameters 
 # -----
-#path_data = os.path.join(".","results/results_preprocess_2D")
+#path_data = os.path.join(".","results/results_preprocess")
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_preprocess") # paper
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
 #path_data = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
@@ -364,7 +364,7 @@ count_adhe = count_num_edges_blocked(adhe_tabl_5, heav_5, delt_5, cond_tabl_5)
 print(count_adhe)
 
 
-count, count_hori, count_not_hori = utils_preprocess_2D.count_num_edges_blocked(initialisation="6-ireg",
+count, count_hori, count_not_hori = utils_preprocess.count_num_edges_blocked(initialisation="6-ireg",
                                                                                 cond_tabl_5=cond_tabl_5, 
                                                                                 adhe_tabl_5=adhe_tabl_5, 
                                                                                 delt_5=delt_5, 
