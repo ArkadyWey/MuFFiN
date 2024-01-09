@@ -7,6 +7,12 @@ import muffin.preprocess.preprocess_blocking as preprocess_blocking
 import muffin.preprocess.preprocess_deposition as preprocess_deposition
 import muffin.utils.load_and_save as load_and_save
 
+# TODO: Depricate blocking as a mechanism - hence remove type_clog and type_alpha as parameters.
+# TODO: Depricate configure as a module - hence remove sigma as parameter.
+# TODO: Reimplent using existing initial cond and adhe - hence remove path_cond_init_4 as parameter.
+# TODO: Rexplain alpha and beta - make consisent
+# TODO: Rename initilisation to connectivity - hence remove initiaalisation parameter.
+
 def main(num_nodes:int, 
          initialisation:str, 
          sigma:float, 
@@ -48,7 +54,7 @@ def main(num_nodes:int,
     Returns
     -------
     tuple
-        The solution as a function of the mass flux.
+        The solution variables as functions of the mass flux.
 
     Raises
     ------
@@ -75,14 +81,14 @@ def main(num_nodes:int,
 
     if type_clog == "block":
         cond_tabl_5, adhe_tabl_5 = preprocess_blocking.get_conductance_and_adhesivity(conc_max_or_tot_1=conc_max_or_tot_1, 
-                                                                                         cond_init_4=cond_init_4, 
-                                                                                         adhe_init_4=adhe_init_4, 
-                                                                                         alpha=alpha)
+                                                                                      cond_init_4=cond_init_4, 
+                                                                                      adhe_init_4=adhe_init_4, 
+                                                                                      alpha=alpha)
 
 
         lhs_3, rhs_4 = preprocess_blocking.get_cell_problem(cond_tabl_5=cond_tabl_5, 
-                                                               refs_2=refs_2, 
-                                                               leng_1=leng_1)
+                                                            refs_2=refs_2, 
+                                                            leng_1=leng_1)
 
 
         csol_3 = preprocess_blocking.get_cell_solution(lhs_3=lhs_3, 
@@ -96,24 +102,24 @@ def main(num_nodes:int,
 
     elif type_clog == "deposit":
         cond_tabl_5,adhe_tabl_5,csol_3,delt_5 = preprocess_deposition.get_conductance_adherence_csol_delta(conc_tot_disc_1=conc_max_or_tot_1,
-                                                                                                              cond_init_4=cond_init_4,
-                                                                                                              adhe_init_4=adhe_init_4,
-                                                                                                              refs_2=refs_2,
-                                                                                                              leng_1=leng_1,
-                                                                                                              beta=beta,
-                                                                                                              alph=alph)
+                                                                                                           cond_init_4=cond_init_4,
+                                                                                                           adhe_init_4=adhe_init_4,
+                                                                                                           refs_2=refs_2,
+                                                                                                           leng_1=leng_1,
+                                                                                                           beta=beta,
+                                                                                                           alph=alph)
     else: 
         raise Exception("type_clog must be either 'block' or 'deposit'.")
 
     heav_5 = preprocess.get_heaviside(delt_5=delt_5)
 
     perm_3, depo_2 = preprocess.get_permeability_and_deposition(refs_2=refs_2,
-                                                                   cond_tabl_5=cond_tabl_5,
-                                                                   adhe_tabl_5=adhe_tabl_5,
-                                                                   delt_5=delt_5,
-                                                                   heav_5=heav_5,
-                                                                   leng_1=leng_1,
-                                                                   cond_init_4=cond_init_4)
+                                                                cond_tabl_5=cond_tabl_5,
+                                                                adhe_tabl_5=adhe_tabl_5,
+                                                                delt_5=delt_5,
+                                                                heav_5=heav_5,
+                                                                leng_1=leng_1,
+                                                                cond_init_4=cond_init_4)
     #print("csol_3[0,:,0]: \n{}".format(csol_3[0,:,0]))
     #print("perm_3[:,0,0]: \n{}".format(perm_3[:,0,0]))
     #print("perm_3[:,1,0]: \n{}".format(perm_3[:,1,0]))
@@ -159,6 +165,7 @@ if __name__ == "__main__":
     # Load required parameters 
     parameters_used = load_and_save.load_required_parameters(parameters_required=parameters_required)
 
+    #print(parameters_used)
     # Make simulation output directory
     if not os.path.exists(parameters_used["path_results"]):
         os.makedirs(parameters_used["path_results"])
