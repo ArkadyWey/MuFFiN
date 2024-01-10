@@ -3,9 +3,11 @@ import datetime
 
 import muffin.configure.configure as configure
 import muffin.preprocess.preprocess as preprocess
+import muffin.preprocess.preprocess_blocking as preprocess_blocking
 import muffin.preprocess.preprocess_deposition as preprocess_deposition
 import muffin.utils.load_and_save as load_and_save
 
+# TODO: Depricate blocking as a mechanism - hence remove type_clog and type_alpha as parameters.
 # TODO: Depricate configure as a module - hence remove sigma as parameter.
 # TODO: Reimplent using existing initial cond and adhe - hence remove path_cond_init_4 as parameter.
 # TODO: Rexplain alpha and beta - make consisent
@@ -16,6 +18,7 @@ def main(num_nodes:int,
          initialisation:str, 
          sigma:float, 
          type_alpha:str, 
+         type_clog:str, 
          path_cond_init_4:str, 
          alph:float, 
          beta:float)->tuple:
@@ -34,6 +37,9 @@ def main(num_nodes:int,
         Whether to block an edge when the particle concentration here is above the mean ("mean") or median ("median")
         of the initial conductance distribution. 
         TODO: Depricate this parameter.
+    type_clog : str
+        Whether to use blocking ("block") model of deposition ("depo") model.
+        TODO: Depricate blocking. Consider re-adding. Use paremeter 'reaction_type' for exampple. 
     path_cond_init_4 : str
         Path to initial conductance file is not being computed. 
         TODO: Reimplement.
@@ -73,13 +79,38 @@ def main(num_nodes:int,
     refs_2            = conf.refs_2 
     leng_1            = conf.leng_1
 
-    cond_tabl_5,adhe_tabl_5,csol_3,delt_5 = preprocess_deposition.get_conductance_adherence_csol_delta(conc_tot_disc_1=conc_max_or_tot_1,
-                                                                                                       cond_init_4=cond_init_4,
-                                                                                                       adhe_init_4=adhe_init_4,
-                                                                                                       refs_2=refs_2,
-                                                                                                       leng_1=leng_1,
-                                                                                                       beta=beta,
-                                                                                                       alph=alph)
+
+    if type_clog == "block":
+        cond_tabl_5, adhe_tabl_5 = preprocess_blocking.get_conductance_and_adhesivity(conc_max_or_tot_1=conc_max_or_tot_1, 
+                                                                                      cond_init_4=cond_init_4, 
+                                                                                      adhe_init_4=adhe_init_4, 
+                                                                                      alpha=alpha)
+
+
+        lhs_3, rhs_4 = preprocess_blocking.get_cell_problem(cond_tabl_5=cond_tabl_5, 
+                                                            refs_2=refs_2, 
+                                                            leng_1=leng_1)
+
+
+        csol_3 = preprocess_blocking.get_cell_solution(lhs_3=lhs_3, 
+                                                       rhs_4=rhs_4)
+
+
+
+        delt_5 = preprocess_blocking.get_delta(csol_3=csol_3, 
+                                               refs_2=refs_2, 
+                                               leng_1=leng_1)
+
+    elif type_clog == "deposit":
+        cond_tabl_5,adhe_tabl_5,csol_3,delt_5 = preprocess_deposition.get_conductance_adherence_csol_delta(conc_tot_disc_1=conc_max_or_tot_1,
+                                                                                                           cond_init_4=cond_init_4,
+                                                                                                           adhe_init_4=adhe_init_4,
+                                                                                                           refs_2=refs_2,
+                                                                                                           leng_1=leng_1,
+                                                                                                           beta=beta,
+                                                                                                           alph=alph)
+    else: 
+        raise Exception("type_clog must be either 'block' or 'deposit'.")
 
     heav_5 = preprocess.get_heaviside(delt_5=delt_5)
 
@@ -128,6 +159,7 @@ if __name__ == "__main__":
         "beta", 
         "sigma",
         "type_alpha",
+        "type_clog",
         "path_cond_init_4",
     ]
 
@@ -150,6 +182,7 @@ if __name__ == "__main__":
                                                                                                  initialisation   = parameters_used["initialisation"],
                                                                                                  sigma            = parameters_used["sigma"],
                                                                                                  type_alpha       = parameters_used["type_alpha"],
+                                                                                                 type_clog        = parameters_used["type_clog"], 
                                                                                                  path_cond_init_4 = parameters_used["path_cond_init_4"], 
                                                                                                  alph             = parameters_used["alph"], 
                                                                                                  beta             = parameters_used["beta"]
