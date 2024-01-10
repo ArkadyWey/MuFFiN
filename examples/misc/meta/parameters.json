@@ -1,0 +1,13 @@
+{
+    "alph": 1.0,
+    "beta": 0.01,
+    "initialisation": "4-reg",
+    "max_ref_dist": 1,
+    "mu": -0.045,
+    "num_concs": 1001,
+    "num_dims": 2,
+    "num_nodes": 4,
+    "path": "./examples/misc/meta",
+    "sigma": 0.3,
+    "v": 0.5
+}
