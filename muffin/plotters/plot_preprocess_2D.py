@@ -19,7 +19,8 @@ import plotting
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep") # paper
 #path_data = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
-path_data = os.path.join("./examples/preprocess/init-4-reg/N-4/r-0/data")
+#path_data = os.path.join("./examples/preprocess/init-4-reg/N-4/r-0/data")
+path_data = os.path.join("./examples/preprocess/data")
 
 path_data_dir  = os.path.dirname(path_data)
 print(path_data_dir)
