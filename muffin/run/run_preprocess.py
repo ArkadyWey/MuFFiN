@@ -12,6 +12,7 @@ import muffin.utils.load_and_save as load_and_save
 # TODO: Reimplent using existing initial cond and adhe - hence remove path_cond_init_4 as parameter.
 # TODO: Rexplain alpha and beta - make consisent
 # TODO: Rename initilisation to connectivity - hence remove initiaalisation parameter.
+# TODO: Add utils_python.plotting as module - hence remove sys dependency
 
 def main(num_nodes:int, 
          initialisation:str, 
