@@ -3,11 +3,9 @@ import datetime
 
 import muffin.configure.configure as configure
 import muffin.preprocess.preprocess as preprocess
-import muffin.preprocess.preprocess_blocking as preprocess_blocking
 import muffin.preprocess.preprocess_deposition as preprocess_deposition
 import muffin.utils.load_and_save as load_and_save
 
-# TODO: Depricate blocking as a mechanism - hence remove type_clog and type_alpha as parameters.
 # TODO: Depricate configure as a module - hence remove sigma as parameter.
 # TODO: Reimplent using existing initial cond and adhe - hence remove path_cond_init_4 as parameter.
 # TODO: Rexplain alpha and beta - make consisent
