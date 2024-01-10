@@ -4,7 +4,6 @@ import numpy
 import copy 
 
 import muffin.utils.utils_preprocess as utils_preprocess
-import muffin.configure.configure as configure
 import muffin.flow.flow as flow 
 
 
