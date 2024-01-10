@@ -1,7 +1,6 @@
 import json
 import os
 import argparse
-import inspect
 
 import muffin.utils.load_and_save as load_and_save
 
