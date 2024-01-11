@@ -2,6 +2,7 @@ import numpy
 import scipy
 
 import muffin.initial_conditions.initial_conditions as initial_conditions
+import muffin.parameters.parameters as parameters
 
 class SixIrregular():
     """
@@ -17,8 +18,7 @@ class SixIrregular():
     Thus conductancedistribution is specified as a delta distribition
     with parameter 1/edge_length in self.fill_edges(), which is different for each edge.
     """ 
-    def __init__(self, num_nodes:int=4, 
-                       mean:float=1.529590,
+    def __init__(self, parameters:parameters.Parameters
                        ):
         """
         Parameters 
@@ -30,20 +30,23 @@ class SixIrregular():
             The desired edge conductance per unit length. 
             To compare to four-regular cell, this should be the mean of the distribuiton 
             from which conductances in the four-regular cell are drawn. 
-            For exmaple, if dist_cond == lognormal(mu,sigma), then mean=exp(mu+sigma**2/2)        
+            For exmaple, if dist_cond == lognormal(mu,sigma), then mean=exp(mu+sigma**2/2)     
+            mean:float=1.529590   
         """
 
     # Attributes
     # -----
-        self.initialisation:str = "6-ireg"
-        self.num_nodes:int      = num_nodes
-        self.n:int              = int(numpy.sqrt(num_nodes)) # number of rows or cols in square cell
-        self.dist_cond:dict     = {} # specified for each edge in self.fill_edges()
+        self.correct_initialisation = "6-ireg"
+        self.initialisation:str     = parameters.initialisation
+        self.check_valid_cell(correct_initialisation=self.correct_initialisation)
+        self.num_nodes:int      = parameters.num_nodes
+        self.n:int              = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
+        self.dist_cond:dict     = parameters.dist_cond # NB: this is NOT the conductance distribution of the cell - this is specified in self.fill_edges()
         self.dist_adhe:dict     = {"name":"delta", "mu":1.0}
-        self.num_refs:int       = 3
-        self.num_dims:int       = 2
+        self.num_refs:int       = parameters.num_refs
+        self.num_dims:int       = parameters.num_dims
         
-        self.scale_factor:float   = mean
+        self.scale_factor:float   = self.get_mean()
         self.l1:float             = self.n*1.0
         self.l2:float             = self.n*1.0
         self.leng_1:numpy.ndarray = self.get_leng_1()
@@ -51,12 +54,22 @@ class SixIrregular():
         self.check_valid_num_nodes()
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
-        self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)*self.scale_factor
+        self.cond_4:numpy.ndarray = self.fill_edges(dist={})*self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
 
 
     # Methods 
     # -----
+    def check_valid_cell(self, correct_initialisation:str):
+        if correct_initialisation!=self.initialisation:
+            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
+
+    def get_mean(self):
+        if self.dist_cond["name"]=="lognormal":
+            mean = numpy.exp(self.dist_cond["mu"]+self.dist_cond["sigma"]**2/2) 
+        return mean
+
+
     def get_sample(self,dist):
         sample = initial_conditions.get_sample(**dist)
         return sample
@@ -71,8 +84,8 @@ class SixIrregular():
                 for i in numpy.arange(start=0,stop=self.num_nodes,step=1):
                     for j in numpy.arange(start=i,stop=self.num_nodes,step=1):
                         if self.conn_4[i,j,r,s] != 0.0 and a_4[i,j,r,s] == 0:   
-                            self.dist_cond["name"] = "delta"
-                            self.dist_cond["mu"] = 1.0/self.dist_6[i,0,0,j,r,s]
+                            dist["name"] = "delta"
+                            dist["mu"] = 1.0/self.dist_6[i,0,0,j,r,s]
                             sample = self.get_sample(dist=dist)
                             a_4[i,j,r,s]   = sample
                             a_4[j,i,-r,-s] = sample
