@@ -2,25 +2,26 @@ import numpy
 import scipy
 
 import muffin.initial_conditions.initial_conditions as initial_conditions
+import muffin.parameters.parameters as parameters
 
 class SixRegular():
     """
     """ 
-    def __init__(self, num_nodes:int=2, 
-                       dist_cond:dict={"name":"lognormal", "mu":0.5, "sigma":0.3},
-                       dist_adhe:dict={"name":"delta",     "mu":0.5}
+    def __init__(self, parameters:parameters.Parameters
                        ):
         """
         """
     # Attributes
-    # -----
-        self.initialisation:str   = "6-reg"
-        self.num_nodes:int        = num_nodes
-        self.n:int                = int(numpy.sqrt(num_nodes/2)) # number of rows or cols in square cell
-        self.dist_cond:dict       = dist_cond
-        self.dist_adhe:dict       = dist_adhe
-        self.num_refs:int         = 3
-        self.num_dims:int         = 2
+    # -----        
+        self.correct_initialisation = "6-reg"
+        self.initialisation:str     = parameters.initialisation
+        self.check_valid_cell(correct_initialisation=self.correct_initialisation)
+        self.num_nodes:int         = parameters.num_nodes
+        self.n:int                 = int(numpy.sqrt(self.num_nodes/2)) # number of rows or cols in square cell
+        self.dist_cond:dict        = parameters.dist_cond
+        self.dist_adhe:dict        = parameters.dist_adhe  
+        self.num_refs:int          = parameters.num_refs
+        self.num_dims:int          = parameters.num_dims
         
         self.scale_factor:float   = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
         self.l1:float             = self.n*self.scale_factor
@@ -36,6 +37,11 @@ class SixRegular():
 
     # Methods 
     # -----
+    def check_valid_cell(self, correct_initialisation:str):
+        if correct_initialisation!=self.initialisation:
+            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
+        
+
     def get_sample(self,dist):
         sample = initial_conditions.get_sample(**dist)
         return sample
@@ -367,7 +373,6 @@ class SixRegular():
 
         return conn_4
 
-
     def check_valid_num_nodes(self):
         """
         Raise Exception if n=sqrt(num_nodes/2) is not square.
@@ -386,6 +391,7 @@ class SixRegular():
                                because it required that n=sqrt(num_nodes/2) is square.""".format(self.num_nodes))
         else: 
             pass
+
 
     def get_leng_1(self):
         """

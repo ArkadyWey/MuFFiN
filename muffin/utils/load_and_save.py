@@ -171,4 +171,4 @@ def check_and_make_dir(path:str):
         String to directory to be checked and made.
     """
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
