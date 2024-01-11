@@ -6,15 +6,16 @@
         "name": "delta"
     },
     "dist_cond": {
-        "mu": -0.045,
+        "mu": 1,
         "name": "lognormal",
         "sigma": 0.3
     },
-    "initialisation": "4-reg",
+    "initialisation": "6-ireg",
     "max_ref_dist": 1,
     "num_concs": 1001,
     "num_dims": 2,
-    "num_nodes": 4,
-    "path": "./examples/misc/meta",
+    "num_nodes": 8,
+    "num_refs": 3,
+    "path": "./test",
     "v": 0.5
 }

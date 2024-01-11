@@ -1,4 +1,7 @@
 import muffin.parameters.parameters as parameters
+import muffin.cells.four_regular as four_regular
+import muffin.cells.six_regular as six_regular
+import muffin.cells.six_irregular as six_irregular
 
 # parameters = muffin.parameters.Parameters()
 # cell = muffin.cells.FourRegular(parameters)
@@ -21,4 +24,7 @@ import muffin.parameters.parameters as parameters
 if __name__ == "__main__":
 
     parameters = parameters.Parameters()
+
+    cell = six_irregular.SixIrregular(parameters=parameters)
+
 
