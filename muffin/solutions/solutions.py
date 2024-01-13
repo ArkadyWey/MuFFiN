@@ -21,9 +21,9 @@ class Solution():
         
         # Define solution variables to fill
         # ------
-        self.cond_5 = numpy.zeros(shape=(S,N,N,R,R))
-        self.csol_3 = numpy.zeros(shape=(S,N,D))
-        self.delt_5 = numpy.zeros(shape=(S,N,N,R,D))
-        self.heav_5 = numpy.zeros(shape=(S,N,N,R,D))
-        self.perm_3 = numpy.zeros(shape=(S,D,D))
-        self.depo_2 = numpy.zeros(shape=(S,D))
+        self.cond_5 = numpy.empty(shape=(S,N,N,R,R))
+        self.csol_3 = numpy.empty(shape=(S,N,D))
+        self.delt_5 = numpy.empty(shape=(S,N,N,R,D))
+        self.heav_5 = numpy.empty(shape=(S,N,N,R,D))
+        self.perm_3 = numpy.empty(shape=(S,D,D))
+        self.depo_2 = numpy.empty(shape=(S,D))
