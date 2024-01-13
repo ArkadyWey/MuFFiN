@@ -1,6 +1,7 @@
 import json
 import os
 import argparse
+import numpy
 
 import muffin.utils.load_and_save as load_and_save
 
@@ -8,17 +9,13 @@ class Parameters():
     """Parameters class. See __init__ for functionality.
     """
     def __init__(self, path:str           = "./examples/misc/meta", 
-                       num_nodes:int      = 4,
                        initialisation:str = "4-reg",
-                       alph:float         = 1.0,
-                       beta:float         = 0.01,
-                       max_ref_dist:int   = 1,
-                       num_dims:int       = 2,
-                       num_concs:int      = 1001,
-                       num_refs           = 3,
-                       v:float            = 0.5,  
+                       num_nodes:int      = 4,
                        dist_cond:dict     = {"name":"lognormal", "mu":-0.045, "sigma":0.3},
-                       dist_adhe:dict     = {"name":"delta",     "mu":-0.045}
+                       dist_adhe:dict     = {"name":"delta",     "mu":1.0}, 
+                       dist_effe:dict     = {"name":"delta",     "mu":0.01},
+                       num_concs:int      = 1001,
+                       tlik_max:int       = 1000,
                 ):
         """Add parameters as attributes and save dictionary of parameters at path.
 
@@ -69,22 +66,38 @@ class Parameters():
         self.dictionary_parser:dict = self.get_parameters_parser()
     
         # Get parameters where parser overwrites class instance
-        self.dictionary:dict = self.overwrite_parameters_class_with_parser()    
+        self.dictionary:dict = self.overwrite_default_parameters_with_parser()    
 
     # Attributes
     # -----
+        # Primary parameters
+        # -----
         self.path:str           = self.dictionary["path"]
-        self.num_nodes:int      = self.dictionary["num_nodes"]
         self.initialisation:str = self.dictionary["initialisation"]
-        self.alph:float         = self.dictionary["alph"]
-        self.beta:float         = self.dictionary["beta"]
-        self.max_ref_dist:int   = self.dictionary["max_ref_dist"]
-        self.num_dims:int       = self.dictionary["num_dims"]
-        self.num_concs:int      = self.dictionary["num_concs"]
-        self.num_refs:int       = self.dictionary["num_refs"]
-        self.v:float            = self.dictionary["v"]
+        self.num_nodes:int      = self.dictionary["num_nodes"]
         self.dist_cond:dict     = self.dictionary_class["dist_cond"]
         self.dist_adhe:dict     = self.dictionary_class["dist_adhe"]
+        self.dist_effe:dict     = self.dictionary_class["dist_effe"]
+        self.num_concs:int      = self.dictionary["num_concs"]
+        self.tlik_max:int       = self.dictionary["tlik_max"]
+
+       
+        # Secondary parameters
+        # -----
+        self.alph:float = self.dist_adhe["mu"]
+        self.beta:float = self.dist_effe["mu"]
+        
+        self.max_ref_dist:int = 1 # maximum number of cells between adjacent nodes
+        self.refs_1:numpy.ndarray = self.get_references(max_ref_dist=self.max_ref_dist) # reference numbers : {0,,1,-1,...,K,-K} when max_ref_dist=K
+        self.num_refs:int = len(self.refs_1) # number of reference numbers
+
+        self.leng_1:numpy.ndarray = self.get_leng_1(initialisation=self.initialisation) # dimensions of cell
+
+        self.tlik_1 = self.get_time_like(num_concs=self.num_concs, tlik_max=self.tlik_max) # time-like variable discretisation
+        self.diff_tlik = self.tlik_1[1] - self.tlik_1[0] # step size for time-like variable discretisation
+
+        self.num_dims:int = 2 # number of dimensions of cell
+
 
     # Do
     # -----
@@ -105,18 +118,14 @@ class Parameters():
         parser = argparse.ArgumentParser()
             
         # Optionally add parameters from parser
-        parser.add_argument("-pr",   "--path",           type=str,   required=False, help="Path to results")
-        parser.add_argument("-N",    "--num_nodes",      type=int,   required=False, help="Number of nodes in cell")
-        parser.add_argument("-init", "--initialisation", type=str,   required=False, help="Structure of cell")
-        parser.add_argument("-a",    "--alph",           type=float, required=False, help="Adherence parameter")
-        parser.add_argument("-b",    "--beta",           type=float, required=False, help="Reaction parameter")
-        parser.add_argument("-mrd",  "--max_ref_dist",   type=float, required=False, help="Maximum number of cells between which adjacent nodes are connected")
-        parser.add_argument("-nd",   "--num_dims",       type=float, required=False, help="Number of dimensions")
-        parser.add_argument("-nc",   "--num_concs",      type=float, required=False, help="Number of mass flux points to discretise with, by default 1001")
-        parser.add_argument("-v",    "--v",              type=float, required=False, help="Check definition")
-        parser.add_argument("-nr",   "--num_refs",       type=int,   required=False, help="Number of cell reference numbers")
-        parser.add_argument("-dc",   "--dist_cond",      type=str,   required=False, help="Conductance distribution")
-        parser.add_argument("-da",   "--dist_adhe",      type=str,   required=False, help="Adherence distribution")
+        parser.add_argument("-p",  "--path",           type=str, required=False, help="Path to simulation")
+        parser.add_argument("-i",  "--initialisation", type=str, required=False, help="Structure of cell")
+        parser.add_argument("-N",  "--num_nodes",      type=int, required=False, help="Number of nodes in cell")
+        parser.add_argument("-dc", "--dist_cond",      type=str, required=False, help="Conductance distribution")
+        parser.add_argument("-da", "--dist_adhe",      type=str, required=False, help="Adherence distribution")
+        parser.add_argument("-de", "--dist_effe",      type=str, required=False, help="Effectance distribution")
+        parser.add_argument("-nc", "--num_concs",      type=int, required=False, help="Number of timelike variable point to discretise with")
+        parser.add_argument("-tm", "--time_like_max",  type=int, required=False, help="Maximum value of timelike variable")
         
         # Remove nones from parameters not given
         parser_args = parser.parse_args() 
@@ -128,11 +137,13 @@ class Parameters():
             dictionary_parser["dist_cond"] = json.loads(dictionary_parser["dist_cond"])
         if "dist_adhe" in dictionary_parser.keys():
             dictionary_parser["dist_adhe"] = json.loads(dictionary_parser["dist_adhe"])
+        if "dist_effe" in dictionary_parser.keys():
+            dictionary_parser["dist_effe"] = json.loads(dictionary_parser["dist_effe"])
         
         return dictionary_parser
 
 
-    def overwrite_parameters_class_with_parser(self):
+    def overwrite_default_parameters_with_parser(self):
         """Get a dictionary of all the parameters, where 
         any parameters that are given by the parser have overwritten 
         parameters given by the calss instance.
@@ -174,7 +185,55 @@ class Parameters():
         with open(os.path.join(path,"parameters.json"), 'w') as json_file:
             d = self.dictionary
             json.dump(d, json_file, sort_keys=True, indent=4, separators=(',', ': '))
+
+
+    def get_leng_1(self, initialisation):
+        """
+        """
+        if initialisation == "4-reg":
+            self.n:int                 = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
+            self.scale_factor:None     = None
+            self.l1:float              = self.n*1.0
+            self.l2:float              = self.n*1.0
+        
+        elif initialisation == "6-reg":
+            self.n:int                = int(numpy.sqrt(self.num_nodes/2)) # number of rows or cols in square cell
+            self.scale_factor:float   = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
+            self.l1:float             = self.n*self.scale_factor
+            self.l2:float             = self.n*numpy.sqrt(3.0)*self.scale_factor
+        
+        elif initialisation == "6-ireg":
+            self.n:int                = int(numpy.sqrt(self.num_nodes)) 
+            self.scale_factor:float   = self.get_mean()
+            self.l1:float             = self.n*1.0
+            self.l2:float             = self.n*1.0
+        
+        else:
+            raise Exception("The cell structure 'initialisation' must be '4-reg', '6-reg', or '6-ireg', and initialisation=={} is not implemented.".format(initialisation))
+        
+        leng_1 = numpy.array([self.l1,self.l2])
+        
+        # TODO: Add 'from file'
+        return leng_1
         
 
+    def get_mean(self)->float:
+        if self.dist_cond["name"]=="lognormal":
+            mean = numpy.exp(self.dist_cond["mu"]+self.dist_cond["sigma"]**2/2) 
+        return mean
+    # TODO: Move this to distribution
+    
 
+    def get_references(self, max_ref_dist:int)->numpy.ndarray:
+        if max_ref_dist == 1:
+            refs_1 = numpy.array([0,1,-1])
+        else: 
+            raise Exception("max_ref_dist != 1 is not implemented.")
+            # TODO: Implement
+        return refs_1
+    
+
+    def get_time_like(self, num_concs:int, tlik_max:int)->numpy.ndarray:
+        tlik_1 = numpy.linspace(start=0, stop=tlik_max, num=num_concs, endpoint=True)
+        return tlik_1
 

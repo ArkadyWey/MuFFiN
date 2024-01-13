@@ -20,7 +20,8 @@ import plotting
 #path_data = os.path.join("/home/user/home_temp/projects/papers/2023_homogenisation/figures/mono/beta-0.01/prep") # paper
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
 #path_data = os.path.join("./examples/preprocess/init-4-reg/N-4/r-0/data")
-path_data = os.path.join("./examples/preprocess/data")
+#path_data = os.path.join("./examples/preprocess/data")
+path_data = os.path.join("./test/test-2")
 
 path_data_dir  = os.path.dirname(path_data)
 print(path_data_dir)
@@ -40,7 +41,7 @@ heav_5            = numpy.load(os.path.join(path_data, "heav_5.npy"))
 delt_5            = numpy.load(os.path.join(path_data, "delt_5.npy"))
 
 
-alph = 0.2
+alph = 0.3
 beta = 0.01
 
 # Plot permeability 
@@ -57,8 +58,8 @@ n = 0
 
 f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 
-ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_3[:,m,n],new_x_value=f,type_clog=type_clog), color="tab:blue") # , label=r"$\hat{k}^{11}$"
-
+#ax.plot(f, flow.get_new_interpolated_point(table_x=conc_max_or_tot_1,table_y=perm_prep_3[:,m,n],new_x_value=f,type_clog=type_clog), color="tab:blue") # , label=r"$\hat{k}^{11}$"
+ax.plot(conc_max_or_tot_1, perm_prep_3[:,m,n])
 ax.plot(conc_max_or_tot_1, 4/((alph*beta*conc_max_or_tot_1+2)**2), color="tab:orange", ls="--")
 
 #plt.rcParams['text.latex.preamble'] = r"\usepackage{bm}"

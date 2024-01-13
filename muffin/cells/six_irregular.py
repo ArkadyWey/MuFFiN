@@ -41,21 +41,18 @@ class SixIrregular():
         self.check_valid_cell(correct_initialisation=self.correct_initialisation)
         self.num_nodes:int      = parameters.num_nodes
         self.n:int              = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
-        self.dist_cond:dict     = parameters.dist_cond # NB: this is NOT the conductance distribution of the cell - this is specified in self.fill_edges()
-        self.dist_adhe:dict     = {"name":"delta", "mu":1.0}
         self.num_refs:int       = parameters.num_refs
         self.num_dims:int       = parameters.num_dims
-        
-        self.scale_factor:float   = self.get_mean()
-        self.l1:float             = self.n*1.0
-        self.l2:float             = self.n*1.0
-        self.leng_1:numpy.ndarray = self.get_leng_1()
+        self.dist_cond:dict     = parameters.dist_cond # NB: this is NOT the conductance distribution of the cell - this is specified in self.fill_edges()
+        self.dist_adhe:dict     = parameters.dist_adhe
+        self.dist_effe:dict     = parameters.dist_effe
 
         self.check_valid_num_nodes()
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist={})*self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
+        self.effe_4:numpy.ndarray = self.fill_edges(dist=self.dist_effe)
 
 
     # Methods 
@@ -392,12 +389,6 @@ class SixIrregular():
         Raise no Exception. Any integer is a valid number of nodes for a six irregular cell.
         """
         pass
-
-    def get_leng_1(self):
-        """
-        """
-        leng_1 = numpy.array([self.l1,self.l2])
-        return leng_1
 
 if __name__ == "__main__":
     num_nodes = 4 
