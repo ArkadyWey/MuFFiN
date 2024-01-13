@@ -18,21 +18,18 @@ class SixRegular():
         self.check_valid_cell(correct_initialisation=self.correct_initialisation)
         self.num_nodes:int         = parameters.num_nodes
         self.n:int                 = int(numpy.sqrt(self.num_nodes/2)) # number of rows or cols in square cell
-        self.dist_cond:dict        = parameters.dist_cond
-        self.dist_adhe:dict        = parameters.dist_adhe  
         self.num_refs:int          = parameters.num_refs
         self.num_dims:int          = parameters.num_dims
-        
-        self.scale_factor:float   = numpy.sqrt(2.0)/numpy.sqrt(numpy.sqrt(3.0))
-        self.l1:float             = self.n*self.scale_factor
-        self.l2:float             = self.n*numpy.sqrt(3.0)*self.scale_factor
-        self.leng_1:numpy.ndarray = self.get_leng_1()
+        self.dist_cond:dict        = parameters.dist_cond
+        self.dist_adhe:dict        = parameters.dist_adhe  
+        self.dist_effe:dict        = parameters.dist_effe  
 
         self.check_valid_num_nodes()
 
         self.conn_4:numpy.ndarray = self.make_conn_4()
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)/self.scale_factor
-        self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)/self.scale_factor
+        self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
+        self.effe_4:numpy.ndarray = self.fill_edges(dist=self.dist_effe)
 
 
     # Methods 
@@ -391,13 +388,6 @@ class SixRegular():
                                because it required that n=sqrt(num_nodes/2) is square.""".format(self.num_nodes))
         else: 
             pass
-
-
-    def get_leng_1(self):
-        """
-        """
-        leng_1 = numpy.array([self.l1,self.l2])
-        return leng_1
 
 
 if __name__ == "__main__":
