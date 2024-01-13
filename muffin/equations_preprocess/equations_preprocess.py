@@ -1,21 +1,18 @@
 import numpy 
-import scipy.linalg as linalg
+import scipy.sparse.linalg as linalg
 
 import muffin.parameters.parameters as parameters
-import muffin.cells.cells as cells
 
 class Base():
     """_summary_
     """
-    def __init__(self, parameters:parameters.Parameters, 
-                       cell): # TODO: :cells.Base - Make base class for cells
+    def __init__(self, parameters:parameters.Parameters): # TODO: :cells.Base - Make base class for cells
         """_summary_
         """
 
     # Attributes
     # -----        
         self.parameters = parameters
-        self.cell = cell    
     
     # Methods
     # -----        
@@ -28,7 +25,7 @@ class Base():
         D = self.parameters.num_dims
         
         refs_1 = self.parameters.refs_1
-        leng_1 = self.cell.leng_1
+        leng_1 = self.parameters.leng_1
         
 
         # Define arrays to fill
@@ -115,7 +112,7 @@ class Base():
 
         return csol_2
 
-    # ---- Submethods ----
+
     def get_delta(self, csol_2, refs_1, leng_1)->numpy.ndarray:
         """Get delta.
 
@@ -133,28 +130,28 @@ class Base():
         delt_4 : numpy.ndarray
             delt_4[i,j,r,m] is difference in cell solutions at nodes i and j in direction m with weight r.
         """
-        pass
-        ## Get params
-        ## -----
-        #num_nodes = parameters.num_nodes
-        #num_refs  = parameters.num_refs # 3
-        #num_dims  = parameters.num_dims # 2
-        #
-        #
-        ## Make array to be filled
-        ## -----
-        #delt_4 = numpy.zeros(shape=(num_nodes,num_nodes,num_refs,num_dims))
-        #
-        #
-        ## Fill using definition of delta
-        ## -----
-        #for i in range(num_nodes):
-        #    for j in range(num_nodes):
-        #        for r in range(num_refs):
-        #            for m in range(num_dims):
-        #                delt_4[i,j,r,m] = csol_2[i,m] - (csol_2[j,m] + refs_1[r]*leng_1[m])
-        # return delt_4
+        # Define readable parameters 
+        # -----
+        N = self.parameters.num_nodes
+        D = self.parameters.num_dims 
+        R = self.parameters.num_refs 
+        
+
+        # Make array to be filled
+        # -----
+        delt_4 = numpy.zeros(shape=(N,N,R,D))
+        
+        
+        # Fill using definition of delta
+        # -----
+        for i in range(N):
+            for j in range(N):
+                for r in range(R):
+                    for m in range(D):
+                        delt_4[i,j,r,m] = csol_2[i,m] - (csol_2[j,m] + refs_1[r]*leng_1[m])
+        return delt_4
     
+
     def get_heaviside(self, delt_4:numpy.ndarray)->numpy.ndarray:
         """_summary_
 
@@ -173,16 +170,82 @@ class Base():
         return heav_4
 
 
+    def get_permeability_and_adhesivity(self, adhe_4, cond_4, delt_4, heav_4, refs_1, leng_1):
+        # Define readable parameters 
+        # -----
+        N = self.parameters.num_nodes 
+        R = self.parameters.num_refs  
+        D = self.parameters.num_dims  
+
+
+        # Make arrays to fill
+        # -----
+        perm_inte_6 = numpy.zeros(shape=(N,N,R,R,D,D))
+        # perm_inte_7[i,j,r0,r1,m,n]
+        depo_inte_5 = numpy.zeros(shape=(N,N,R,R,D))
+        # depo_inte_6[i,j,r0,r1,m]
+
+
+        # Get permeability and adhesivity integrands
+        # ------
+        for m in range(D):
+            for n in range(D):
+                for r0 in range(R):
+                    for r1 in range(R):
+                        if m==0: 
+                            rm=r0
+                        elif m==1:
+                            rm=r1
+                        else: 
+                            raise Exception("m != 0,1. This is impossible, since the problem is 2D.")
+                        if n==0: 
+                            rn=r0
+                        elif n==1:
+                            rn=r1
+                        else: 
+                            raise Exception("n != 0,1. This is impossible, since the problem is 2D.")
+                        # Get depo and perm
+                        # -----
+                        perm_inte_6[:,:,r0,r1,m,n] = refs_1[rm]*cond_4[:,:,r0,r1]*(-delt_4[:,:,rn,n])
+                        depo_inte_5[:,:,r0,r1,m]   = adhe_4[:,:,r0,r1]*cond_4[:,:,r0,r1]*(-delt_4[:,:,rm,m])*heav_4[:,:,rm,m]
+                        # TODO: Check heav definition and indexing
+
+
+        # Sums
+        # -----
+        perm_5 = numpy.sum(a=perm_inte_6, axis=3) # sum over r1
+        perm_4 = numpy.sum(a=perm_5, axis=2) # sum over r0
+        perm_3 = numpy.sum(a=perm_4, axis=1) # sum over j
+        perm_2 = numpy.sum(a=perm_3, axis=0) # sum over i
+        # perm_2[m,n]    
+
+        depo_4 = numpy.sum(a=depo_inte_5, axis=3) # sum over r1
+        depo_3 = numpy.sum(a=depo_4, axis=2) # sum over r0
+        depo_2 = numpy.sum(a=depo_3, axis=1) # sum over j
+        depo_1 = numpy.sum(a=depo_2, axis=0) # sum over i
+        # depo_2[m]
+
+
+        # Multiply by prefactors
+        # -----
+        for m in range(D):
+            for n in range(D):
+                perm_2[m,n] = 0.5*(leng_1[m]/numpy.prod(leng_1))*perm_2[m,n]
+
+        depo_1 = -(1/numpy.prod(leng_1))*depo_1
+
+        return (perm_2, depo_1)
+
+
         
 class Deposition(Base):
     """_summary_
 
     """
-    def __init__(self, parameters:parameters.Parameters,
-                       cell):
+    def __init__(self, parameters:parameters.Parameters):
         """_summary_
         """
-        super().__init__(parameters=parameters, cell=cell)
+        super().__init__(parameters=parameters)
         pass
 
     # Attributes
@@ -191,7 +254,13 @@ class Deposition(Base):
     # Methods
     # -----      
     def get_conductance_problem(self, cond_4, adhe_4, effe_4, delt_4):
-        rhs_4 = effe_4*adhe_4*delt_4*cond_4**(3/2)
+        N = self.parameters.num_nodes
+        R = self.parameters.num_refs
+
+        rhs_4 = numpy.zeros(shape=(N,N,R,R))
+        for r0 in range(R):
+            for r1 in range(R): 
+                rhs_4[:,:,r0,r1] = effe_4[:,:,r0,r1]*adhe_4[:,:,r0,r1]*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0) 
         return rhs_4
 
     def step_conductance_problem(self, cond_4, rhs_4, diff_tlik):
