@@ -1,21 +1,19 @@
 {
-    "alph": 1.0,
-    "beta": 0.01,
     "dist_adhe": {
-        "mu": -0.045,
+        "mu": 1.0,
         "name": "delta"
     },
     "dist_cond": {
         "mu": 1,
-        "name": "lognormal",
-        "sigma": 0.3
+        "name": "delta"
+    },
+    "dist_effe": {
+        "mu": 0.01623,
+        "name": "delta"
     },
     "initialisation": "4-reg",
-    "max_ref_dist": 1,
     "num_concs": 1001,
-    "num_dims": 2,
     "num_nodes": 4,
-    "num_refs": 3,
     "path": "./test",
-    "v": 0.5
+    "tlik_max": 1000
 }

@@ -221,6 +221,8 @@ def get_conductance_rhs(cond_4,delt_4,adhe_4,beta,alph):
             #raise Exception 
 
     #cond_rhs_4 = numpy.zeros_like(cond_rhs_4)
+    print(beta)
+    print(alph)
     return cond_rhs_4
 
 
@@ -254,6 +256,8 @@ def get_conductance(cond_4,cond_rhs_4,dt):
 def get_conductance_adherence_csol_delta(conc_tot_disc_1,cond_init_4,adhe_init_4,refs_2,leng_1,beta,alph):
     """
     """
+    print("alph: {}".format(alph))
+    print("beta: {}".format(beta))
     # Parameters 
     # ------
     num_concs = len(conc_tot_disc_1)
