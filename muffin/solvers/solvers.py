@@ -8,7 +8,7 @@ class Explicit():
     def __init__(self, parameters:parameters.Parameters,
                        cell,
                        equations_preprocess, 
-                       solution): 
+                       solution:solutions.Solution): 
         """_summary_
         """
 
@@ -56,3 +56,5 @@ class Explicit():
                                                                                                                                heav_4=self.solution.heav_5[s,:,:,:,:], 
                                                                                                                                refs_1=self.parameters.refs_1, 
                                                                                                                                leng_1=self.cell.leng_1)
+                                                                                                                            
+        self.solution.get_dictionary()
