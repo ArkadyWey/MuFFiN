@@ -49,6 +49,8 @@ if __name__ == "__main__":
 
     print(model.solution.cond_5[100,:,:,0,0])
 
+    model.plot("all", y="permeability")
+
 
     #solver = solvers.Explicit(parameters=parameters, cell=cell, equations_preprocess=equations)
 
