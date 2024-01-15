@@ -18,10 +18,15 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+# Copy examples folder from OpenPNM root to docs folder
+import shutil
+shutil.copytree('../examples', '_examples/examples', dirs_exist_ok=True)
+
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.githubpages",
+    "nbsphinx"
 ]
 
 autoclass_content = 'both'

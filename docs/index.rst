@@ -15,7 +15,7 @@ A solver for Multiscale Fluid Flow in Networks
    other/getting-started
    modules
    other/tutorial
-   other/examples
+   _examples/index
    other/contributing
    other/source-code
    other/publications
