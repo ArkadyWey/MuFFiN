@@ -33,8 +33,8 @@ class Model():
                                       solution=self.solution)
         
         else: 
-            raise Exception("Solver option_solver must be 'explicit', {} is not implemented.".format(option_solver))
-        
+            # TODO: Add other solvers
+            raise Exception("option_solver must be 'explicit'. option_solver=={} is not implemented.".format(option_solver))
         return solver
 
 
@@ -83,6 +83,22 @@ class Model():
         elif type_plot == "distributions":
             self.plotter.plot_distributions(indices=indices)
         else: 
-            raise Exception("type_plot must be 'all', 'single', or 'distributions'. type_plot=={} is not implemented.".format(type_plot))
+            raise Exception("type_plot must be 'all' or 'single'. type_plot=={} is not implemented.".format(type_plot))
 
-        
+
+    def save(self, type_save:str="all", y:str="conductance"):
+        if type_save == "all":
+            self.solution.save_all()
+        elif type_save == "single":
+            self.solution.save_single(y=y)
+        else: 
+            raise Exception("type_save must be 'all' or 'single'. type_save=={} is not implemented.".format(type_save))
+
+
+    def load(self, type_load:str="all", y:str="conductance"):
+        if type_load == "all":
+            self.solution.load_all()
+        elif type_load == "single":
+            self.solution.load_single(y=y)
+        else: 
+            raise Exception("type_load must be 'all' or 'single'. type_load=={} is not implemented.".format(type_load))
