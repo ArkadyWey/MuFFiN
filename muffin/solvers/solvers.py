@@ -19,6 +19,7 @@ class Explicit():
         self.equations_preprocess = equations_preprocess
         self.solution = solution 
 
+
     # Methods 
     # -----
     def solve(self):

@@ -15,10 +15,12 @@ class Plotter():
         """_summary_
         """
 
+
     # Attributes
     # -----
         self.solution = solution
         self.parameters = parameters
+
 
     # Methods
     # -----
@@ -28,18 +30,15 @@ class Plotter():
                    x_left:str=None, x_right:str=None, 
                    y_bottom:str=None, y_top:str=None, 
                    x_name:str=None, y_name:str=None):
-        """Create fig, ax instance, plot y as a function of x, and save figure.
-        """
+        
         # Define
-        # -----
-        fig, ax = self.get_fig_and_ax()
+        plotting.thesisify_pre_ax_creation()
+        fig, ax = plt.subplots(1,1)
 
         # Plot
-        # -----
         ax.plot(x_value, y_value, color=color, ls=linestyle)
 
         # Format
-        # -----
         plotting.thesisify_post_plot(ax=ax,
                                      x_label=x_label,
                                      y_label=y_label,
@@ -49,36 +48,15 @@ class Plotter():
                                      y_top=y_top)
 
         # Save
-        # -----
         fig_name = "{}__V__{}.svg".format(x_name,y_name)
-        self.save_fig(fig=fig,fig_name=fig_name)
+        plotting.save_fig(fig=fig, fname=os.path.join(self.parameters.path, fig_name), format="svg")
         
 
-    def get_fig_and_ax(self):
-        plotting.thesisify_pre_ax_creation()
-        fig, ax = plt.subplots(1,1)
-        return (fig, ax)
-
-
-    def save_fig(self, fig, fig_name):
-        plotting.save_fig(fig=fig, fname=os.path.join(self.parameters.path, fig_name), format="svg")
-
-
-    def plot_single(self, y:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
-        """_summary_
-
-        Parameters
-        ----------
-        y : str, optional
-            _description_, by default "conductance"
-        indices : _type_, optional
-            _description_, by default {"i":0,"j":1,"r0":0,"r1":0,"r":0,m":0,"n":0}
-        """
+    def plot_single(self, variable_name:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
         x_meta = self.solution.dictionary["time_like"]
-        y_meta = self.solution.dictionary[y]
+        y_meta = self.solution.dictionary[variable_name]
 
         # Get correct indices of array
-        # -----
         y_value = y_meta["value"] # array of some shape  
         count = 0      
         for index in list(indices.keys()):
@@ -95,22 +73,7 @@ class Plotter():
                   x_name=x_meta["name"], y_name=y_meta["name"])
 
 
-
-
     def plot_all(self, indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
-        """_summary_
-
-        Parameters
-        ----------
-        indices : _type_, optional
-            _description_, by default {"i":0,"j":1,"r0":0,"r1":0,"m":0,"n":0}
-        """
-        for variable_name in list(self.solution.dictionary.keys()):
+        for variable_name in self.solution.variable_names:
             y_meta = self.solution.dictionary[variable_name]
             self.plot_single(y=y_meta["name"], indices=indices)
-
-
-    def plot_distributions(self, indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
-        pass
-             
-
