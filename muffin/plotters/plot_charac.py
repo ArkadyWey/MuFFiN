@@ -6,9 +6,7 @@ from scipy import interpolate
 import muffin.utils.utils_sl as utils_sl
 import muffin.network.network_2D as network_2D
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 
 def get_charac(z_1,t0,z0):

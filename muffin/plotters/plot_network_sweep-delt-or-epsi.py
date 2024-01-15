@@ -5,9 +5,7 @@ from matplotlib import pyplot as plt
 import muffin.network.network_2D as network_2D
 import muffin.utils.utils_sl as utils_sl
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 
 #model_parameters = ["N1-5","N1-10","N1-20"]

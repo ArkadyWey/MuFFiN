@@ -4,9 +4,7 @@ import numpy
 from matplotlib import pyplot as plt
 
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 path_results = os.path.join(".","results/results_network/thesis/sweep-alph/tiny-sweep")
 

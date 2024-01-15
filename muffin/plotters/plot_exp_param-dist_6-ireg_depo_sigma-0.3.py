@@ -6,9 +6,7 @@ from scipy import interpolate
 import muffin.configure.configure as configure
 import muffin.utils.utils_plot_exp_param_dist as utils_plot_exp_param_dist
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 # Parameters 
 # -----
