@@ -68,6 +68,7 @@ class Parameters():
         # Get parameters where parser overwrites class instance
         self.dictionary:dict = self.overwrite_default_parameters_with_parser()    
 
+
     # Attributes
     # -----
         # Primary parameters
@@ -80,7 +81,6 @@ class Parameters():
         self.dist_effe:dict     = self.dictionary_class["dist_effe"]
         self.num_concs:int      = self.dictionary["num_concs"]
         self.tlik_max:int       = self.dictionary["tlik_max"]
-
        
         # Secondary parameters
         # -----
@@ -102,6 +102,7 @@ class Parameters():
     # Do
     # -----
         self.save(path=self.path)
+
 
     # Methods 
     # -----
