@@ -18,6 +18,8 @@ class Solution():
         # Load variables from parameters 
         # ------
         self.parameters = parameters
+        self.path_save = os.path.join(self.parameters.path, "solution")
+        load_and_save.check_and_make_dir(path=self.path_save)
 
         self.variable_names = [
             "time_like",
@@ -106,12 +108,12 @@ class Solution():
 
     def save_single(self, variable_name:str="conductance"):
         y_meta = self.dictionary[variable_name]
-        self.save(d=y_meta, path_file=os.path.join(self.parameters.path,"{}.npy".format(y_meta["name"])))
+        self.save(d=y_meta, path_file=os.path.join(self.path_save,"{}.npy".format(y_meta["name"])))
 
 
     def save_all(self):
         for variable_name in self.variable_names:
-            self.save_single(y=variable_name)
+            self.save_single(variable_name=variable_name)
 
 
     def load(self, path_file:str=None):
@@ -120,7 +122,7 @@ class Solution():
 
 
     def load_single(self, variable_name:str="conductance"):
-        d = self.load(path_file=os.path.join(self.parameters.path,"{}.npy".format(variable_name)))
+        d = self.load(path_file=os.path.join(self.path_save,"{}.npy".format(variable_name)))
         return d
     
 

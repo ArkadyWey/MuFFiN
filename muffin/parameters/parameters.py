@@ -8,7 +8,7 @@ import muffin.utils.load_and_save as load_and_save
 class Parameters():
     """Parameters class. See __init__ for functionality.
     """
-    def __init__(self, path:str           = "./examples/misc/meta", 
+    def __init__(self, path:str           = "./tests", 
                        initialisation:str = "4-reg",
                        num_nodes:int      = 4,
                        dist_cond:dict     = {"name":"lognormal", "mu":-0.045, "sigma":0.3},
@@ -98,10 +98,10 @@ class Parameters():
 
         self.num_dims:int = 2 # number of dimensions of cell
 
-
+        self.path_save = os.path.join(self.path, "parameters")
     # Do
     # -----
-        self.save(path=self.path)
+        self.save(path=self.path_save)
 
 
     # Methods 
@@ -129,7 +129,9 @@ class Parameters():
         parser.add_argument("-tm", "--time_like_max",  type=int, required=False, help="Maximum value of timelike variable")
         
         # Remove nones from parameters not given
-        parser_args = parser.parse_args() 
+        #parser_args = parser.parse_args() 
+        #parser_args, unknown = parser.parse_known_args()
+        parser_args = parser.parse_args("")
         dict_parser_args = vars(parser_args) # convert args to dictionary
         dictionary_parser = load_and_save.remove_none_items_from_dict(d=dict_parser_args) # remove nones
         

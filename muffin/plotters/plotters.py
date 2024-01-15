@@ -5,6 +5,7 @@ import numpy
 import muffin.parameters.parameters as parameters
 import muffin.solutions.solutions as solutions
 import muffin.plotters.plotting as plotting
+import muffin.utils.load_and_save as load_and_save
 
 
 class Plotter():
@@ -20,6 +21,8 @@ class Plotter():
     # -----
         self.solution = solution
         self.parameters = parameters
+        self.path_save = os.path.join(self.parameters.path, "plots")
+        load_and_save.check_and_make_dir(path=self.path_save)
 
 
     # Methods
@@ -49,7 +52,7 @@ class Plotter():
 
         # Save
         fig_name = "{}__V__{}.svg".format(x_name,y_name)
-        plotting.save_fig(fig=fig, fname=os.path.join(self.parameters.path, fig_name), format="svg")
+        plotting.save_fig(fig=fig, fname=os.path.join(self.path_save, fig_name), format="svg")
         
 
     def plot_single(self, variable_name:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
