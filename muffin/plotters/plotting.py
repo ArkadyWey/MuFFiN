@@ -138,10 +138,11 @@ def set_ax_lims(ax,x_left=None,x_right=None,y_bottom=None,y_top=None):
     return ax
 
 
-def set_legend(ax, font_size=13):
+def set_legend(ax, legend_on=False, font_size=13):
     """
     """
-    ax.legend(loc="best", frameon=False, fontsize=font_size)
+    if legend_on == True:
+        ax.legend(loc="best", frameon=False, fontsize=font_size)
     return ax
 
 
@@ -158,19 +159,20 @@ def set_spines(ax, spines_on=False):
 
 
 def thesisify_post_plot(ax,
-		         fig_type="half_page",
-                 x_label=None,
-                 y_label=None,
-                 x_left=None,
-                 x_right=None,
-                 y_bottom=None,
-                 y_top=None,
-                 major_tick_length=5.0,
-                 minor_tick_length=2.5,
-                 major_tick_width=1.0,
-                 minor_tick_width=1.0,
-                 labelpad=5, 
-		 spines_on=False):
+		                fig_type="half_page",
+                        x_label=None,
+                        y_label=None,
+                        x_left=None,
+                        x_right=None,
+                        y_bottom=None,
+                        y_top=None,
+                        major_tick_length=5.0,
+                        minor_tick_length=2.5,
+                        major_tick_width=1.0,
+                        minor_tick_width=1.0,
+                        labelpad=5, 
+		                spines_on=False, 
+                        legend_on=False):
     """
     """
     if fig_type=="half_page":
@@ -203,10 +205,11 @@ def thesisify_post_plot(ax,
                        y_label=y_label,
                        labelpad=labelpad)
 
-    ax = set_legend(ax=ax, font_size=legend_font_size)
+    if legend_on ==  True:
+        ax = set_legend(ax=ax, legend_on=legend_on, font_size=legend_font_size)
 
     
-    ax = set_spines(ax=ax,spines_on=spines_on)
+    ax = set_spines(ax=ax, spines_on=spines_on)
     
     return ax
 
