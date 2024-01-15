@@ -5,12 +5,12 @@ import muffin.cells.six_irregular as six_irregular
 import muffin.equations_preprocess.equations_preprocess as equations_preprocess
 import muffin.solvers.solvers as solvers
 import muffin.models.models as models
+import muffin.plotters.plotting as plotting
+
 
 import matplotlib.pyplot as plt
 import numpy
 import sys
-sys.path.append("/home/user/utils_python")
-import plotting
 import os
 
 # parameters = muffin.parameters.Parameters()
@@ -44,24 +44,19 @@ if __name__ == "__main__":
 
     model = models.Model(parameters=parameters, cell=cell, equations_preprocess=equations)
     
+    #solver = solvers.Explicit(parameters=parameters, cell=cell, equations_preprocess=equations)
+    #solver.solve()
+
     #model.solver.solve() or
-    model.solve()
+    #model.solve()
 
     print(model.solution.cond_5[100,:,:,0,0])
 
-    model.plot("all", y="permeability")
 
+    #model.save(type_save="all", y="permeability")
+    model.load(type_load="all", y="permeability")
 
-    #solver = solvers.Explicit(parameters=parameters, cell=cell, equations_preprocess=equations)
-
-    #solver.solve()
-    # model = models.Model(parameters, cell, equations, solver)
-
-    # model.solver.solve()
-
-    # model.solution.plot()
-
-    # model.solution.save()
+    model.plot(type_plot="all", y="permeability")
 
     # model.solution.load()
 
@@ -87,7 +82,8 @@ if __name__ == "__main__":
                                  x_left=0,
                                  x_right=1000,
                                  y_bottom=0,
-                                 y_top=1)
+                                 y_top=1, 
+                                 legend_on=False)
 
     plotting.save_fig(fig=fig,fname=os.path.join(parameters.path,"perm_prep__3__v__s_1.svg"), format="svg")
 
