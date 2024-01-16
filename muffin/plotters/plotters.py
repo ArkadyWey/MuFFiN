@@ -76,4 +76,4 @@ class Plotter():
     def plot_all(self, indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
         for variable_name in self.solution.variable_names:
             y_meta = self.solution.dictionary[variable_name]
-            self.plot_single(y=y_meta["name"], indices=indices)
+            self.plot_single(variable_name=y_meta["name"], indices=indices)

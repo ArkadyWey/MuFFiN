@@ -56,7 +56,7 @@ class Model():
         self.solver.solve()
 
 
-    def plot(self, type_plot:str="all", y:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
+    def plot(self, type_plot:str="all", variable_name:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
         """Produce figures of the solution.
 
         Parameters
@@ -79,26 +79,26 @@ class Model():
         if type_plot == "all":
             self.plotter.plot_all(indices=indices)
         elif type_plot == "single":
-            self.plotter.plot_single(y=y, indices=indices)
+            self.plotter.plot_single(variable_name=variable_name, indices=indices)
         elif type_plot == "distributions":
             self.plotter.plot_distributions(indices=indices)
         else: 
             raise Exception("type_plot must be 'all' or 'single'. type_plot=={} is not implemented.".format(type_plot))
 
 
-    def save(self, type_save:str="all", y:str="conductance"):
+    def save(self, type_save:str="all", variable_name:str="conductance"):
         if type_save == "all":
             self.solution.save_all()
         elif type_save == "single":
-            self.solution.save_single(y=y)
+            self.solution.save_single(variable_name=variable_name)
         else: 
             raise Exception("type_save must be 'all' or 'single'. type_save=={} is not implemented.".format(type_save))
 
 
-    def load(self, type_load:str="all", y:str="conductance"):
+    def load(self, type_load:str="all", variable_name:str="conductance"):
         if type_load == "all":
             self.solution.load_all()
         elif type_load == "single":
-            self.solution.load_single(y=y)
+            self.solution.load_single(variable_name=variable_name)
         else: 
             raise Exception("type_load must be 'all' or 'single'. type_load=={} is not implemented.".format(type_load))

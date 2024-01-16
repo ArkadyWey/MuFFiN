@@ -48,15 +48,11 @@ if __name__ == "__main__":
     #solver.solve()
 
     #model.solver.solve() or
-    #model.solve()
-
-    print(model.solution.cond_5[100,:,:,0,0])
-
-
+    model.solve()
     #model.save(type_save="all", y="permeability")
-    model.load(type_load="all", y="permeability")
+    #model.load(type_load="all", y="permeability")
 
-    model.plot(type_plot="all", y="permeability")
+    model.plot(type_plot="all", variable_name="permeability")
 
     # model.solution.load()
 
