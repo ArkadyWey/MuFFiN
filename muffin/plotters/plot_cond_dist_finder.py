@@ -3,9 +3,7 @@ from matplotlib import pyplot as plt
 import numpy
 import os
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 path_results = os.path.join(".","results/results_cond-dist")
 

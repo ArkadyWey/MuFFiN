@@ -4,17 +4,13 @@ import numpy
 from scipy import integrate
 
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 # Parameters 
 # -----
 path_results = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/numerics")
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 def get_wpc(T,X,L,N,S):
     return T*X**L + S*N**L

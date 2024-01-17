@@ -5,9 +5,7 @@ from matplotlib import pyplot as plt
 import muffin.network.network_2D as network_2D
 import muffin.utils.utils_sl as utils_sl
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 
 #model_parameters = ["beta-0.02","beta-0.04","beta-0.06","beta-0.08","beta-0.10",] #small-sweep

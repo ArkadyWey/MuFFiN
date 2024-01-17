@@ -7,10 +7,7 @@ import muffin.solvers.solvers as solvers
 import muffin.models.models as models
 import muffin.plotters.plotting as plotting
 
-
 import matplotlib.pyplot as plt
-import numpy
-import sys
 import os
 
 # parameters = muffin.parameters.Parameters()
@@ -49,7 +46,7 @@ if __name__ == "__main__":
 
     #model.solver.solve() or
     model.solve()
-    #model.save(type_save="all", y="permeability")
+    model.save(type_save="all")
     #model.load(type_load="all", y="permeability")
 
     model.plot(type_plot="all", variable_name="permeability")

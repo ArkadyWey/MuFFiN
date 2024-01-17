@@ -4,9 +4,7 @@ import numpy
 import scipy 
 from scipy import integrate
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 import muffin.variables.performance as performance
 

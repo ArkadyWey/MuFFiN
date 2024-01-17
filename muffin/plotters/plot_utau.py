@@ -3,9 +3,7 @@ import os
 import numpy 
 import scipy.integrate
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 def get_lifetime(velo_1,time_1,indx_crit):
     """

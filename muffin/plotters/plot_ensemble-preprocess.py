@@ -7,9 +7,7 @@ import muffin.utils.utils_preprocess as utils_preprocess
 import muffin.flow.flow as flow 
 
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 # Parameters 
 # -----

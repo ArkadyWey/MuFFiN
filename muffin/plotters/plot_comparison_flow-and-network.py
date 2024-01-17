@@ -6,9 +6,7 @@ import numpy
 import muffin.utils.utils_sl as utils_sl
 import muffin.network.network_2D as network_2D
 
-import sys
-sys.path.append("/home/user/utils_python")
-import plotting
+import muffin.plotters.plotting as plotting
 
 #path_output = os.path.join(".","results/results_comparison/random/epsi-0.1") # thesis
 path_output = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/results_comparison") # paper
