@@ -17,7 +17,6 @@ class Base():
     # Methods
     # -----        
     def get_cell_problem(self, cond_4):
-        pass
         # Define readable parameters 
         # -----
         N = self.parameters.num_nodes
@@ -78,7 +77,6 @@ class Base():
 
 
     def step_cell_problem(self, lhs_cpro_2, rhs_cpro_3):
-        pass 
         """
         Parameters
         -----
@@ -246,7 +244,7 @@ class Deposition(Base):
         """_summary_
         """
         super().__init__(parameters=parameters)
-        pass
+
 
     # Attributes
     # -----        
@@ -264,5 +262,5 @@ class Deposition(Base):
         return rhs_4
 
     def step_conductance_problem(self, cond_4, rhs_4, diff_tlik):
-        cond_new_4 = cond_4  - diff_tlik*rhs_4
+        cond_new_4 = cond_4 - diff_tlik*rhs_4
         return cond_new_4
