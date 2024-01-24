@@ -14,8 +14,11 @@ class Parameters():
                        dist_cond:dict     = {"name":"lognormal", "mu":-0.045, "sigma":0.3},
                        dist_adhe:dict     = {"name":"delta",     "mu":1.0}, 
                        dist_effe:dict     = {"name":"delta",     "mu":0.01},
-                       num_concs:int      = 1001,
-                       tlik_max:int       = 1000,
+                       num_tliks:int      = 1001,
+                       tlik_max:int       = 2000,
+                       num_posis:int      = 101,
+                       time_max:int       = 500,
+                       parser_on:bool     = False
                 ):
         """Add parameters as attributes and save dictionary of parameters at path.
 
@@ -79,9 +82,13 @@ class Parameters():
         self.dist_cond:dict     = self.dictionary_class["dist_cond"]
         self.dist_adhe:dict     = self.dictionary_class["dist_adhe"]
         self.dist_effe:dict     = self.dictionary_class["dist_effe"]
-        self.num_concs:int      = self.dictionary["num_concs"]
+        self.num_tliks:int      = self.dictionary["num_tliks"]
         self.tlik_max:int       = self.dictionary["tlik_max"]
-       
+        self.num_posis          = self.dictionary["num_posis"]
+        self.time_max           = self.dictionary["time_max"]
+        self.phi                = 1.0 # TODO: Fix phi
+        self.parser_on          = self.dictionary["parser_on"]
+
         # Secondary parameters
         # -----
         self.alph:float = self.dist_adhe["mu"]
@@ -93,12 +100,31 @@ class Parameters():
 
         self.leng_1:numpy.ndarray = self.get_leng_1(initialisation=self.initialisation) # dimensions of cell
 
-        self.tlik_1 = self.get_time_like(num_concs=self.num_concs, tlik_max=self.tlik_max) # time-like variable discretisation
+        self.tlik_1 = numpy.linspace(start=0, stop=self.tlik_max, num=self.num_tliks, endpoint=True) # time-like variable discretisation
         self.diff_tlik = self.tlik_1[1] - self.tlik_1[0] # step size for time-like variable discretisation
 
         self.num_dims:int = 2 # number of dimensions of cell
 
         self.path_save = os.path.join(self.path, "parameters")
+    
+        # Macroscale
+        # -----
+        self.posi_max = 1.0 # TODO: Change to self.leng_1[0]
+        self.posi_1   = numpy.linspace(start=0, stop=self.posi_max, num=self.num_posis, endpoint=True)
+        self.diff_posi = self.posi_1[1]-self.posi_1[0]
+
+        self.num_times_solv = self.time_max*2*(self.num_posis-1)+1 
+        self.time_solv_1 = numpy.linspace(start=0, stop=self.time_max, num=self.num_times_solv, endpoint=True)
+        self.diff_time_solv = self.time_solv_1[1]-self.time_solv_1[0]
+
+        self.incr_time = int((self.num_times_solv-1)/self.time_max) # time increment to reduce num times saved
+        self.time_save_1 = self.time_solv_1[0::self.incr_time]
+        self.num_times_save = len(self.time_save_1)
+
+        self.conc_1 = self.get_initial_concentration_distribution(num_posis=self.num_posis)
+
+        # TODO: Implement at what times to save
+
     # Do
     # -----
         self.save(path=self.path_save)
@@ -115,34 +141,40 @@ class Parameters():
             Dictionary where keys are parameter names and values are
             parameter values.
         """        
-        # Define parser
-        parser = argparse.ArgumentParser()
-            
-        # Optionally add parameters from parser
-        parser.add_argument("-p",  "--path",           type=str, required=False, help="Path to simulation")
-        parser.add_argument("-i",  "--initialisation", type=str, required=False, help="Structure of cell")
-        parser.add_argument("-N",  "--num_nodes",      type=int, required=False, help="Number of nodes in cell")
-        parser.add_argument("-dc", "--dist_cond",      type=str, required=False, help="Conductance distribution")
-        parser.add_argument("-da", "--dist_adhe",      type=str, required=False, help="Adherence distribution")
-        parser.add_argument("-de", "--dist_effe",      type=str, required=False, help="Effectance distribution")
-        parser.add_argument("-nc", "--num_concs",      type=int, required=False, help="Number of timelike variable point to discretise with")
-        parser.add_argument("-tm", "--time_like_max",  type=int, required=False, help="Maximum value of timelike variable")
+        if self.parser_on == True:
+            # Define parser
+            parser = argparse.ArgumentParser()
+
+            # Optionally add parameters from parser
+            parser.add_argument("-p",  "--path",           type=str, required=False, help="Path to simulation")
+            parser.add_argument("-i",  "--initialisation", type=str, required=False, help="Structure of cell")
+            parser.add_argument("-N",  "--num_nodes",      type=int, required=False, help="Number of nodes in cell")
+            parser.add_argument("-dc", "--dist_cond",      type=str, required=False, help="Conductance distribution")
+            parser.add_argument("-da", "--dist_adhe",      type=str, required=False, help="Adherence distribution")
+            parser.add_argument("-de", "--dist_effe",      type=str, required=False, help="Effectance distribution")
+            parser.add_argument("-nc", "--num_tliks",      type=int, required=False, help="Number of timelike variable point to discretise with")
+            parser.add_argument("-tm", "--time_like_max",  type=int, required=False, help="Maximum value of timelike variable")
+            parser.add_argument("-np", "--num_posis",      type=int, required=False, help="Number of spatial points to discretise with")
+            parser.add_argument("-T",  "--time_max",       type=int, required=False, help="Maximum value of time variable")
+
+            # Remove nones from parameters not given
+            parser_args = parser.parse_args() 
+            #parser_args, unknown = parser.parse_known_args()
+            #parser_args = parser.parse_args("")
+            dict_parser_args = vars(parser_args) # convert args to dictionary
+            dictionary_parser = load_and_save.remove_none_items_from_dict(d=dict_parser_args) # remove nones
+
+            # Convert distribution strings to dictionaries if given in parser
+            if "dist_cond" in dictionary_parser.keys():
+                dictionary_parser["dist_cond"] = json.loads(dictionary_parser["dist_cond"])
+            if "dist_adhe" in dictionary_parser.keys():
+                dictionary_parser["dist_adhe"] = json.loads(dictionary_parser["dist_adhe"])
+            if "dist_effe" in dictionary_parser.keys():
+                dictionary_parser["dist_effe"] = json.loads(dictionary_parser["dist_effe"])
         
-        # Remove nones from parameters not given
-        #parser_args = parser.parse_args() 
-        #parser_args, unknown = parser.parse_known_args()
-        parser_args = parser.parse_args("")
-        dict_parser_args = vars(parser_args) # convert args to dictionary
-        dictionary_parser = load_and_save.remove_none_items_from_dict(d=dict_parser_args) # remove nones
-        
-        # Convert distribution strings to dictionaries if given in parser
-        if "dist_cond" in dictionary_parser.keys():
-            dictionary_parser["dist_cond"] = json.loads(dictionary_parser["dist_cond"])
-        if "dist_adhe" in dictionary_parser.keys():
-            dictionary_parser["dist_adhe"] = json.loads(dictionary_parser["dist_adhe"])
-        if "dist_effe" in dictionary_parser.keys():
-            dictionary_parser["dist_effe"] = json.loads(dictionary_parser["dist_effe"])
-        
+        elif self.parser_on == False:
+                dictionary_parser = {}
+                
         return dictionary_parser
 
 
@@ -234,9 +266,11 @@ class Parameters():
             raise Exception("max_ref_dist != 1 is not implemented.")
             # TODO: Implement
         return refs_1
+
+
+    def get_initial_concentration_distribution(self, num_posis:int)->numpy.ndarray:
+        conc_1 = numpy.empty(shape=(num_posis))
+        conc_1[:] = numpy.zeros_like(conc_1)
+        conc_1[0] = 1.0
+        return conc_1
     
-
-    def get_time_like(self, num_concs:int, tlik_max:int)->numpy.ndarray:
-        tlik_1 = numpy.linspace(start=0, stop=tlik_max, num=num_concs, endpoint=True)
-        return tlik_1
-
