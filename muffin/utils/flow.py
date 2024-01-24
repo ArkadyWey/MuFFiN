@@ -20,14 +20,7 @@ def get_new_interpolated_point(table_x,table_y,new_x_values_1):
     -------
     - new_y_value: float
         Interpolated y value corresponding to new_x_value
-    """_
-    #if type_clog == "deposit":
+    """
     interpolated_function = interpolate.splrep(x=table_x,y=table_y,k=3)
     new_y_values_1 = interpolate.splev(x=new_x_values_1, tck=interpolated_function)
-    # elif type_clog == "block":
-    #     step_fun = interpolate.interp1d(table_x, table_y, kind='next') 
-    #     #print("new_x_value:\n{}".format(new_x_value))
-    #     new_y_value = step_fun(new_x_value)
-    # else: 
-    #     raise Exception("type_clog must be either 'block' or 'deposit'.")
     return new_y_values_1

@@ -19,7 +19,7 @@ import muffin.plotters.plotting as plotting
 #path_data = os.path.join("/home/user/projects/papers/2023_homogenisation/figures/mono/prep")
 #path_data = os.path.join("./examples/preprocess/init-4-reg/N-4/r-0/data")
 #path_data = os.path.join("./examples/preprocess/data")
-path_data = os.path.join("./test/test-2")
+path_data = os.path.join("./muffin/examples/misc/data")
 
 path_data_dir  = os.path.dirname(path_data)
 print(path_data_dir)
@@ -39,7 +39,7 @@ heav_5            = numpy.load(os.path.join(path_data, "heav_5.npy"))
 delt_5            = numpy.load(os.path.join(path_data, "delt_5.npy"))
 
 
-alph = 0.3
+alph = 1.0
 beta = 0.01
 
 # Plot permeability 
@@ -180,7 +180,7 @@ f = numpy.linspace(0.0,conc_max_or_tot_1[-1],1000)
 
 plotting.thesisify_post_plot(ax=ax,
                              x_label=r"$s$",
-                             y_label=r"$G_{ij}^{\bm{r}}$",
+                             y_label=r"$G_{ij}^r$", #^{\bm{r}}
                              x_left=0,
                              x_right=1000,
                              y_bottom=0,
