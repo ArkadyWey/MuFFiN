@@ -1,6 +1,11 @@
 import muffin.equations_preprocess.equations_preprocess as equations_preprocess
+import muffin.equations_flow.equations_flow as equations_flow
 import muffin.parameters.parameters as parameters
 import muffin.solutions.solutions as solutions
+
+import muffin.plotters.plotting as plotting
+import matplotlib.pyplot as plt
+import os
 
 class Explicit():
     """_summary_
@@ -8,7 +13,9 @@ class Explicit():
     def __init__(self, parameters:parameters.Parameters,
                        cell,
                        equations_preprocess:equations_preprocess.Deposition, # TODO: Implement abstract class since can be others
-                       solution:solutions.Solution): 
+                       equations_flow:equations_flow.Base, # TODO: Implement abstract class since can be others
+                       solution:solutions.Solution, 
+                       solution_flow:solutions.Solution_Flow): 
         """_summary_
         """
 
@@ -17,13 +24,15 @@ class Explicit():
         self.parameters = parameters 
         self.cell = cell
         self.equations_preprocess = equations_preprocess
+        self.equations_flow = equations_flow
         self.solution = solution 
+        self.solution_flow = solution_flow 
 
 
     # Methods 
     # -----
     def solve_preprocess(self):
-        for s in range(self.parameters.tlik_max):
+        for s in range(self.parameters.num_tliks):
             # Conductance problem 
             # -----
             if s==0:
@@ -62,19 +71,55 @@ class Explicit():
 
 
     def solve_flow(self):
-        for i_t in range(self.parameters.time_max):
+        for i_t in range(self.parameters.num_times_solv):
+            print("Calculating solution at time step {} of {}".format(i_t, self.parameters.num_times_solv-1))
             # Concentration problem 
             # -----
             if i_t==0: 
-                self.solution.conc_2[i_t,:] = self.domain.conc_1 # initial condition
+                self.solution_flow.conc_2[i_t,:] = self.parameters.conc_1 # initial condition
             elif i_t!=0:
                 rhs_1 = self.equations_flow.get_concentration_problem(conc_1=self.solution_flow.conc_2[i_t-1,:], 
-                                                                      psi_1=self.solution_flow.psi_2[i_t-1,:]
+                                                                      psi_1=self.solution_flow.psi_2[i_t-1,:],
                                                                       velo=self.solution_flow.velo_1[i_t-1],
                                                                       phi=self.parameters.phi, 
                                                                       diff_posi=self.parameters.diff_posi)
 
-                self.solution.conc_2[i_t,:] = self.equations_preprocess.step_conductance_problem(conc_1=self.solution_flow.conc_2[i_t-1,:], 
-                                                                                                 rhs_1=rhs_1, 
-                                                                                                 diff_time=self.parameters.diff_time)
+                self.solution_flow.conc_2[i_t,:] = self.equations_flow.step_concentration_problem(conc_1=self.solution_flow.conc_2[i_t-1,:], 
+                                                                                                  rhs_1=rhs_1, 
+                                                                                                  diff_time=self.parameters.diff_time_solv)
+        
+            self.solution_flow.tlik_2[i_t,:] = self.equations_flow.get_time_like(conc_2=self.solution_flow.conc_2[0:i_t+1,:], 
+                                                                                 dpdx_2=self.solution_flow.dpdx_2[0:i_t+1,:], 
+                                                                                 time_1=self.parameters.time_solv_1[0:i_t+1], 
+                                                                                 diff_time=self.parameters.diff_time_solv)
+            
+            (perm_1, depo_1) = self.equations_flow.get_permeability_and_adhesivity(tlik_prep_1=self.parameters.tlik_1, 
+                                                                                   perm_prep_1=self.solution.perm_3[:,0,0], 
+                                                                                   depo_prep_1=self.solution.depo_2[:,0], 
+                                                                                   tlik_1=self.solution_flow.tlik_2[i_t,:])
+            
+            self.solution_flow.perm_2[i_t,:] = perm_1
+            self.solution_flow.depo_2[i_t,:] = depo_1
+
+            self.solution_flow.velo_1[i_t] = self.equations_flow.get_velocity(perm_1=self.solution_flow.perm_2[i_t,:], 
+                                                                              posi_1=self.parameters.posi_1, 
+                                                                              diff_posi=self.parameters.diff_posi)
+        
+            self.solution_flow.dpdx_2[i_t,:] = self.equations_flow.get_pressure_gradient(perm_1=self.solution_flow.perm_2[i_t,:],
+                                                                                         velo=self.solution_flow.velo_1[i_t])
+
+            self.solution_flow.psi_2[i_t,:] = self.equations_flow.get_reactivity(depo_1=self.solution_flow.depo_2[i_t,:], 
+                                                                                 dpdx_1=self.solution_flow.dpdx_2[i_t,:])
+
+
+        # Remake solution with less time points
+        # ------
+        self.solution_flow.conc_2 = self.solution_flow.conc_2[0::self.parameters.incr_time, :] 
+        self.solution_flow.tlik_2 = self.solution_flow.tlik_2[0::self.parameters.incr_time, :] 
+        self.solution_flow.perm_2 = self.solution_flow.perm_2[0::self.parameters.incr_time, :] 
+        self.solution_flow.depo_2 = self.solution_flow.depo_2[0::self.parameters.incr_time, :] 
+        self.solution_flow.velo_1 = self.solution_flow.velo_1[0::self.parameters.incr_time]
+        self.solution_flow.dpdx_2 = self.solution_flow.dpdx_2[0::self.parameters.incr_time, :] 
+        self.solution_flow.psi_2  = self.solution_flow.psi_2[0::self.parameters.incr_time, :] 
+
         self.solution_flow.get_dictionary()
