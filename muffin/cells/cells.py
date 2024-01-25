@@ -5,8 +5,6 @@ import muffin.initial_conditions.initial_conditions as initial_conditions
 import muffin.parameters.parameters as parameters
 
 
-
-
 class FourRegular():
     """
     This is a test 3
