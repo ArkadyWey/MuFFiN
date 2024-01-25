@@ -4,19 +4,50 @@ import scipy.sparse.linalg as linalg
 import muffin.parameters.parameters as parameters
 
 class Base():
-    """_summary_
+    """Get base equations for the preprocessing step of the solver.
+
+    Equations for the preprocessing step are equations that involve microscale variables 
+    but not macroscale variables. 
+    Base equations in this step are equations that do not depend on the particle
+    deposition method.
+    Equations that do depend on the particle deposition method then inherit from this 
+    base class.
     """
     def __init__(self, parameters:parameters.Parameters): # TODO: :cells.Base - Make base class for cells
-        """_summary_
+        """Define parameters as attributes.
+
+        Parameters
+        ----------
+        parameters : parameters.parameters.Parameters
+            Parameters of the problem, held in the Parameters class.
         """
 
     # Attributes
     # -----        
-        self.parameters = parameters
+        self.parameters:parameters.Parameters = parameters
     
     # Methods
     # -----        
-    def get_cell_problem(self, cond_4):
+    def get_cell_problem(self, cond_4:numpy.ndarray)->tuple(numpy.ndarray, numpy.ndarray):
+        """Get the left hand side and right hand side of the cell problem.
+        The cell problem is a linear equation of the form Ax=b.
+
+        Parameters
+        ----------
+        cond_4 : numpy.ndarray
+            Conductance of edges in the cell. 
+            Note that cond_4[i,j,r0,r1] is the conductance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+
+        Returns
+        -------
+        (lhs_cpro_2, rhs_cpro_3) : tuple(numpy.ndarray, numpy.ndarray)
+            Left hand side and right hand side of cell problem. 
+            Note that lhs_cpro_2[i,j] is the element of the left hand matrix for nodes i and j, 
+            and rhs_cpro_3[i,j,m] is the element of the right hand matrix for nodes i and j in direction m.
+        """
+        
+        
         # Define readable parameters 
         # -----
         N = self.parameters.num_nodes
@@ -29,10 +60,10 @@ class Base():
 
         # Define arrays to fill
         # -----
-        rhs_cpro_inte_5 = numpy.zeros(shape=(N,N,R,R,D))
+        rhs_cpro_inte_5 = numpy.empty(shape=(N,N,R,R,D))
         # rhs_cpro_inte_5[i,j,r0,r1,m].
         
-        lhs_inte_4 = numpy.zeros(shape=(N,N,R,R))
+        lhs_inte_4 = numpy.empty(shape=(N,N,R,R))
         # lhs_inte_4[i,j,r0,r1].
 
 
@@ -76,16 +107,25 @@ class Base():
         return (lhs_cpro_2, rhs_cpro_3)
 
 
-    def step_cell_problem(self, lhs_cpro_2, rhs_cpro_3):
-        """
-        Parameters
-        -----
-        - lhs_2[i,j]
-        - rhs_3[i,j,m]
+    def step_cell_problem(self, lhs_cpro_2:numpy.ndarray, rhs_cpro_3:numpy.ndarray)->numpy.ndarray:
+        """Solve the cell problem.
+        The cell problem is a linear equation of the form Ax=b.
 
-        Returns 
-        # -----
-        - csol_2[i,m]
+        Parameters
+        ----------
+        lhs_cpro_2 : numpy.ndarray
+            Left hand side of the cell problem.
+            Note that lhs_cpro_2[i,j] is the element of the left hand matrix for nodes i and j.
+        rhs_cpro_3 : numpy.ndarray
+            Right hand side of cell problem. 
+            Note that rhs_cpro_3[i,j,m] is the element of the right hand matrix for nodes i and j 
+            in direction m.
+        
+        Returns
+        -------
+        csol_2 : numpy.ndarray
+            Cell solution. 
+            Note that csol_2[i,m] is the cell solution at node i in direction m.
         """
 
         # Define readable parameters 
@@ -96,7 +136,8 @@ class Base():
 
         # Define arrays to fill
         # -----
-        csol_2 = numpy.zeros(shape=(N,D))
+        csol_2 = numpy.empty(shape=(N,D))
+        # csol_2[i,m]
 
 
         # Get solution
@@ -105,29 +146,43 @@ class Base():
         for m in range(D):
             b_1 = numpy.sum(a=rhs_cpro_3[:,:,m], axis=1) # sum over j
             csol_2[:,m] = linalg.lsqr(A=a_2, b=b_1)[0]
+
+            # TODO: Consider -- 
             #sol = optimize.lsq_linear(A=a_2,b=b_1)
             #csol_3[k,:,m] = sol.x
 
         return csol_2
 
 
-    def get_delta(self, csol_2, refs_1, leng_1)->numpy.ndarray:
-        """Get delta.
+    def get_delta(self, csol_2:numpy.ndarray, refs_1:numpy.ndarray, leng_1:numpy.ndarray)->numpy.ndarray:
+        """Get delta. 
+        Delta is a tensor that holds information about the difference between cell solutions
+        at different nodes.
 
         Parameters
         ----------
         csol_2 : numpy.ndarray
-            csol_2[i,m] is cell solution at node i in direction m.
+            Cell solution. 
+            Note that csol_2[i,m] is the cell solution at node i in direction m.
         refs_1 : numpy.ndarray
-            refs_1[r] is reference at index r in {0,1,-1}.
+            Reference indices that describe the displacement the cell that contains one node from the cell
+            that contains another node. For example, the edge between node i in one cell and node j in a cell 
+            one cell to the right and one cell below the cell containing i is indexed by i,j,r0=1,r1=-1.
+            Thus the reference indices are r=1 and r=-1.
+            Note refs_1[r] is reference at index r in [0,1,-1]
         leng_1 : numpy.ndarray
-            leng_1[m] is length in direction m.
-        
+            The lengths of the edges of the recangular macroscale domain.
+            Note that leng_1[m] is the length in direction m.
+
         Returns
         -------
         delt_4 : numpy.ndarray
-            delt_4[i,j,r,m] is difference in cell solutions at nodes i and j in direction m with weight r.
+            The cell solution difference.
+            Note that delt_4[i,j,r,m] is difference in cell solutions at nodes i and j 
+            in direction m with reference r.
         """
+
+
         # Define readable parameters 
         # -----
         N = self.parameters.num_nodes
@@ -137,7 +192,7 @@ class Base():
 
         # Make array to be filled
         # -----
-        delt_4 = numpy.zeros(shape=(N,N,R,D))
+        delt_4 = numpy.empty(shape=(N,N,R,D))
         
         
         # Fill using definition of delta
@@ -151,24 +206,82 @@ class Base():
     
 
     def get_heaviside(self, delt_4:numpy.ndarray)->numpy.ndarray:
-        """_summary_
+        """Get the Heaviside function. 
+        Heaviside is a tensor that holds information about the sign of the difference between cell solutions
+        at different nodes. This is positive only when the difference tensor indicates 
+        that information is conducted in the direction of the pressure gradient. 
+        Note that the tolerance is arbitrarily set at 1E-5 so delt_4 values smaller than this 
+        result in zero contribution to adhesivity.
 
         Parameters
         ----------
         delt_4 : numpy.ndarray
-            _description_
+            The cell solution difference.
+            Note that delt_4[i,j,r,m] is difference in cell solutions at nodes i and j 
+            in direction m with reference r.
+            
 
         Returns
         -------
         heav_4 : numpy.ndarray
-            _description_
+            The cell solution difference sign. An indicator for flow along an edge with a component 
+            in the direction of the pressure gradient.
+            Note that heav_4[i,j,r,m] == 1 if the difference in cell solutions at nodes i and j 
+            in direction m with reference r is positive (i.e., above the tolerance), and zero otherwise. 
         """
         tol = 1E-5
         heav_4 = (delt_4>tol).astype(int)
         return heav_4
 
 
-    def get_permeability_and_adhesivity(self, adhe_4, cond_4, delt_4, heav_4, refs_1, leng_1):
+    def get_permeability_and_adhesivity(self, adhe_4:numpy.ndarray, cond_4:numpy.ndarray, 
+                                              delt_4:numpy.ndarray, heav_4:numpy.ndarray, 
+                                              refs_1:numpy.ndarray, leng_1:numpy.ndarray)->tuple(numpy.ndarray,numpy.ndarray):
+        """Get the permeability and adhesivity. 
+        These are the two parameters of the macroscale system.
+
+        Parameters
+        ----------
+        adhe_4 : numpy.ndarray
+            Adherence of edges in the cell. 
+            Note that adhe_4[i,j,r0,r1] is the adherence of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+
+        cond_4 : numpy.ndarray
+            Conductance of edges in the cell. 
+            Note that cond_4[i,j,r0,r1] is the conductance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+
+        delt_4 : numpy.ndarray
+            The cell solution difference.
+            Note that delt_4[i,j,r,m] is difference in cell solutions at nodes i and j 
+            in direction m with reference r.
+
+        heav_4 : numpy.ndarray
+            The cell solution difference sign. An indicator for flow along an edge with a component 
+            in the direction of the pressure gradient.
+            Note that heav_4[i,j,r,m] == 1 if the difference in cell solutions at nodes i and j 
+            in direction m with reference r is positive (i.e., above the tolerance), and zero otherwise. 
+
+        refs_1 : numpy.ndarray
+            Reference indices that describe the displacement the cell that contains one node from the cell
+            that contains another node. For example, the edge between node i in one cell and node j in a cell 
+            one cell to the right and one cell below the cell containing i is indexed by i,j,r0=1,r1=-1.
+            Thus the reference indices are r=1 and r=-1.
+            Note refs_1[r] is reference at index r in [0,1,-1].
+
+        leng_1 : numpy.ndarray
+            The lengths of the edges of the recangular macroscale domain.
+            Note that leng_1[m] is the length in direction m.
+
+        Returns
+        -------
+        (perm_2, depo_1) : tuple(numpy.ndarray,numpy.ndarray)
+            The permeability, which is the effective conductance, and the adhesivity, which is the effective adherence.
+            Note that perm_2[m,n] is the permeability in the n direction of the face in the m direction.
+            Note that depo_1[m] is the adhesivity in the m direction.
+        """
+        
         # Define readable parameters 
         # -----
         N = self.parameters.num_nodes 
@@ -180,6 +293,7 @@ class Base():
         # -----
         perm_inte_6 = numpy.zeros(shape=(N,N,R,R,D,D))
         # perm_inte_7[i,j,r0,r1,m,n]
+
         depo_inte_5 = numpy.zeros(shape=(N,N,R,R,D))
         # depo_inte_6[i,j,r0,r1,m]
 
