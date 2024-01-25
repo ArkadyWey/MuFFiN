@@ -5,22 +5,31 @@ import muffin.initial_conditions.initial_conditions as initial_conditions
 import muffin.parameters.parameters as parameters
 
 
-class FourRegular():
-    """
-    This is a test 3
+class Base():
+    """Base class for cells.
+
+    Holds attributes and methods relevant to any cell, regardless of its connectivity.
+
+    A child class must contain:
+        - make_conn_4() method, which returns the adjacency matrix of the cell.
+        - fill_edges() method, which describes how to attribute parameter values to the edges 
+          that are given by the parameter class.
+    All other methods should be submethods of these two.
     """
     def __init__(self, parameters:parameters.Parameters
                        ):
-        """
+        """Define parameters as attributes.
+
+        Parameters
+        ----------
+        parameters : parameters.parameters.Parameters
+            Parameters of the problem, held in the Parameters class.
         """
 
-    # Attributes
-    # -----        
-        self.correct_initialisation = "4-reg"
-        self.initialisation:str     = parameters.initialisation
-        self.check_valid_cell(correct_initialisation=self.correct_initialisation)
+    # Attributes 
+    # ------
         self.num_nodes:int         = parameters.num_nodes
-        self.n:int                 = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
+        self.initialisation:str    = parameters.initialisation
         self.num_refs:int          = parameters.num_refs
         self.num_dims:int          = parameters.num_dims
         self.dist_cond:dict        = parameters.dist_cond
@@ -28,9 +37,81 @@ class FourRegular():
         self.dist_effe:dict        = parameters.dist_effe  
         self.leng_1:numpy.ndarray  = parameters.leng_1
 
+
+    # Methods 
+    # ------
+    def check_valid_cell(self, correct_initialisation:str):
+        """Check if initialisation specified in Parameters 
+        agrees with the initialisation of this cell. 
+        If it does not, then this cell should not have been chosen.
+
+        Parameters
+        ----------
+        correct_initialisation : str
+            The initalisation that corresponds to this cell.
+
+        Raises
+        ------
+        Exception
+            If the initialisation corresponding to this cell does not match the one specified in the parameters.
+        """
+        if correct_initialisation!=self.initialisation:
+            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
+    
+
+    def get_sample(self,dist:dict)->float:
+        """Get a sample value of a distribution.
+
+        Parameters
+        ----------
+        dist : dict
+            A dictionary describing a particular distribution defined in muffin.initial_conditions.
+            Note that distribution dictionaries should consist of the name of the distribution as well 
+            as any parameters of that distribution that are required in order to return a sample. 
+            For example, a distribution dictionary of the lognormal distribution 
+            should take the form dist = {"name" : str, "mu" : float, "sigma" : float}. 
+            See muffin.initial_conditions for more details.
+
+        Returns
+        -------
+        sample : float
+            A sample of the distribution specified by the distribution dictionary.
+        """
+        sample = initial_conditions.get_sample(**dist)
+        return sample
+
+
+
+
+class FourRegular(Base):
+    """Class for four-regular cells.
+
+    A four-regular cell is a periodic cell of a network in which each node is 
+    connected to exactly four other nodes.
+
+    Holds attributes and methods relevant this structure.
+    """
+    def __init__(self, parameters:parameters.Parameters
+                       ):
+        """
+        """
+        super().__init__(parameters=parameters)
+
+
+    # Attributes
+    # -----        
+        self.correct_initialisation = "4-reg"
+        self.check_valid_cell(correct_initialisation=self.correct_initialisation)
+        
+        self.n:int                 = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
         self.check_valid_num_nodes()
 
+        # Get connectivity 
+        # ------
         self.conn_4:numpy.ndarray = self.make_conn_4()
+        
+        # Fill edges to make initial conditions
+        # -----
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
         self.effe_4:numpy.ndarray = self.fill_edges(dist=self.dist_effe)
@@ -38,17 +119,26 @@ class FourRegular():
 
     # Methods 
     # -----
-    def check_valid_cell(self, correct_initialisation:str):
-        if correct_initialisation!=self.initialisation:
-            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
-    
-    def get_sample(self,dist):
-        sample = initial_conditions.get_sample(**dist)
-        return sample
+    def fill_edges(self,dist:dict)->numpy.ndarray:
+        """Fill the edges of a copy of the adjacency tensor 
+        of the cell with samples from a distribution 
+        given by a distribution dictionary.
 
+        Parameters
+        ----------
+        dist : dict
+            A dictionary describing a particular distribution defined in muffin.initial_conditions.
+            Note that distribution dictionaries should consist of the name of the distribution as well 
+            as any parameters of that distribution that are required in order to return a sample. 
+            For example, a distribution dictionary of the lognormal distribution 
+            should take the form dist = {"name" : str, "mu" : float, "sigma" : float}. 
+            See muffin.initial_conditions for more details.
 
-    def fill_edges(self,dist):
-        """
+        Returns
+        -------
+        a_4 : numpy.ndarray
+            An array with identical structure as the adjacency tensor of the cell 
+            but whose elements are samples of the specified distribution.
         """
         a_4 = numpy.zeros_like(self.conn_4)
         for r in [0,1,-1]:
@@ -61,31 +151,19 @@ class FourRegular():
                             a_4[j,i,-r,-s] = sample
         return a_4
 
-    def make_conn_4(self):
-        """
-        Get cell initial connectivity tensor.
 
-        Parameters
-        -----
-        - num_nodes: int
-            Number of nodes in the cell. Must be a square number.
-        - num_refs: int
-            Number of lengths in the reference set. 
-            For example, if reference set is {-1,0,+1} then num_refs==3.
-        - mu: float 
-            Mean of the normal distribution from which the lognormal distribution is derived. 
-            Must be non-negative. 
-        - sigma: float: 
-            Standard deviation of the normal distribution from which the lognormal distribution is derived. 
-            Must be non-negative. 
-    
+    def make_conn_4(self)->numpy.ndarray:
+        """
+        Get the adjacency tensor of the cell. 
+        Elements with value 1 correspond to indices that describe connected edges.
+        Elements with value 0 correspond to indices that describe unconnected edges.
+   
         Returns 
         -----
-        - conn_4: numpy.ndarray
-            Connectivity tensor of the cell.
-            conn_4[i,j,r1,r2] = 1 if edge exists between node i in reference cell and node j in the cell 
-            at position r1,r2.
-
+        - conn_4 : numpy.ndarray
+            Adjacency tensor of the cell.
+            Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell 
+            at position r1, r2 relative to the cell that contains node i.
         """
         
         # Get parameters
@@ -145,6 +223,7 @@ class FourRegular():
 
         return conn_4
 
+
     def check_valid_num_nodes(self):
         """
         Raise Exception if n=sqrt(num_nodes) is not square.
@@ -168,29 +247,35 @@ class FourRegular():
 
 
 
-class SixRegular():
+class SixRegular(Base):
+    """Class for six-regular cells.
+
+    A six-regular cell is a periodic cell of a network in which each node is 
+    connected to exactly six other nodes.
+
+    Holds attributes and methods relevant this structure.
     """
-    """ 
     def __init__(self, parameters:parameters.Parameters
                        ):
         """
         """
+        super().__init__(parameters=parameters)
+
+
     # Attributes
     # -----        
         self.correct_initialisation = "6-reg"
-        self.initialisation:str     = parameters.initialisation
         self.check_valid_cell(correct_initialisation=self.correct_initialisation)
-        self.num_nodes:int         = parameters.num_nodes
-        self.n:int                 = int(numpy.sqrt(self.num_nodes/2)) # number of rows or cols in square cell
-        self.num_refs:int          = parameters.num_refs
-        self.num_dims:int          = parameters.num_dims
-        self.dist_cond:dict        = parameters.dist_cond
-        self.dist_adhe:dict        = parameters.dist_adhe  
-        self.dist_effe:dict        = parameters.dist_effe  
 
+        self.n:int                 = int(numpy.sqrt(self.num_nodes/2)) # number of rows or cols in square cell
         self.check_valid_num_nodes()
 
+        # Get connectivity 
+        # ------
         self.conn_4:numpy.ndarray = self.make_conn_4()
+        
+        # Fill edges to make initial conditions
+        # -----
         self.cond_4:numpy.ndarray = self.fill_edges(dist=self.dist_cond)/self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
         self.effe_4:numpy.ndarray = self.fill_edges(dist=self.dist_effe)
@@ -198,17 +283,26 @@ class SixRegular():
 
     # Methods 
     # -----
-    def check_valid_cell(self, correct_initialisation:str):
-        if correct_initialisation!=self.initialisation:
-            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
-        
+    def fill_edges(self,dist:dict)->numpy.ndarray:
+        """Fill the edges of a copy of the adjacency tensor 
+        of the cell with samples from a distribution 
+        given by a distribution dictionary.
 
-    def get_sample(self,dist):
-        sample = initial_conditions.get_sample(**dist)
-        return sample
+        Parameters
+        ----------
+        dist : dict
+            A dictionary describing a particular distribution defined in muffin.initial_conditions.
+            Note that distribution dictionaries should consist of the name of the distribution as well 
+            as any parameters of that distribution that are required in order to return a sample. 
+            For example, a distribution dictionary of the lognormal distribution 
+            should take the form dist = {"name" : str, "mu" : float, "sigma" : float}. 
+            See muffin.initial_conditions for more details.
 
-    def fill_edges(self,dist):
-        """
+        Returns
+        -------
+        a_4 : numpy.ndarray
+            An array with identical structure as the adjacency tensor of the cell 
+            but whose elements are samples of the specified distribution.
         """
         a_4 = numpy.zeros_like(self.conn_4)
         for r in [0,1,-1]:
@@ -224,6 +318,16 @@ class SixRegular():
 
     def make_conn_4(self):
         """
+        Get the adjacency tensor of the cell. 
+        Elements with value 1 correspond to indices that describe connected edges.
+        Elements with value 0 correspond to indices that describe unconnected edges.
+   
+        Returns 
+        -----
+        - conn_4 : numpy.ndarray
+            Adjacency tensor of the cell.
+            Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell 
+            at position r1, r2 relative to the cell that contains node i.
         """
         (self.pts_x_0, 
          self.pts_y_0, 
@@ -556,54 +660,42 @@ class SixRegular():
 
 
 
+class SixIrregular(Base):
+    """Class for four-regular cells.
 
+    A six-irregular cell is a periodic cell of a network in which each node is 
+    connected to six other nodes on average, but may be connected to more or fewer in particular.
 
-class SixIrregular():
-    """
-    Class for six irregular cell. 
+    Holds attributes and methods relevant this structure.
 
-    Info
-    -----
-    Nodes are connected to other nodes using a Delaunay triangulation. 
-    Average node coordination number is six. 
-    Conductance distribution is set to empty since the conductance of each edge is 
+    In this formulation, nodes are connected to other nodes using a Delaunay triangulation. 
+    Conductances are initiated as empty since the conductance of each edge is 
     its inverse length, scaled by the desired conductnace per unit length (for example, 
     the mean conductance per unit length in a cell with which we with to compare).
-    Thus conductancedistribution is specified as a delta distribition
+    Thus conductance distribution is specified as a delta distribution
     with parameter 1/edge_length in self.fill_edges(), which is different for each edge.
     """ 
     def __init__(self, parameters:parameters.Parameters
                        ):
         """
-        Parameters 
-        -----
-        - num_nodes: int 
-            The number of nodes in the cell. Any integer.
-
-        - mean: float 
-            The desired edge conductance per unit length. 
-            To compare to four-regular cell, this should be the mean of the distribuiton 
-            from which conductances in the four-regular cell are drawn. 
-            For exmaple, if dist_cond == lognormal(mu,sigma), then mean=exp(mu+sigma**2/2)     
-            mean:float=1.529590   
         """
+        super().__init__(parameters=parameters)
+
 
     # Attributes
     # -----
         self.correct_initialisation = "6-ireg"
-        self.initialisation:str     = parameters.initialisation
         self.check_valid_cell(correct_initialisation=self.correct_initialisation)
-        self.num_nodes:int      = parameters.num_nodes
-        self.n:int              = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
-        self.num_refs:int       = parameters.num_refs
-        self.num_dims:int       = parameters.num_dims
-        self.dist_cond:dict     = parameters.dist_cond # NB: this is NOT the conductance distribution of the cell - this is specified in self.fill_edges()
-        self.dist_adhe:dict     = parameters.dist_adhe
-        self.dist_effe:dict     = parameters.dist_effe
 
+        self.n:int              = int(numpy.sqrt(self.num_nodes)) # number of rows or cols in square cell
         self.check_valid_num_nodes()
 
+        # Get connectivity 
+        # ------
         self.conn_4:numpy.ndarray = self.make_conn_4()
+        
+        # Fill edges to make initial conditions
+        # -----
         self.cond_4:numpy.ndarray = self.fill_edges(dist={})*self.scale_factor
         self.adhe_4:numpy.ndarray = self.fill_edges(dist=self.dist_adhe)
         self.effe_4:numpy.ndarray = self.fill_edges(dist=self.dist_effe)
@@ -611,23 +703,33 @@ class SixIrregular():
 
     # Methods 
     # -----
-    def check_valid_cell(self, correct_initialisation:str):
-        if correct_initialisation!=self.initialisation:
-            raise Exception("Incorrect cell initialised. Parameters.initialisation == '{}' but cell is '{}'.".format(self.initialisation, correct_initialisation))
-
     def get_mean(self):
         if self.dist_cond["name"]=="lognormal":
             mean = numpy.exp(self.dist_cond["mu"]+self.dist_cond["sigma"]**2/2) 
         return mean
 
-
-    def get_sample(self,dist):
-        sample = initial_conditions.get_sample(**dist)
-        return sample
-
-
     def fill_edges(self,dist):
-        """
+        """Fill the edges of a copy of the adjacency tensor 
+        of the cell with FUNCTIONS OF samples from a distribution 
+        given by a distribution dictionary. Note that this is distinct from
+        regular cells, where the distribution given completely specifies the 
+        values of the edges.
+
+        Parameters
+        ----------
+        dist : dict
+            A dictionary describing a particular distribution defined in muffin.initial_conditions.
+            Note that distribution dictionaries should consist of the name of the distribution as well 
+            as any parameters of that distribution that are required in order to return a sample. 
+            For example, a distribution dictionary of the lognormal distribution 
+            should take the form dist = {"name" : str, "mu" : float, "sigma" : float}. 
+            See muffin.initial_conditions for more details.
+
+        Returns
+        -------
+        a_4 : numpy.ndarray
+            An array with identical structure as the adjacency tensor of the cell 
+            but whose elements are FUNCTIONS OF samples of the specified distribution.
         """
         a_4 = numpy.zeros_like(self.conn_4)
         for r in [0,1,-1]:
@@ -645,6 +747,16 @@ class SixIrregular():
 
     def make_conn_4(self):
         """
+        Get the adjacency tensor of the cell. 
+        Elements with value 1 correspond to indices that describe connected edges.
+        Elements with value 0 correspond to indices that describe unconnected edges.
+   
+        Returns 
+        -----
+        - conn_4 : numpy.ndarray
+            Adjacency tensor of the cell.
+            Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell 
+            at position r1, r2 relative to the cell that contains node i.
         """
         (self.pts_x_0, 
          self.pts_y_0, 
