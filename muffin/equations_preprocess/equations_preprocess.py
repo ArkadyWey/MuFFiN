@@ -28,7 +28,7 @@ class Base():
     
     # Methods
     # -----        
-    def get_cell_problem(self, cond_4:numpy.ndarray)->tuple(numpy.ndarray, numpy.ndarray):
+    def get_cell_problem(self, cond_4:numpy.ndarray)->tuple:
         """Get the left hand side and right hand side of the cell problem.
         The cell problem is a linear equation of the form Ax=b.
 
@@ -236,7 +236,7 @@ class Base():
 
     def get_permeability_and_adhesivity(self, adhe_4:numpy.ndarray, cond_4:numpy.ndarray, 
                                               delt_4:numpy.ndarray, heav_4:numpy.ndarray, 
-                                              refs_1:numpy.ndarray, leng_1:numpy.ndarray)->tuple(numpy.ndarray,numpy.ndarray):
+                                              refs_1:numpy.ndarray, leng_1:numpy.ndarray)->tuple:
         """Get the permeability and adhesivity. 
         These are the two parameters of the macroscale system.
 
@@ -291,10 +291,10 @@ class Base():
 
         # Make arrays to fill
         # -----
-        perm_inte_6 = numpy.zeros(shape=(N,N,R,R,D,D))
+        perm_inte_6 = numpy.empty(shape=(N,N,R,R,D,D))
         # perm_inte_7[i,j,r0,r1,m,n]
 
-        depo_inte_5 = numpy.zeros(shape=(N,N,R,R,D))
+        depo_inte_5 = numpy.empty(shape=(N,N,R,R,D))
         # depo_inte_6[i,j,r0,r1,m]
 
 
@@ -351,11 +351,19 @@ class Base():
 
         
 class Deposition(Base):
-    """_summary_
+    """Get non-base equations for the preprocessing step of the solver.
 
+    Equations for the preprocessing step are equations that involve microscale variables 
+    but not macroscale variables. 
+    Non-base equations in this step are equations that do depend on the particle
+    deposition method.
+    In this class, we implement those for deposition that is proportional to the cross-sectional area  
+    of the edge, which results in a conductnace decrfease that is proportional to conductance to the 
+    power of 3/4.
+    Note that this class inherits base methods from the base class for the equations of the preprocessing step.
     """
     def __init__(self, parameters:parameters.Parameters):
-        """_summary_
+        """Inherit from base class.
         """
         super().__init__(parameters=parameters)
 
@@ -365,16 +373,87 @@ class Deposition(Base):
 
     # Methods
     # -----      
-    def get_conductance_problem(self, cond_4, adhe_4, effe_4, delt_4):
+    def get_conductance_problem(self, cond_4:numpy.ndarray, adhe_4:numpy.ndarray, effe_4:numpy.ndarray, delt_4:numpy.ndarray)->numpy.ndarray:
+        """Get the right hand side of the equation that describes 
+        how the conductance decreases as particle adhering occurs. 
+
+        Parameters
+        ----------
+        adhe_4 : numpy.ndarray
+            Adherence of edges in the cell. 
+            Note that adhe_4[i,j,r0,r1] is the adherence of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i. 
+
+        cond_4 : numpy.ndarray
+            Conductance of edges in the cell. 
+            Note that cond_4[i,j,r0,r1] is the conductance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+
+        delt_4 : numpy.ndarray
+            The cell solution difference.
+            Note that delt_4[i,j,r,m] is difference in cell solutions at nodes i and j 
+            in direction m with reference r.    
+
+        effe_4 : numpy.ndarray
+            Reactance of edges in the cell.
+            Note that effe_4[i,j,r0,r1] is the reactance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.   
+
+        Returns
+        -------
+        rhs_4 : numpy.ndarray
+            The right hand side of the conductance equation.
+            Note that rhs_4[i,j,r0,r1] is the right hand side of the equation that describes the change 
+            of conductance of the edge between node i and node j in the cell at position r0, r1 relative 
+            to the cell containing node i.   
+        """
+        
+        # Define readable parameters 
+        # -----
         N = self.parameters.num_nodes
         R = self.parameters.num_refs
 
-        rhs_4 = numpy.zeros(shape=(N,N,R,R))
+
+        # Make arrays to fill
+        # -----
+        rhs_4 = numpy.empty(shape=(N,N,R,R))
+        # rhs_4[i,j,r0,r1]
+        
+
+        # Get rhs of conductance equation
+        # -----
         for r0 in range(R):
             for r1 in range(R): 
                 rhs_4[:,:,r0,r1] = effe_4[:,:,r0,r1]*adhe_4[:,:,r0,r1]*abs(delt_4[:,:,r0,0])*cond_4[:,:,r0,r1]**(3.0/2.0) 
+
         return rhs_4
 
-    def step_conductance_problem(self, cond_4, rhs_4, diff_tlik):
+
+    def step_conductance_problem(self, cond_4:numpy.ndarray, rhs_4:numpy.ndarray, diff_tlik:float)->numpy.ndarray:
+        """Execute one step of the equation for the change of conductance due to adhering particles.
+
+        Parameters
+        ----------
+        cond_4 : numpy.ndarray
+            Conductance of edges in the cell. 
+            Note that cond_4[i,j,r0,r1] is the conductance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+            Note that this is the current (as opposed to future) conductance.
+        rhs_4 : numpy.ndarray
+            The right hand side of the conductance equation.
+            Note that rhs_4[i,j,r0,r1] is the right hand side of the equation that describes the change 
+            of conductance of the edge between node i and node j in the cell at position r0, r1 relative 
+            to the cell containing node i.   
+        diff_tlik : float
+            The difference between time points, that is, 'delta t'.
+
+        Returns
+        -------
+        cond_new_4 : numpy.ndarray
+            Conductance of edges in the cell. 
+            Note that cond_4[i,j,r0,r1] is the conductance of the edge 
+            between node i and node j in the cell at position r0, r1 relative to the cell containing node i.
+            Note that this is the future (as opposed to current) conductance.
+        """
         cond_new_4 = cond_4 - diff_tlik*rhs_4
         return cond_new_4
