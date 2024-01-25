@@ -1,5 +1,5 @@
 muffin.cells.cells module
-========================
+===========================
 
 .. automodule:: muffin.cells.cells
    :members:
