@@ -8,7 +8,7 @@ import muffin.utils.load_and_save as load_and_save
 class Parameters():
     """Parameters class. See __init__ for functionality.
     """
-    def __init__(self, path:str           = "./tests", 
+    def __init__(self, path:str           = "./tests/test-2", 
                        initialisation:str = "4-reg",
                        num_nodes:int      = 4,
                        dist_cond:dict     = {"name":"lognormal", "mu":-0.045, "sigma":0.3},
@@ -60,13 +60,12 @@ class Parameters():
             parameters of the named distribution. See muffin/initial_conditions/initial_conditions.py 
             for options.
         """
-
         # Get parameters given in class instance
         self.dictionary_class:dict = locals()
         self.dictionary_class.pop("self") # remove self as parameter
 
         # Get parameters given in parser
-        self.dictionary_parser:dict = self.get_parameters_parser()
+        self.dictionary_parser:dict = self.get_parameters_parser(parser_on=parser_on)
     
         # Get parameters where parser overwrites class instance
         self.dictionary:dict = self.overwrite_default_parameters_with_parser()    
@@ -87,7 +86,6 @@ class Parameters():
         self.num_posis          = self.dictionary["num_posis"]
         self.time_max           = self.dictionary["time_max"]
         self.phi                = 1.0 # TODO: Fix phi
-        self.parser_on          = self.dictionary["parser_on"]
 
         # Secondary parameters
         # -----
@@ -132,7 +130,7 @@ class Parameters():
 
     # Methods 
     # -----
-    def get_parameters_parser(self):
+    def get_parameters_parser(self, parser_on):
         """Get a dictionary of the parameters given by the parser.
 
         Returns
@@ -141,7 +139,7 @@ class Parameters():
             Dictionary where keys are parameter names and values are
             parameter values.
         """        
-        if self.parser_on == True:
+        if parser_on == True:
             # Define parser
             parser = argparse.ArgumentParser()
 
@@ -172,9 +170,9 @@ class Parameters():
             if "dist_effe" in dictionary_parser.keys():
                 dictionary_parser["dist_effe"] = json.loads(dictionary_parser["dist_effe"])
         
-        elif self.parser_on == False:
+        elif parser_on == False:
                 dictionary_parser = {}
-                
+
         return dictionary_parser
 
 

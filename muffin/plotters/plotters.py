@@ -39,6 +39,7 @@ class Plotter():
         # Plot
         ax.plot(x_value, y_value, color=color, ls=linestyle)
 
+
         # Format
         plotting.thesisify_post_plot(ax=ax,
                                      x_label=x_label,
@@ -51,7 +52,11 @@ class Plotter():
         # Save
         fig_name = "{}__V__{}.svg".format(x_name,y_name)
         plotting.save_fig(fig=fig, fname=os.path.join(self.path_save, fig_name), format="svg")
-        
+
+        # Show in notebook
+        if self.show_on == True:        
+            plt.show(block=True)
+
         # Close to save memory
         plt.close()
 
@@ -84,7 +89,11 @@ class Plotter():
         # Save
         fig_name = "{}__V__{}.svg".format(x_name,y_name)
         plotting.save_fig(fig=fig, fname=os.path.join(self.path_save, fig_name), format="svg")
-        
+
+        # Show in notebook
+        if self.show_on == True:        
+            plt.show(block=True)
+
         # Close to save memory
         plt.close()
 
@@ -93,7 +102,8 @@ class Plotter_Preprocess(Plotter):
     """_summary_
     """
     def __init__(self, parameters:parameters.Parameters,
-                       solution:solutions.Solution): 
+                       solution:solutions.Solution, 
+                       show_on:bool=False): 
         """_summary_
         """
 
@@ -104,7 +114,7 @@ class Plotter_Preprocess(Plotter):
 
         self.solution = solution
         self.parameters = parameters
-
+        self.show_on = show_on
 
     # Methods
     # -----
@@ -140,7 +150,8 @@ class Plotter_Flow(Plotter):
     """_summary_
     """
     def __init__(self, parameters:parameters.Parameters,
-                       solution_flow:solutions.Solution_Flow): 
+                       solution_flow:solutions.Solution_Flow, 
+                       show_on:bool=False): 
         """_summary_
         """
     
@@ -150,8 +161,9 @@ class Plotter_Flow(Plotter):
 
         self.solution_flow = solution_flow
         self.parameters = parameters
+        self.show_on = show_on
 
-    def plot_single(self, y_name:str="permeability"):
+    def plot_single(self, y_name:str="permeability", show_on:bool=False):
         y_meta = self.solution_flow.dictionary[y_name]
         
         if "i_t" in y_meta["indices"] and "i_x" not in y_meta["indices"]:
@@ -181,7 +193,6 @@ class Plotter_Flow(Plotter):
             y_values = numpy.empty(shape=(self.parameters.num_posis, len(indxs_to_sweep)))
             for i,t in enumerate(indxs_to_sweep):
                 t = int(t)
-                print(t)
                 y_value = y_meta["value"][t,:]
                 y_values[:,i] = y_value
             self.plot_sweep(x_value=x_meta["value"], y_values=y_values, 
@@ -189,12 +200,13 @@ class Plotter_Flow(Plotter):
                            x_label=x_meta["label"], y_label=y_meta["label"],
                            x_left=x_meta["value"][0,...], x_right=x_meta["value"][-1,...], 
                            y_bottom=y_meta["value"].min(), y_top=y_meta["value"].max(), 
-                           x_name=x_meta["name"], y_name=y_meta["name"])
+                           x_name=x_meta["name"], y_name=y_meta["name"], 
+                           show_on=show_on)
 
         else:
             raise Exception("Number of axes of flow solution variable must be 1 or 2.")
 
-    def plot_all(self):
+    def plot_all(self, show_on:bool=False):
         for variable_name in self.solution_flow.variable_names:
             y_meta = self.solution_flow.dictionary[variable_name]
             self.plot_single(y_name=y_meta["name"])

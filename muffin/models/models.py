@@ -12,7 +12,8 @@ class Model():
                        cell,
                        equations_preprocess, 
                        equations_flow,
-                       option_solver="explicit"): 
+                       option_solver:str="explicit", 
+                       show_on:bool=False): 
         """_summary_
         """
 
@@ -22,6 +23,7 @@ class Model():
         self.cell       = cell
         self.equations_preprocess = equations_preprocess
         self.equations_flow = equations_flow
+        self.show_on:bool = show_on
         
         self.solution, self.solution_flow = self.get_solution()
         self.solver = self.get_solver(option_solver=option_solver)
@@ -62,17 +64,21 @@ class Model():
 
         if type_plotter=="all":
             plotter_preprocess = plotters.Plotter_Preprocess(parameters = self.parameters, 
-                                                             solution=self.solution)
+                                                             solution=self.solution, 
+                                                             show_on=self.show_on)
             plotter_flow = plotters.Plotter_Flow(parameters = self.parameters, 
-                                                 solution_flow=self.solution_flow)
+                                                 solution_flow=self.solution_flow, 
+                                                 show_on=self.show_on)
         elif type_plotter=="preprocess":
             plotter_preprocess = plotters.Plotter_Preprocess(parameters = self.parameters, 
-                                                             solution=self.solution)
+                                                             solution=self.solution, 
+                                                             show_on=self.show_on)
             plotter_flow = None
         elif type_plotter=="flow":
             plotter_preprocess = None
             plotter_flow = plotters.Plotter_Flow(parameters = self.parameters, 
-                                                 solution_flow=self.solution_flow)
+                                                 solution_flow=self.solution_flow, 
+                                                 show_on=self.show_on)
 
         return plotter_preprocess, plotter_flow
 
@@ -92,7 +98,8 @@ class Model():
             raise Exception("type_solve must be 'preprocess' or 'flow' or 'all'. {} is not implemented".format(type_solve))
 
 
-    def plot(self, type_solution:str="all", type_plot:str="all", y_name:str="conductance", indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
+    def plot(self, type_solution:str="all", type_plot:str="all", y_name:str="conductance", 
+                   indices:dict={"i":0,"j":1,"r0":0,"r1":0,"r":0,"m":0,"n":0}):
         """Produce figures of the solution.
 
         Parameters

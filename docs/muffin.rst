@@ -18,6 +18,7 @@ Subpackages
    muffin.shell
    muffin.utils
    muffin.variables
+   muffin.equations_preprocess
 
 Submodules
 ----------
