@@ -13,11 +13,12 @@ Subpackages
    muffin.initial_conditions
    muffin.network
    muffin.plotters
-   muffin.preprocess
    muffin.run
    muffin.shell
    muffin.utils
    muffin.variables
+   muffin.equations_preprocess
+   muffin.equations_flow
 
 Submodules
 ----------

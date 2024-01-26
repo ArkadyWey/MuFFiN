@@ -171,4 +171,27 @@ def check_and_make_dir(path:str):
         String to directory to be checked and made.
     """
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
+
+
+def save_dict_of_array(d:dict={'a':numpy.array([0])}, path_file:str="d.npy"):
+    """_summary_
+    """
+    numpy.save(file=path_file, arr=d, allow_pickle=True, fix_imports=True)
+
+def load_dict_of_array(path_file:str="d.npy"):
+    """_summary_
+
+    Parameters
+    ----------
+    file : str, optional
+        _description_, by default "d.npy"
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
+    d_as_array = numpy.load(file=path_file, mmap_mode=None, allow_pickle=True, fix_imports=True, encoding='ASCII', max_header_size=10000)
+    d =  d_as_array.item()
+    return d

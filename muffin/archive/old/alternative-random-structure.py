@@ -344,7 +344,7 @@ for x in [-1,0,1]:
             ax.add_patch(Rectangle(xy=(x, y), width=1, height=1, alpha=0.8, color="tab:red", edgecolor="tab:red", fill=False, linestyle="--"))
 
 
-plt.show()
+# plt.show()
 
 fig, ax = plt.subplots(1,1)
 for p in range(num_pts):
@@ -370,7 +370,7 @@ for pi in range(4):
             ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points))
 
 
-plt.show()
+# plt.show()
 
 
 fig, ax = plt.subplots(1,1)
@@ -394,7 +394,7 @@ for i in range(num_nodes):
                     x_vals_of_points = [pts_4[i,0,0,0], pts_4[j,0,r,s]]
                     y_vals_of_points = [pts_4[i,1,0,0], pts_4[j,1,r,s]]
                     ax.add_line(Line2D(xdata=x_vals_of_points,ydata=y_vals_of_points))
-plt.show()
+# plt.show()
 ####  ##
 ####  ### Check that this graph agrees with cond tensor
 ####  ### allocate the points lists to the points that are still there, and 

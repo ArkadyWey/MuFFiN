@@ -5,14 +5,39 @@ import types
 # Define different initial condition distributions 
 # -----
 
-def delta(mu:float):
-    """
+def delta(mu:float=0.5)->float:
+    """Dirac-delta distribution sampler.
+
+    Parameters
+    ----------
+    mu : float
+        Parameter of the Dirac-delta distribution, by default 0.5.
+
+    Returns
+    -------
+    sample : float
+        A sample value of the distribution.
     """
     sample = mu
     return sample
     
-def lognormal(mu:float, sigma:float):
-    """
+
+def lognormal(mu:float=-0.045, sigma:float=0.3)->float:
+    """Lognormal distribution sampler.
+
+    Parameters
+    ----------
+    mu : float, optional
+        Mean of the normal distribution corresponding to the log-normal conductance/adherence 
+        distribution, by default -0.045.
+    sigma : float, optional
+        Standard deviation of the normal distribution corresponding to the log-normal conductance/adherence 
+        distribution, by default 0.3.
+
+    Returns
+    -------
+    sample : float
+        A sample value of the distribution.
     """
     sample = numpy.random.lognormal(mean=mu, sigma=sigma)
     return sample

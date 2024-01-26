@@ -1,0 +1,19 @@
+{
+    "dist_adhe": {
+        "mu": 1.0,
+        "name": "delta"
+    },
+    "dist_cond": {
+        "mu": 1,
+        "name": "delta"
+    },
+    "dist_effe": {
+        "mu": 0.01623,
+        "name": "delta"
+    },
+    "initialisation": "4-reg",
+    "num_concs": 1001,
+    "num_nodes": 4,
+    "path": "./test",
+    "tlik_max": 1000
+}
