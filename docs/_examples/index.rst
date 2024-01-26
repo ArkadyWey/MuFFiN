@@ -16,4 +16,3 @@ The examples are categorized into the following categories:
    ./examples/3_loading-a-model
    ./examples/4_plotting-solutions
    ./examples/5_specifying-parameters
-   ../examples/test
