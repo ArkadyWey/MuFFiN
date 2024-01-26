@@ -87,7 +87,7 @@ class LaxWendroff:
 def main():
     sim = LaxWendroff(100, 1.5)
     sim.solve_and_plot()
-    plt.show()
+    # plt.show()
     
     
 if __name__ == "__main__":
