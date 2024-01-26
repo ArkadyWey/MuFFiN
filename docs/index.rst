@@ -39,14 +39,12 @@ Here's a more thorough list of things you'll find on this website.
    :maxdepth: 1
    :caption: Navigation:
 
-   other/installation
+   _other/installation
    _getting-started/index
-   other/model
+   _other/model
    modules
    _examples/index
-   other/contributing
-   .. other/source-code
-   .. other/publications
+   _other/contributing
 
 
 .. toctree::
