@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='MuFFiN',
-      version='0.1.0',
+      version='0.0.1',
       description='A package to simulate Multiscale Fluid Flow in Networks.',
       url='https://github.com/ArkadyWey/MuFFiN/',
       author='Arkady Wey',
