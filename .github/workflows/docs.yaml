@@ -19,6 +19,8 @@ jobs:
         run: |
           pip install -e .
           pip install sphinx_rtd_theme
+          pip install myst_nb 
+          
       - name: Sphinx build
         run: |
           sphinx-apidoc -o ./docs ./muffin/ --separate
