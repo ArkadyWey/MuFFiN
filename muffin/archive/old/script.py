@@ -368,12 +368,12 @@ plt.plot(posi_1,conc_2[:,end])
 
 
 #plt.plot(posi_1,conc_2[:,3])
-plt.show()
+# plt.show()
 
 plt.plot(time_1,velo_1)
 plt.xlabel("t")
 plt.ylabel("u")
-plt.show()
+# plt.show()
 
 
 print(datetime.datetime.now() - begin_time)

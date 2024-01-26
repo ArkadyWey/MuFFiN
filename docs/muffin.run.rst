@@ -15,10 +15,7 @@ Submodules
    muffin.run.run_ensemble-preprocess-stats
    muffin.run.run_exp_param-dist
    muffin.run.run_flow
-   muffin.run.run_flow_old
    muffin.run.run_network
-   muffin.run.run_preprocess_1D
-   muffin.run.run_preprocess
 
 Module contents
 ---------------

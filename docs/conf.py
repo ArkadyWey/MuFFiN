@@ -23,11 +23,43 @@ import shutil
 shutil.copytree('../examples', '_examples/examples', dirs_exist_ok=True)
 
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.githubpages",
-    "nbsphinx"
+    "sphinx.ext.autodoc", # autodocumentation
+    "sphinx.ext.napoleon", # numpy documentation
+    "sphinx.ext.githubpages", # auto workflow
+    "myst_nb" #markdowns and notebooks
 ]
+#    "nbsphinx", # jupyter notebooks
+
+    # 'm2r', # embed markdown in rst
+    # 'sphinx.ext.autosectionlabel', # links in documents
+    # "myst_parser", # markdowns
+    # 'sphinx_mdinclude' # markdowns
+    # "myst_nb" markdowns and notebooks
+
+source_suffix = ['.rst']#, '.md']
+
+# source_suffix = {
+#     '.rst': 'restructuredtext',
+#     '.txt': 'markdown',
+#     '.md': 'markdown',
+# }
+
+# myst_enable_extensions = [
+#     "amsmath",
+#     "attrs_inline",
+#     "colon_fence",
+#     "deflist",
+#     "dollarmath",
+#     "fieldlist",
+#     "html_admonition",
+#     "html_image",
+#     "linkify",
+#     "replacements",
+#     "smartquotes",
+#     "strikethrough",
+#     "substitution",
+#     "tasklist",
+# ]
 
 autoclass_content = 'both'
 

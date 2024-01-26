@@ -1,5 +1,5 @@
 muffin.equations_preprocess package
-========================
+====================================
 
 Submodules
 ----------

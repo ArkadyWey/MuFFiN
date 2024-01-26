@@ -87,7 +87,7 @@ plt.plot(t,c0)
 plt.plot(t,c1)
 plt.plot(t,c2)
 plt.plot(t,u)
-plt.show()
+# plt.show()
 
 #for i in range(len(Vus)):
 #   # solve
