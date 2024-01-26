@@ -1,7 +1,5 @@
 import muffin.parameters.parameters as parameters
-import muffin.cells.four_regular as four_regular
-import muffin.cells.six_regular as six_regular
-import muffin.cells.six_irregular as six_irregular
+import muffin.cells.cells as cells
 import muffin.equations_preprocess.equations_preprocess as equations_preprocess
 import muffin.equations_flow.equations_flow as equations_flow
 import muffin.solvers.solvers as solvers
@@ -38,8 +36,8 @@ if __name__ == "__main__":
 
     #print(parameters.dictionary)
 
-    print("Getting Cell...") 
-    cell = four_regular.FourRegular(parameters=parameters)
+    print("Getting Cell...") #
+    cell = cells.FourRegular(parameters=parameters)
 
     print("Getting Equations (Preprocess)...") 
     equations = equations_preprocess.Deposition(parameters=parameters)
@@ -48,14 +46,14 @@ if __name__ == "__main__":
     equations_flow = equations_flow.Base(parameters=parameters)
 
     print("Getting Model...") 
-    model = models.Model(parameters=parameters, cell=cell, equations_preprocess=equations, equations_flow=equations_flow)
+    model = models.Model(parameters=parameters, cell=cell, equations_preprocess=equations, equations_flow=equations_flow, show_on=True)
     
     #solver = solvers.Explicit(parameters=parameters, cell=cell, equations_preprocess=equations)
     #solver.solve()
 
     #model.solver.solve() or
     print("Solving (Preprocess and Flow)...") 
-    model.solve(type_solve="all")
+    model.solve(type_solve="preprocess")
     
     #print("Solving (Flow)...") 
     #model.solve(type_solve="flow")
@@ -66,7 +64,7 @@ if __name__ == "__main__":
     #model.load(type_load="all", y="permeability")
     
     print("Plotting...") 
-    model.plot(type_solution="all")# , y_name="permeability")
+    model.plot(type_solution="preprocess")# , y_name="permeability")
 
     # model.solution.load()
 
