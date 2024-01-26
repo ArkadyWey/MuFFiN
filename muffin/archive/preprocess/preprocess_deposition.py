@@ -365,7 +365,7 @@ if __name__ == "__main__":
     #print(csol_3[0:2,:,:])
     plt.plot(times,cond_5[:,0,1,0,0])
     plt.plot(times,1/((1/1)+(times/2))**2,ls="--")
-    plt.show()
+    # plt.show()
 
 
     
