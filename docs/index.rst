@@ -44,7 +44,7 @@ Here's a more thorough list of things you'll find on this website.
    _other/model
    modules
    _examples/index
-   _other/contributing
+   _other/contributing.md
 
 
 .. toctree::
