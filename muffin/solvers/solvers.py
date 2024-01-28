@@ -72,7 +72,7 @@ class Explicit():
 
     def solve_flow(self):
         for i_t in range(self.parameters.num_times_solv):
-            print("Calculating solution at time step {} of {}".format(i_t, self.parameters.num_times_solv-1))
+            #print("Calculating solution at time step {} of {}".format(i_t, self.parameters.num_times_solv-1))
             # Concentration problem 
             # -----
             if i_t==0: 
