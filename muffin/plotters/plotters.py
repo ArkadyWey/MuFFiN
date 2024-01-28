@@ -163,7 +163,7 @@ class Plotter_Flow(Plotter):
         self.parameters = parameters
         self.show_on = show_on
 
-    def plot_single(self, y_name:str="permeability", show_on:bool=False):
+    def plot_single(self, y_name:str="permeability"):
         y_meta = self.solution_flow.dictionary[y_name]
         
         if "i_t" in y_meta["indices"] and "i_x" not in y_meta["indices"]:
@@ -200,13 +200,12 @@ class Plotter_Flow(Plotter):
                            x_label=x_meta["label"], y_label=y_meta["label"],
                            x_left=x_meta["value"][0,...], x_right=x_meta["value"][-1,...], 
                            y_bottom=y_meta["value"].min(), y_top=y_meta["value"].max(), 
-                           x_name=x_meta["name"], y_name=y_meta["name"], 
-                           show_on=show_on)
+                           x_name=x_meta["name"], y_name=y_meta["name"])
 
         else:
             raise Exception("Number of axes of flow solution variable must be 1 or 2.")
 
-    def plot_all(self, show_on:bool=False):
+    def plot_all(self):
         for variable_name in self.solution_flow.variable_names:
             y_meta = self.solution_flow.dictionary[variable_name]
             self.plot_single(y_name=y_meta["name"])
