@@ -1,0 +1,7 @@
+muffin.solutions.solutions module
+=================================
+
+.. automodule:: muffin.solutions.solutions
+   :members:
+   :undoc-members:
+   :show-inheritance:

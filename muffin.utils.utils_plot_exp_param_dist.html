@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.utils.utils_plot_exp_param_dist module &mdash; MuFFiN 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="muffin.utils.utils_sl module" href="muffin.utils.utils_sl.html" />
+    <link rel="prev" title="muffin.utils.utils_indexing module" href="muffin.utils.utils_indexing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Navigation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_other/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getting-started/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="muffin.html">muffin package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="muffin.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="muffin.cells.html">muffin.cells package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.configure.html">muffin.configure package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.flow.html">muffin.flow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.initial_conditions.html">muffin.initial_conditions package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.network.html">muffin.network package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.plotters.html">muffin.plotters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.run.html">muffin.run package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.shell.html">muffin.shell package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="muffin.utils.html">muffin.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.variables.html">muffin.variables package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_preprocess.html">muffin.equations_preprocess package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_flow.html">muffin.equations_preprocess package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#module-muffin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Useful links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ArkadyWey/MuFFiN">MuFFiN &#64; GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dynamicslab/pysensors/issues">MuFFiN &#64; PyPI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Documentation</a></li>
+          <li class="breadcrumb-item"><a href="muffin.html">muffin package</a></li>
+          <li class="breadcrumb-item"><a href="muffin.utils.html">muffin.utils package</a></li>
+      <li class="breadcrumb-item active">muffin.utils.utils_plot_exp_param_dist module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/muffin.utils.utils_plot_exp_param_dist.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-muffin.utils.utils_plot_exp_param_dist">
+<span id="muffin-utils-utils-plot-exp-param-dist-module"></span><h1>muffin.utils.utils_plot_exp_param_dist module<a class="headerlink" href="#module-muffin.utils.utils_plot_exp_param_dist" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.GetBinEdges">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_plot_exp_param_dist.</span></span><span class="sig-name descname"><span class="pre">GetBinEdges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.GetBinEdges" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Get parameters for probability distribution of
+the deposition parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_bins</strong> (<em>int</em>) – <ul>
+<li><p>Number of bins we want the histogram to have.</p></li>
+</ul>
+</p></li>
+<li><p><strong>min_val</strong> (<em>float</em>) – <ul>
+<li><p>Centre of the left-most bin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>max_val</strong> (<em>float</em>) – <ul>
+<li><p>Centre of the right-most bin.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.GetBinEdges.get_bin_edge_limits">
+<span class="sig-name descname"><span class="pre">get_bin_edge_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.GetBinEdges.get_bin_edge_limits" title="Link to this definition"></a></dt>
+<dd><p>Get bin edge limits so that we can define bins in next function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_val</strong> (<em>-</em>) – Min value that the distribution can achieve.
+For example, in the case of the depositiion parameter distriburion, this is  zero.</p></li>
+<li><p><strong>max_val</strong> (<em>-</em>) – Max value the histogram can achieve.
+For example, in the case of the deposition parameter distribution, this is
+the mean of the undferlying conductance distribution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>left_bin_edge</strong> (<em>float</em>) –</p>
+<ul class="simple">
+<li><p>Left side of first bin. Use zero minus half the width of a bin, so that</p></li>
+</ul>
+<p>first bin is centred about zero.</p>
+</li>
+<li><p><strong>right_bin_edge</strong> (<em>float</em>) –</p>
+<ul class="simple">
+<li><p>Right edge of last bin. We use the mean of the conductance distribution plus</p></li>
+</ul>
+<p>half the width, so that the last bin is centred about the mean, since we know that
+is the maximal value that the histogram can achieve.</p>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.GetBinEdges.get_bin_edges">
+<span class="sig-name descname"><span class="pre">get_bin_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_bin_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_bin_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.GetBinEdges.get_bin_edges" title="Link to this definition"></a></dt>
+<dd><p>Get an array of the limits of the bins,
+in the form bin_edges = [left-side-of-first bin, right-side-of-first-bin,</p>
+<blockquote>
+<div><p>…. right-side-of-last-bin],</p>
+</div></blockquote>
+<p>so that len(bin_edges) = num_bins + 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_bin_edge</strong> (<em>float</em>) – <ul>
+<li><p>Left side of first bin. Use zero minus half the width of a bin, so that</p></li>
+</ul>
+<p>first bin is centred about zero.</p>
+</p></li>
+<li><p><strong>right_bin_edge</strong> (<em>float</em>) – <ul>
+<li><p>Right edge of last bin. We use the mean of the conductance distribution plus</p></li>
+</ul>
+<p>half the width, so that the last bin is centred about the mean, since we know that
+is the maximal value that the histogram can achieve.</p>
+</p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>-----</strong> (<em>#</em>) – </p></li>
+<li><p><strong>bin_edges</strong> (<em>-</em>) – <p>List of values at which bin edges occur.
+bin_edges = [left-side-of-first bin, right-side-of-first-bin,</p>
+<blockquote>
+<div><p>…. right-side-of-last-bin],</p>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_plot_exp_param_dist.</span></span><span class="sig-name descname"><span class="pre">PlotParameterDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins_in_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pts_to_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.get_histograms">
+<span class="sig-name descname"><span class="pre">get_histograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_bins_in_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_results</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.get_histograms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.plot_histograms">
+<span class="sig-name descname"><span class="pre">plot_histograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins_hist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.plot_histograms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.plot_interpolated_histograms">
+<span class="sig-name descname"><span class="pre">plot_interpolated_histograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_nodes_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counts_int_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins_int_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pts_to_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterDistribution.plot_interpolated_histograms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_plot_exp_param_dist.</span></span><span class="sig-name descname"><span class="pre">PlotParameterMeanAndSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paths_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_lists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_smooth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_sd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd_constants_and_powers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_sd_fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_sd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD.get_mean_and_sd_for_each_N">
+<span class="sig-name descname"><span class="pre">get_mean_and_sd_for_each_N</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_results</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD.get_mean_and_sd_for_each_N" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD.plot_mean_and_sd">
+<span class="sig-name descname"><span class="pre">plot_mean_and_sd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_sd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.PlotParameterMeanAndSD.plot_mean_and_sd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_plot_exp_param_dist.</span></span><span class="sig-name descname"><span class="pre">Plot_DepoAprx_vs_Density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count_adhe_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_bin_width">
+<span class="sig-name descname"><span class="pre">get_bin_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_bin_width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_scaled_x_for_j">
+<span class="sig-name descname"><span class="pre">get_scaled_x_for_j</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_adhe_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_scaled_x_for_j" title="Link to this definition"></a></dt>
+<dd><p>Scale the values on x axis of density v number of edges
+blocked to make them fit to density v j plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_x_and_y">
+<span class="sig-name descname"><span class="pre">get_x_and_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count_adhe_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.Plot_DepoAprx_vs_Density.get_x_and_y" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Take the a 1-d variable that is the count of</p></li>
+</ul>
+<p>either number of edges blocoed, number of horizontal edges blocked,
+or number of vertical edges blocked.
+- Bin these.
+- Get correct density by dividing by number of samples.
+- Scale density to match j density.
+- Get number of bins and use this to get x values.</p>
+<p>Return
+- x values of density plot for number of edges blocked.
+- height values for density plot for number of edges blocked.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_plot_exp_param_dist.get_new_interpolated_point">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_plot_exp_param_dist.</span></span><span class="sig-name descname"><span class="pre">get_new_interpolated_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_x_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_plot_exp_param_dist.get_new_interpolated_point" title="Link to this definition"></a></dt>
+<dd><p>Given a list of x values, and corresponding y values, and
+a new x value, approximate the corresponding function,
+and use this function to return the new y value
+corresponding to the new x value.
+:param - table_x: 1-dimensional list of x values.
+:type - table_x: numpy.ndarray
+:param - table_y: 1-dimensional list of y values.
+:type - table_y: numpy.ndarray
+:param - new_x_value: New x value for which the corresponding y value is to be approximated.
+:type - new_x_value: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- new_y_value</strong> – Interpolated y value corresponding to new_x_value</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="muffin.utils.utils_indexing.html" class="btn btn-neutral float-left" title="muffin.utils.utils_indexing module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="muffin.utils.utils_sl.html" class="btn btn-neutral float-right" title="muffin.utils.utils_sl module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

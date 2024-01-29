@@ -1,0 +1,18 @@
+muffin.parameters package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   muffin.parameters.parameters
+
+Module contents
+---------------
+
+.. automodule:: muffin.parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:

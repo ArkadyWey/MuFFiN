@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.cells.cells module &mdash; MuFFiN 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="muffin.cells.loaded module" href="muffin.cells.loaded.html" />
+    <link rel="prev" title="muffin.cells package" href="muffin.cells.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Navigation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_other/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getting-started/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="muffin.html">muffin package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="muffin.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="muffin.cells.html">muffin.cells package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.configure.html">muffin.configure package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.flow.html">muffin.flow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.initial_conditions.html">muffin.initial_conditions package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.network.html">muffin.network package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.plotters.html">muffin.plotters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.run.html">muffin.run package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.shell.html">muffin.shell package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.utils.html">muffin.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.variables.html">muffin.variables package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_preprocess.html">muffin.equations_preprocess package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_flow.html">muffin.equations_preprocess package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#module-muffin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Useful links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ArkadyWey/MuFFiN">MuFFiN &#64; GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dynamicslab/pysensors/issues">MuFFiN &#64; PyPI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Documentation</a></li>
+          <li class="breadcrumb-item"><a href="muffin.html">muffin package</a></li>
+          <li class="breadcrumb-item"><a href="muffin.cells.html">muffin.cells package</a></li>
+      <li class="breadcrumb-item active">muffin.cells.cells module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/muffin.cells.cells.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-muffin.cells.cells">
+<span id="muffin-cells-cells-module"></span><h1>muffin.cells.cells module<a class="headerlink" href="#module-muffin.cells.cells" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.cells.cells.Base">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.cells.cells.</span></span><span class="sig-name descname"><span class="pre">Base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="muffin.parameters.parameters.html#muffin.parameters.parameters.Parameters" title="muffin.parameters.parameters.Parameters"><span class="pre">Parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.Base" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for cells.</p>
+<p>Holds attributes and methods relevant to any cell, regardless of its connectivity.</p>
+<dl class="simple">
+<dt>A child class must contain:</dt><dd><ul class="simple">
+<li><p>make_conn_4() method, which returns the adjacency matrix of the cell.</p></li>
+<li><p>fill_edges() method, which describes how to attribute parameter values to the edges
+that are given by the parameter class.</p></li>
+</ul>
+</dd>
+</dl>
+<p>All other methods should be submethods of these two.</p>
+<p>Define parameters as attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parameters</strong> (<a class="reference internal" href="muffin.parameters.parameters.html#muffin.parameters.parameters.Parameters" title="muffin.parameters.parameters.Parameters"><em>parameters.parameters.Parameters</em></a>) – Parameters of the problem, held in the Parameters class.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.Base.check_valid_cell">
+<span class="sig-name descname"><span class="pre">check_valid_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correct_initialisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.Base.check_valid_cell" title="Link to this definition"></a></dt>
+<dd><p>Check if initialisation specified in Parameters
+agrees with the initialisation of this cell.
+If it does not, then this cell should not have been chosen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correct_initialisation</strong> (<em>str</em>) – The initalisation that corresponds to this cell.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the initialisation corresponding to this cell does not match the one specified in the parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.Base.get_sample">
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#muffin.cells.cells.Base.get_sample" title="Link to this definition"></a></dt>
+<dd><p>Get a sample value of a distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dist</strong> (<em>dict</em>) – A dictionary describing a particular distribution defined in muffin.initial_conditions.
+Note that distribution dictionaries should consist of the name of the distribution as well
+as any parameters of that distribution that are required in order to return a sample.
+For example, a distribution dictionary of the lognormal distribution
+should take the form dist = {“name” : str, “mu” : float, “sigma” : float}.
+See muffin.initial_conditions for more details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sample</strong> – A sample of the distribution specified by the distribution dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.cells.cells.FourRegular">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.cells.cells.</span></span><span class="sig-name descname"><span class="pre">FourRegular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="muffin.parameters.parameters.html#muffin.parameters.parameters.Parameters" title="muffin.parameters.parameters.Parameters"><span class="pre">Parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.FourRegular" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#muffin.cells.cells.Base" title="muffin.cells.cells.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Class for four-regular cells.</p>
+<p>A four-regular cell is a periodic cell of a network in which each node is
+connected to exactly four other nodes.</p>
+<p>Holds attributes and methods relevant this structure.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.FourRegular.check_valid_num_nodes">
+<span class="sig-name descname"><span class="pre">check_valid_num_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.FourRegular.check_valid_num_nodes" title="Link to this definition"></a></dt>
+<dd><p>Raise Exception if n=sqrt(num_nodes) is not square.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in the cell.
+n = sqrt(num_nodes) must be square.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.FourRegular.fill_edges">
+<span class="sig-name descname"><span class="pre">fill_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#muffin.cells.cells.FourRegular.fill_edges" title="Link to this definition"></a></dt>
+<dd><p>Fill the edges of a copy of the adjacency tensor
+of the cell with samples from a distribution
+given by a distribution dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dist</strong> (<em>dict</em>) – A dictionary describing a particular distribution defined in muffin.initial_conditions.
+Note that distribution dictionaries should consist of the name of the distribution as well
+as any parameters of that distribution that are required in order to return a sample.
+For example, a distribution dictionary of the lognormal distribution
+should take the form dist = {“name” : str, “mu” : float, “sigma” : float}.
+See muffin.initial_conditions for more details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>a_4</strong> – An array with identical structure as the adjacency tensor of the cell
+but whose elements are samples of the specified distribution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.FourRegular.make_conn_4">
+<span class="sig-name descname"><span class="pre">make_conn_4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#muffin.cells.cells.FourRegular.make_conn_4" title="Link to this definition"></a></dt>
+<dd><p>Get the adjacency tensor of the cell.
+Elements with value 1 correspond to indices that describe connected edges.
+Elements with value 0 correspond to indices that describe unconnected edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- conn_4</strong> – Adjacency tensor of the cell.
+Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell
+at position r1, r2 relative to the cell that contains node i.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.cells.cells.</span></span><span class="sig-name descname"><span class="pre">SixIrregular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="muffin.parameters.parameters.html#muffin.parameters.parameters.Parameters" title="muffin.parameters.parameters.Parameters"><span class="pre">Parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#muffin.cells.cells.Base" title="muffin.cells.cells.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Class for four-regular cells.</p>
+<p>A six-irregular cell is a periodic cell of a network in which each node is
+connected to six other nodes on average, but may be connected to more or fewer in particular.</p>
+<p>Holds attributes and methods relevant this structure.</p>
+<p>In this formulation, nodes are connected to other nodes using a Delaunay triangulation.
+Conductances are initiated as empty since the conductance of each edge is
+its inverse length, scaled by the desired conductnace per unit length (for example,
+the mean conductance per unit length in a cell with which we with to compare).
+Thus conductance distribution is specified as a delta distribution
+with parameter 1/edge_length in self.fill_edges(), which is different for each edge.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.check_valid_num_nodes">
+<span class="sig-name descname"><span class="pre">check_valid_num_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.check_valid_num_nodes" title="Link to this definition"></a></dt>
+<dd><p>Raise no Exception. Any integer is a valid number of nodes for a six irregular cell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.connect_edges">
+<span class="sig-name descname"><span class="pre">connect_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.connect_edges" title="Link to this definition"></a></dt>
+<dd><p>Get the initial conductance tensor.
+For each edge:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Get the points on either end of the edge</p></li>
+</ul>
+<p>in terms of the index p.
+- Convert each p index to a (i,r,s) triple  using key.
+- Check if the edge has an end inside the unit cell.
+- If it does, then define the edge conductance in terms of the length of the edge.
+- If it doesn’t, then do not add the edge to the conductance tensor.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- cond_init_4</strong> – cond_init_4[i,j,r,s] = conductance between node i in unit cell
+and node j in cell at position (r,s) relative to unit cell.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.fill_edges">
+<span class="sig-name descname"><span class="pre">fill_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.fill_edges" title="Link to this definition"></a></dt>
+<dd><p>Fill the edges of a copy of the adjacency tensor
+of the cell with FUNCTIONS OF samples from a distribution
+given by a distribution dictionary. Note that this is distinct from
+regular cells, where the distribution given completely specifies the
+values of the edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dist</strong> (<em>dict</em>) – A dictionary describing a particular distribution defined in muffin.initial_conditions.
+Note that distribution dictionaries should consist of the name of the distribution as well
+as any parameters of that distribution that are required in order to return a sample.
+For example, a distribution dictionary of the lognormal distribution
+should take the form dist = {“name” : str, “mu” : float, “sigma” : float}.
+See muffin.initial_conditions for more details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>a_4</strong> – An array with identical structure as the adjacency tensor of the cell
+but whose elements are FUNCTIONS OF samples of the specified distribution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_distance_between_points">
+<span class="sig-name descname"><span class="pre">get_distance_between_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_distance_between_points" title="Link to this definition"></a></dt>
+<dd><p>For each pair of points (i,r,s) in the points tensor,
+get their x and y coordinates and calculate the euclidean distance between them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_edges">
+<span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_edges" title="Link to this definition"></a></dt>
+<dd><p>Turn each simplex into a loop, then extract the three edges from that loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- edges</strong> – Unstructured list of edges, such that edges[e] = (p_1,p_2).
+Note that indexing is still done via p here.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_mean">
+<span class="sig-name descname"><span class="pre">get_mean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_node_coordinates">
+<span class="sig-name descname"><span class="pre">get_node_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_node_coordinates" title="Link to this definition"></a></dt>
+<dd><p>Get x and y coordinates of each point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>- pts_x_0</strong> (<em>numpy.ndarray</em>) – pts_x_0[i] is x coordinate of node i in cell with r = 0.</p></li>
+<li><p><strong>- pts_y_0</strong> (<em>numpy.ndarray</em>) – pts_y_0[i] is y coordinate of node i in cell with s = 0.</p></li>
+<li><p><strong>- pts_x_1</strong> (<em>numpy.ndarray</em>) – pts_x                                                                                                                                                       _1[i] is x coordinate of node i in cell with r = 1.</p></li>
+<li><p><strong>- pts_y_1</strong> (<em>numpy.ndarray</em>) – pts_y_1[i] is y coordinate of node i in cell with s = 1.</p></li>
+<li><p><strong>- pts_x_m1</strong> (<em>numpy.ndarray</em>) – pts_x_m1[i] is x coordinate of node i in cell with r = -1.</p></li>
+<li><p><strong>- pts_y_m1</strong> (<em>numpy.ndarray</em>) – pts_y_m1[i] is y coordinate of node i in cell with s = -1.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_points_tensor">
+<span class="sig-name descname"><span class="pre">get_points_tensor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_points_tensor" title="Link to this definition"></a></dt>
+<dd><p>Put node coordinates into tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- pts_4</strong> – pts_4[i,m,r,s] is the x^m (either x or y) component of node i in cell at reference r,s.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.get_simplices_of_triangulation">
+<span class="sig-name descname"><span class="pre">get_simplices_of_triangulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.get_simplices_of_triangulation" title="Link to this definition"></a></dt>
+<dd><p>Get all points in points tensor in correct form to use triangulation
+method.
+Then Triangulate all points using Delaunay triangulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>- simplices</strong> (<em>list of lists.</em>) – simplices[s] = [p_s_1,p_s_2,p_s_3] where p_s_i is the ith point on the s^th simplex.
+I.e. each simplex is a list of three points that make a triangle.
+These are indexed by p, hence we need a key between p and our indexing system (i,r,s).</p></li>
+<li><p><strong>- key</strong> (<em>list</em>) – key[p] = [i,r,s] triple corresponding to point p. That is, a triple
+that tells us the index, and r,s cell position of the point p.
+We use this to map between two indexings, p, and (i,r,s).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixIrregular.make_conn_4">
+<span class="sig-name descname"><span class="pre">make_conn_4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixIrregular.make_conn_4" title="Link to this definition"></a></dt>
+<dd><p>Get the adjacency tensor of the cell.
+Elements with value 1 correspond to indices that describe connected edges.
+Elements with value 0 correspond to indices that describe unconnected edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- conn_4</strong> – Adjacency tensor of the cell.
+Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell
+at position r1, r2 relative to the cell that contains node i.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">muffin.cells.cells.</span></span><span class="sig-name descname"><span class="pre">SixRegular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="muffin.parameters.parameters.html#muffin.parameters.parameters.Parameters" title="muffin.parameters.parameters.Parameters"><span class="pre">Parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#muffin.cells.cells.Base" title="muffin.cells.cells.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Class for six-regular cells.</p>
+<p>A six-regular cell is a periodic cell of a network in which each node is
+connected to exactly six other nodes.</p>
+<p>Holds attributes and methods relevant this structure.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.check_valid_num_nodes">
+<span class="sig-name descname"><span class="pre">check_valid_num_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.check_valid_num_nodes" title="Link to this definition"></a></dt>
+<dd><p>Raise Exception if n=sqrt(num_nodes/2) is not square.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in the cell.
+n = sqrt(num_nodes/2) must be square.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.connect_edges">
+<span class="sig-name descname"><span class="pre">connect_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.connect_edges" title="Link to this definition"></a></dt>
+<dd><p>Get the initial conductance tensor.
+For each edge:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Get the points on either end of the edge</p></li>
+</ul>
+<p>in terms of the index p.
+- Convert each p index to a (i,r,s) triple  using key.
+- Check if the edge has an end inside the unit cell.
+- If it does, then define the edge conductance in terms of the length of the edge.
+- If it doesn’t, then do not add the edge to the conductance tensor.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- cond_init_4</strong> – cond_init_4[i,j,r,s] = conductance between node i in unit cell
+and node j in cell at position (r,s) relative to unit cell.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.fill_edges">
+<span class="sig-name descname"><span class="pre">fill_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#muffin.cells.cells.SixRegular.fill_edges" title="Link to this definition"></a></dt>
+<dd><p>Fill the edges of a copy of the adjacency tensor
+of the cell with samples from a distribution
+given by a distribution dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dist</strong> (<em>dict</em>) – A dictionary describing a particular distribution defined in muffin.initial_conditions.
+Note that distribution dictionaries should consist of the name of the distribution as well
+as any parameters of that distribution that are required in order to return a sample.
+For example, a distribution dictionary of the lognormal distribution
+should take the form dist = {“name” : str, “mu” : float, “sigma” : float}.
+See muffin.initial_conditions for more details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>a_4</strong> – An array with identical structure as the adjacency tensor of the cell
+but whose elements are samples of the specified distribution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.get_distance_between_points">
+<span class="sig-name descname"><span class="pre">get_distance_between_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.get_distance_between_points" title="Link to this definition"></a></dt>
+<dd><p>For each pair of points (i,r,s) in the points tensor,
+get their x and y coordinates and calculate the euclidean distance between them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.get_edges">
+<span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.get_edges" title="Link to this definition"></a></dt>
+<dd><p>Turn each simplex into a loop, then extract the three edges from that loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- edges</strong> – Unstructured list of edges, such that edges[e] = (p_1,p_2).
+Note that indexing is still done via p here.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.get_node_coordinates">
+<span class="sig-name descname"><span class="pre">get_node_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.get_node_coordinates" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.get_points_tensor">
+<span class="sig-name descname"><span class="pre">get_points_tensor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.get_points_tensor" title="Link to this definition"></a></dt>
+<dd><p>Put node coordinates into tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- pts_4</strong> – pts_4[i,m,r,s] is the x^m (either x or y) component of node i in cell at reference r,s.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.get_simplices_of_triangulation">
+<span class="sig-name descname"><span class="pre">get_simplices_of_triangulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.get_simplices_of_triangulation" title="Link to this definition"></a></dt>
+<dd><p>Get all points in points tensor in correct form to use triangulation
+method.
+Then triangulate all points using Delaunay triangulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>- simplices</strong> (<em>list of lists.</em>) – simplices[s] = [p_s_1,p_s_2,p_s_3] where p_s_i is the ith point on the s^th simplex.
+I.e. each simplex is a list of three points that make a triangle.
+These are indexed by p, hence we need a key between p and our indexing system (i,r,s).</p></li>
+<li><p><strong>- key</strong> (<em>list</em>) – key[p] = [i,r,s] triple corresponding to point p. That is, a triple
+that tells us the index, and r,s cell position of the point p.
+We use this to map between two indexings, p, and (i,r,s).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muffin.cells.cells.SixRegular.make_conn_4">
+<span class="sig-name descname"><span class="pre">make_conn_4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muffin.cells.cells.SixRegular.make_conn_4" title="Link to this definition"></a></dt>
+<dd><p>Get the adjacency tensor of the cell.
+Elements with value 1 correspond to indices that describe connected edges.
+Elements with value 0 correspond to indices that describe unconnected edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>- conn_4</strong> – Adjacency tensor of the cell.
+Note that conn_4[i,j,r0,r1] = 1 if edge exists between node i in one cell and node j in the cell
+at position r1, r2 relative to the cell that contains node i.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="muffin.cells.html" class="btn btn-neutral float-left" title="muffin.cells package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="muffin.cells.loaded.html" class="btn btn-neutral float-right" title="muffin.cells.loaded module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

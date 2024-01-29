@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.utils.utils_indexing module &mdash; MuFFiN 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="muffin.utils.utils_plot_exp_param_dist module" href="muffin.utils.utils_plot_exp_param_dist.html" />
+    <link rel="prev" title="muffin.utils.load_and_save module" href="muffin.utils.load_and_save.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Navigation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_other/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getting-started/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="muffin.html">muffin package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="muffin.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="muffin.cells.html">muffin.cells package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.configure.html">muffin.configure package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.flow.html">muffin.flow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.initial_conditions.html">muffin.initial_conditions package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.network.html">muffin.network package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.plotters.html">muffin.plotters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.run.html">muffin.run package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.shell.html">muffin.shell package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="muffin.utils.html">muffin.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.variables.html">muffin.variables package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_preprocess.html">muffin.equations_preprocess package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_flow.html">muffin.equations_preprocess package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#module-muffin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Useful links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ArkadyWey/MuFFiN">MuFFiN &#64; GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dynamicslab/pysensors/issues">MuFFiN &#64; PyPI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Documentation</a></li>
+          <li class="breadcrumb-item"><a href="muffin.html">muffin package</a></li>
+          <li class="breadcrumb-item"><a href="muffin.utils.html">muffin.utils package</a></li>
+      <li class="breadcrumb-item active">muffin.utils.utils_indexing module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/muffin.utils.utils_indexing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-muffin.utils.utils_indexing">
+<span id="muffin-utils-utils-indexing-module"></span><h1>muffin.utils.utils_indexing module<a class="headerlink" href="#module-muffin.utils.utils_indexing" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.convert_indx_cell_to_grid_edge">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">convert_indx_cell_to_grid_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.convert_indx_cell_to_grid_edge" title="Link to this definition"></a></dt>
+<dd><p>Convert the cell index of an edge, which is a six-tuple (i,j,r0,r1,i_c,j_c),
+to the grid index of an edge, which is a pair (ii,jj).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>-</em>) – Index of node within the cell.</p></li>
+<li><p><strong>r0</strong> (<em>-</em>) – Horizontal position of the cell that contains node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>r1</strong> (<em>-</em>) – Vertical position of the cell that contains the node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>i_c</strong> (<em>-</em>) – Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom
+row in the grid.</p></li>
+<li><p><strong>j_c</strong> (<em>-</em>) – Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in each cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- ii</strong> (<em>int</em>) – A grid index description of the cell index (i,i_c,j_c),
+which is a number between 0 and num_nodes*num_rows*num_cols-1 (inclusive, since num_nodes*num_rows*num_cols
+is the number of nodes in the network).</p></li>
+<li><p><strong>- jj</strong> (<em>int</em>) – A grid index description of the cell index (j,i_c+r1,j_c+r0), which is the cell index of node j.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.convert_indx_cell_to_grid_node">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">convert_indx_cell_to_grid_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.convert_indx_cell_to_grid_node" title="Link to this definition"></a></dt>
+<dd><p>Convert the cell index of a node, which is a triple (i,i_c,j_c)
+to a grid index, which is a single number ii.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>-</em>) – Index of node within the cell.</p></li>
+<li><p><strong>i_c</strong> (<em>-</em>) – Row that the cell is in. Rows are indexed from 0 upwards. Row 0 is the bottom
+row in the grid.</p></li>
+<li><p><strong>j_c</strong> (<em>-</em>) – Column that the cell is in. Colums are indexed from 0 upwards. Column 0 is on the left.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in each cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- ii</strong> – A grid index description of the cell index (i,i_c,j_c),
+which is a number between 0 and num_nodes*num_rows*(num_cols-1)
+(inclusive, since num_nodes*num_rows*num_cols
+is the number of nodes in the network).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.convert_indx_grid_to_cell_edge">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">convert_indx_grid_to_cell_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.convert_indx_grid_to_cell_edge" title="Link to this definition"></a></dt>
+<dd><p>Given the grid indiceces ii,jj of two nodes between which there is an edge,
+return the cell index of the same two indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ii</strong> (<em>-</em>) – A grid index description of the cell index (i,i_c,j_c),
+which is a number between 0 and num_nodes*num_rows*num_cols-1 (inclusive, since num_nodes*num_rows*num_cols
+is the number of nodes in the network).</p></li>
+<li><p><strong>jj</strong> (<em>-</em>) – A grid index description of the cell index (j,i_c+r1,j_c+r0), which is the cell index of node j.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in each cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- i</strong> (<em>int</em>) – Index of node within the cell.</p></li>
+<li><p><strong>- r0</strong> (<em>int</em>) – Horizontal position of the cell that contains node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>- r1</strong> (<em>int</em>) – Vertical position of the cell that contains the node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>- i_c</strong> (<em>int</em>) – Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom
+row in the grid.</p></li>
+<li><p><strong>- j_c</strong> (<em>int</em>) – Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.convert_indx_grid_to_cell_node">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">convert_indx_grid_to_cell_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.convert_indx_grid_to_cell_node" title="Link to this definition"></a></dt>
+<dd><p>Given a grid index of a node,
+return the cell index of the same node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ii</strong> (<em>-</em>) – A grid index description of the cell index (i,i_c,j_c),
+which is a number between 0 and num_nodes*num_rows*(num_cols-1)
+(inclusive, since num_nodes*num_rows*num_cols
+is the number of nodes in the network).</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of  nodes in a cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the network.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- i</strong> (<em>int</em>) – Node index, from 0 to num_nodes-1.</p></li>
+<li><p><strong>- i_c</strong> (<em>int</em>) – The row that the cell containing i is in.</p></li>
+<li><p><strong>- j_c</strong> (<em>int</em>) – The column that the cell containing i is in.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.get_edge_is_external">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">get_edge_is_external</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.get_edge_is_external" title="Link to this definition"></a></dt>
+<dd><p>Check if the edge going to j in the cell defined by the arguments
+leaves the network into the external cells that form the outer grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r0</strong> (<em>-</em>) – Horizontal position of the cell that contains node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>r1</strong> (<em>-</em>) – Vertical position of the cell that contains the node j, relative to the cell that contains node i.</p></li>
+<li><p><strong>i_c</strong> (<em>-</em>) – Row that the cell that contains node i is in. Rows are indexed from 0 upwards. Row 0 is the bottom
+row in the grid.</p></li>
+<li><p><strong>j_c</strong> (<em>-</em>) – Column that the cell that containas node i is in. Colums are indexed from 0 upwards. Column 0 is on the left.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the network (not including the external cells).</p></li>
+<li><p><strong>num_cols</strong> (<em>-</em>) – Number of cols of cells in the network (not including the external cells).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- edge_is_external</strong> – True if the edge to cell defined by arguments from i,i_c,j_c is external, False if it is internal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_1_to_3_internal_nodes">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_1_to_3_internal_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_1_to_3_internal_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_2_to_6_all_edges">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_2_to_6_all_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_refs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_2_to_6_all_edges" title="Link to this definition"></a></dt>
+<dd><p>Reshape an edge quantity with grid indexing into the same edge quantity with cell indexing.
+For example, cond_2 back to cond_6 after the problem has been solved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a_2</strong> (<em>-</em>) – The same quantity defined on edges, indexed with grid indexing.
+That is, the quantity a on edge (ii,jj).
+We understand where this edge is by converting this grid descroption back to a cell
+description.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – The number of nodes in a cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – The number of rows of cells in the network (not including external cells).</p></li>
+<li><p><strong>num_cols</strong> (<em>-</em>) – The number of columns of cells in the network (not including external cells).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- a_6</strong> – A quantity defined on edges, indexed with cell indexing.
+a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between
+the node i in cell i_c,j_c, and the node j located in the cell at
+r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).
+This includes edges to external nodes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_2_to_6_internal_edges">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_2_to_6_internal_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_refs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_2_to_6_internal_edges" title="Link to this definition"></a></dt>
+<dd><p>Reshape an edge quantity with grid indexing into the same edge quantity with cell indexing.
+For example, cond_2 back to cond_6 after the problem has been solved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a_2</strong> (<em>-</em>) – The same quantity defined on edges, indexed with grid indexing.
+That is, the quantity a on edge (ii,jj).
+We understand where this edge is by converting this grid descroption back to a cell
+description.
+This does not include edges to nodes that are in cells outside the network.</p></li>
+<li><p><strong>internal_edges</strong> (<em>-</em>) – internal_edges[i] = ([ii,jj],[i,j,r0,r1,i_c,j_c]). internal_edges[i][0] is the grid index of an internal
+edge, internal_edge[i][1] is the corresponding cell index of the same internal edge.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in each cell.</p></li>
+<li><p><strong>num_refs</strong> (<em>-</em>) – Number of references.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the network (does not include external cells).</p></li>
+<li><p><strong>num_cols</strong> (<em>-</em>) – Number of cols of cells in the network (does not include external cells).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- a_6</strong> – A quantity defined on edges, indexed with cell indexing.
+a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between
+the node i in cell i_c,j_c, and the node j located in the cell at
+r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_3_to_1_internal_nodes">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_3_to_1_internal_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_3_to_1_internal_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_6_to_2_all_edges">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_6_to_2_all_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_6_to_2_all_edges" title="Link to this definition"></a></dt>
+<dd><p>Reshape an edge quantity with cell indexing into the same edge quantity with grid indexing.
+For example, cond_6.
+This includes nodes that are outside the network (but still in the grid) because, for example, a_6
+tells us about the connections from nodes in bottom left cell to the cell on the left (using r0=-1)…
+this cell is outside the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a_6</strong> (<em>-</em>) – A quantity defined on edges, indexed with cell indexing.
+a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between
+the node i in cell i_c,j_c, and the node j located in the cell at
+r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- a_2</strong> – The same quantity defined on edges, indexed with grid indexing.
+That is, the quantity a on edge (ii,jj).
+We understand where this edge is by converting this grid descroption back to a cell
+description.
+This includes edges to external nodes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.utils.utils_indexing.reshape_6_to_2_internal_edges">
+<span class="sig-prename descclassname"><span class="pre">muffin.utils.utils_indexing.</span></span><span class="sig-name descname"><span class="pre">reshape_6_to_2_internal_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.utils.utils_indexing.reshape_6_to_2_internal_edges" title="Link to this definition"></a></dt>
+<dd><p>Reshape an edge quantity with cell indexing into the same edge quantity with grid indexing.
+For example, cond_6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a_6</strong> (<em>-</em>) – A quantity defined on edges, indexed with cell indexing.
+a_6[i,j,r0,r1,i_c,j_c] is the quantity a defined on the edge between
+the node i in cell i_c,j_c, and the node j located in the cell at
+r0,r1 relative to the cell containing i (i.e. node j in cell i_c+r1,j_c+r0).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- a_2</strong> (<em>numpy.ndarray</em>) – The same quantity defined on edges, indexed with grid indexing.
+That is, the quantity a on edge (ii,jj).
+We understand where this edge is by converting this grid descroption back to a cell
+description.
+This does not include edges to external nodes.</p></li>
+<li><p><strong>- internal_edges</strong> (<em>list</em>) – internal_edges[i] = ([ii,jj],[i,j,r0,r1,i_c,j_c]). internal_edges[i][0] is the grid index of an internal
+edge, internal_edge[i][1] is the corresponding cell index of the same internal edge.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="muffin.utils.load_and_save.html" class="btn btn-neutral float-left" title="muffin.utils.load_and_save module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="muffin.utils.utils_plot_exp_param_dist.html" class="btn btn-neutral float-right" title="muffin.utils.utils_plot_exp_param_dist module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

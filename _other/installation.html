@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; MuFFiN 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting started" href="../_getting-started/index.html" />
+    <link rel="prev" title="Welcome to the MuFFiN homepage!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Navigation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-and-activating-your-virtual-environment">Creating and activating your virtual environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-muffin-from-pip">Install MuFFiN from PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-muffin-from-source-code">Installing MuFFiN from source code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-easy-way">The easy way</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-hard-way">The hard way</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../_getting-started/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Useful links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ArkadyWey/MuFFiN">MuFFiN &#64; GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dynamicslab/pysensors/issues">MuFFiN &#64; PyPI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_other/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p>There are several different ways that you can install <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>!</p>
+<p>You can install <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> using <code class="docutils literal notranslate"><span class="pre">PIP</span></code>, or else directly from
+its source code, which is hosted on <code class="docutils literal notranslate"><span class="pre">GitHub</span></code>.</p>
+<p>Before you get started with installing <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> though, we recommended that you
+get to grips with using a virtual environment.</p>
+<p>This will ensure that your installation does not interact with other Python packages that you’ve previously installed
+in your default Python environment,
+and will help you keep track of your project.</p>
+<section id="creating-and-activating-your-virtual-environment">
+<h2>Creating and activating your virtual environment<a class="headerlink" href="#creating-and-activating-your-virtual-environment" title="Link to this heading"></a></h2>
+<p>You can follow a more detailed tutorial on virtual environments <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">here</a>.
+But here is a brief summary.</p>
+<p>Python applications will often use packages that don’t come as part of the default library.
+This means it will not be possible for one Python installation to meet the requirements of every application.</p>
+<p>To solve this problem, the best thing to do is to create a virtual environment.
+This is just a self-contained directory tree that
+contains an installation of a particular Python version,
+plus a number of necessary additional packages.</p>
+<p>To create a virtual environment, start by deciding upon a directory where you want to place it,
+and, in your terminal, run Python’s venv module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">chosen</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;/</span><span class="n">env</span>
+</pre></div>
+</div>
+<p>This creates a virtual environment, in this case called <code class="docutils literal notranslate"><span class="pre">env</span></code>.
+The directories inside this mean that is really is a virtual environment
+(and not just a directory).
+These contain a copy of the Python interpreter that you used to create the
+virtual environment, as well as various other supporting files.</p>
+<p>Once you have created your virtual environment, you may activate it by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">chosen</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>You should see your command prompt is now appended with (env), which means
+your virtual environment is active!</p>
+<p>Once activated, using Python will call the interpreter local
+to this environment (rather than your machine’s default interpreter).</p>
+<p>To check that you are really using the local version of <code class="docutils literal notranslate"><span class="pre">Python</span></code>,
+run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">which</span> <span class="n">python</span>
+</pre></div>
+</div>
+<p>This should return a location inside your virtual environment.</p>
+<p>You can now install packages into your virtual environment.
+For example, you could install <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">numpy</span>
+</pre></div>
+</div>
+<p>Don’t worry if you no longer want to use your vritual environment, and want to use your
+defualt Python interpreter!
+You can deactivate the virtual environment at any time by simply running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deactivate</span> <span class="n">env</span>
+</pre></div>
+</div>
+<p>Of course, there are many alternatives to venv for environment management.
+One example is <a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment">conda environments</a>.</p>
+</section>
+<section id="install-muffin-from-pip">
+<h2>Install MuFFiN from PIP<a class="headerlink" href="#install-muffin-from-pip" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">PIP</span></code> is a package manager for Python packages, or modules if you like.</p>
+<p>A package is just a directory that contains a collection of Python modules relevant to a particular task.
+For example, MuFFiN is a package that contains Python modules for simulating Multiscale Fluid Flow in Networks!</p>
+<p>You can think of <code class="docutils literal notranslate"><span class="pre">PIP</span></code> as a shop for Python packages, and so you can download MuFFiN from <code class="docutils literal notranslate"><span class="pre">PIP</span></code>.</p>
+<p>With your virtual environment active (see above), in your terminal, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">MuFFiN</span>
+</pre></div>
+</div>
+<p>You can check that this has installed MuFFiN
+by running a python script (for example, <code class="docutils literal notranslate"><span class="pre">test.py</span></code>)
+containing the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">muffin</span>
+</pre></div>
+</div>
+</section>
+<section id="installing-muffin-from-source-code">
+<h2>Installing MuFFiN from source code<a class="headerlink" href="#installing-muffin-from-source-code" title="Link to this heading"></a></h2>
+<p>Our source code is stored in a repository on GitHub.</p>
+<p>We will publish new releases to <code class="docutils literal notranslate"><span class="pre">PIP</span></code> every so often, but we are updating the source code all the time.
+Therefore, if you want to use the latest features available (but not yet officially released), you have two options:</p>
+<section id="the-easy-way">
+<h3>The easy way<a class="headerlink" href="#the-easy-way" title="Link to this heading"></a></h3>
+<p>One way to get the latest features is to use your terminal to run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ArkadyWey</span><span class="o">/</span><span class="n">MuFFiN</span><span class="o">.</span><span class="n">git</span><span class="nd">@dev</span>
+</pre></div>
+</div>
+<p>This might not be the right solution for you though!</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This approach is not recommended if you plan to contribute to MuFFiN, or
+get new updates dynamically.
+You will need to uninstall your current version of MuFFiN and then rerun this command everytime
+you want to check for updates.</p>
+</div>
+</section>
+<section id="the-hard-way">
+<h3>The hard way<a class="headerlink" href="#the-hard-way" title="Link to this heading"></a></h3>
+<p>A safer way to keep up to date dynamically, or contribute to MuFFiN (which we are happy to help with!),
+is to clone our GitHub repository and install it locally.</p>
+<p>This sounds complicated, but it’t not!</p>
+<p>Open up a terminal and change directory to the directory where you want to clone <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Now clone our repository by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">arkadywey</span><span class="o">/</span><span class="n">MuFFiN</span>
+</pre></div>
+</div>
+<p>Next, change directory to the root folder of <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">MuFFiN</span>
+</pre></div>
+</div>
+<p>You now need to install <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> dependencies.
+These are just the packages that are used in <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>.</p>
+<p>Of course, you can install these using <code class="docutils literal notranslate"><span class="pre">PIP</span></code> (make sure you have your virtual environment active!) by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>You’re now ready to install <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>.
+You should do this in “editable” mode.
+To do this (with your virtual environment active), run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>This adds the directory <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> as a Python package, which is what we wanted.</p>
+<p>You now have a virtual environment set up, with <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> installed, as well
+as all of its dependencies!</p>
+<p>Because you installed the package as editable, you can update your local version to reflect our version at
+any time by changing directory to the root directory containing <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code>, and
+running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span>
+</pre></div>
+</div>
+<p>Scared of <code class="docutils literal notranslate"><span class="pre">Git</span></code>? Don’t be! There are loads of great resources online to help you to use <code class="docutils literal notranslate"><span class="pre">Git</span></code> for version control.
+GUIs (Graphical User Interfaces) like <code class="docutils literal notranslate"><span class="pre">GitKraken</span></code> or <code class="docutils literal notranslate"><span class="pre">GitFork</span></code> might make this easier.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>A word of caution. If you tried installing <code class="docutils literal notranslate"><span class="pre">MuFFiN</span></code> using <code class="docutils literal notranslate"><span class="pre">PIP</span></code> or using ‘the easy way’,
+then you will need to uninstall it before you install the development version!</p>
+</div>
+<p>Luckily, un-installation is straightforward! This can be achieved by opening a terminal and running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="n">MuFFiN</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to the MuFFiN homepage!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../_getting-started/index.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

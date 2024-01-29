@@ -1,0 +1,18 @@
+muffin.solvers package
+======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   muffin.solvers.solvers
+
+Module contents
+---------------
+
+.. automodule:: muffin.solvers
+   :members:
+   :undoc-members:
+   :show-inheritance:

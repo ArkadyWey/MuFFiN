@@ -1,0 +1,7 @@
+muffin.models.models module
+===========================
+
+.. automodule:: muffin.models.models
+   :members:
+   :undoc-members:
+   :show-inheritance:

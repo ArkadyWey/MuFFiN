@@ -1,0 +1,7 @@
+muffin.parameters.parameters module
+===================================
+
+.. automodule:: muffin.parameters.parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:

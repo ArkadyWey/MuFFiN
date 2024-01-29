@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muffin.network.network_2D module &mdash; MuFFiN 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="muffin.plotters package" href="muffin.plotters.html" />
+    <link rel="prev" title="muffin.network package" href="muffin.network.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Navigation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_other/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getting-started/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="muffin.html">muffin package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="muffin.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="muffin.cells.html">muffin.cells package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.configure.html">muffin.configure package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.flow.html">muffin.flow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.initial_conditions.html">muffin.initial_conditions package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="muffin.network.html">muffin.network package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.plotters.html">muffin.plotters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.run.html">muffin.run package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.shell.html">muffin.shell package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.utils.html">muffin.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.variables.html">muffin.variables package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_preprocess.html">muffin.equations_preprocess package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="muffin.equations_flow.html">muffin.equations_preprocess package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="muffin.html#module-muffin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_other/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Useful links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ArkadyWey/MuFFiN">MuFFiN &#64; GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dynamicslab/pysensors/issues">MuFFiN &#64; PyPI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MuFFiN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Documentation</a></li>
+          <li class="breadcrumb-item"><a href="muffin.html">muffin package</a></li>
+          <li class="breadcrumb-item"><a href="muffin.network.html">muffin.network package</a></li>
+      <li class="breadcrumb-item active">muffin.network.network_2D module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/muffin.network.network_2D.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-muffin.network.network_2D">
+<span id="muffin-network-network-2d-module"></span><h1>muffin.network.network_2D module<a class="headerlink" href="#module-muffin.network.network_2D" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_average_solutions_down_columns">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_average_solutions_down_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reshape_times_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes_hori</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_7</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adhe_7</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc_4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volu_4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_average_solutions_down_columns" title="Link to this definition"></a></dt>
+<dd><p>Get average values of solution down columns that can be plotted against position at times
+that we have selected.
+The solutions fed in have been reshaped into cell indexing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_boundary_nodes_in_cell">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_boundary_nodes_in_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initialisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_boundary_nodes_in_cell" title="Link to this definition"></a></dt>
+<dd><p>Get a dictionary that contains lists of the indices of
+nodes that would satisfy the inlet or outlet
+boundary condition if the cell were at the boundary.
+The result will eventually be fed into the algebraic equation that finds
+the pressure.
+Since outut is node index, it is netiehr grid indexing or cell indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initialisation</strong> (<em>-</em>) – String describing the structure of the cell.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in the cell.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- boundary_nodes_cell_2</strong> – boundary_nodes_cell_2[“inlet”][i]  = the ith inlet node index in the cell.
+boundary_nodes_cell_2[“outlet”][i] = the ith outlet node index in the cell.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_boundary_nodes_in_network">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_boundary_nodes_in_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary_nodes_cell_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_boundary_nodes_in_network" title="Link to this definition"></a></dt>
+<dd><p>Given that we know which nodes in a cell would have the potential to be boundary nodes,
+for each cell, check if the cell is on the boundary, and then if the cell is in the boundary
+check which nodes in that cell are on the boundary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary_nodes_cell_2</strong> (<em>-</em>) – boundary_nodes_cell_2[“inlet”][i]  = the ith inlet node index in the cell.
+boundary_nodes_cell_2[“outlet”][i] = the ith outlet node index in the cell.</p></li>
+<li><p><strong>num_nodes</strong> (<em>-</em>) – Number of nodes in the cell.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – Number of rows of cells in the network.</p></li>
+<li><p><strong>num_columns</strong> (<em>-</em>) – Number of columns of cells in the network.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- boundary_nodes_network_2</strong> – Lists of the grid indices that refer to inlet and outlet nodes in the network.
+boundary_nodes_network_2[“inlet”][ii] = grid index of a node in the inlet of the network.
+boundary_ndoes_network_2[“outlet”][ii] = grid_index of a node in the outlet of the network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_cell_is_boundary_cell">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_cell_is_boundary_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i_c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j_c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_cell_is_boundary_cell" title="Link to this definition"></a></dt>
+<dd><p>Check if cell i_c,j_c is on any of the four boundaries of the network
+given by num_nodes, num_rows,  num_cols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_c</strong> (<em>-</em>) – The row that the cell containing the node is in.</p></li>
+<li><p><strong>j_c</strong> (<em>-</em>) – The column that the cell containing the node is in.</p></li>
+<li><p><strong>num_rows</strong> (<em>-</em>) – The number of rows of cells in the network.</p></li>
+<li><p><strong>um_cols</strong> (<em>- n</em>) – The number of colyumns of cells in the network.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- is_inlet_cell</strong> (<em>bool</em>) – True if cell i_c,j_c is a cell at the inlet of the network.</p></li>
+<li><p><strong>- is_outlet_cell</strong> (<em>bool</em>) – True if cell i_c,j_c is a cell at the outlet of the network.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_concentration">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conc_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volu_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_network_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_concentration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_conductance">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_conductance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conc_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_network_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_conductance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_edge_concentration">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_edge_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conc_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdif_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_edge_concentration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_flux_through_network">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_flux_through_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cond_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_network_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_flux_through_network" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_heaviside">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_heaviside</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdif_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_heaviside" title="Link to this definition"></a></dt>
+<dd><p>Get the heaviside function of pressure difference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pdif_2</strong> (<em>-</em>) – Pressure difference between node i and node j. pdif_2[ii,jj] = pres_1[ii]-pres_1[jj]
+in grid indexing.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>- heav_2</strong> –</p>
+<dl class="simple">
+<dt>The heaviside function. H[ii,jj] = 1 if pdif&gt;tol</dt><dd><p>0 if pdif&lt;tol</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_initial_conds_with_out_node">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_initial_conds_with_out_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cond_init_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adhe_init_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc_init_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volu_init_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_network_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_initial_conds_with_out_node" title="Link to this definition"></a></dt>
+<dd><p>Add an out node to the network.
+The out node will simply collect all particles that have left the main network.
+The out node connects to all outlet nodes.
+There will be no deposition on edges between outlet nodes and the out node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cond_init_2</strong> (<em>-</em>) – Has shape (num_nodes_network,num_nodes_network).
+cond_init_2[ii,jj] = the initial conductance between ii and jj.</p></li>
+<li><p><strong>adhe_init_2</strong> (<em>-</em>) – Has shape (num_nodes_network,num_nodes_network).
+cond_init_2[ii,jj] = the initial adherence between ii and jj.</p></li>
+<li><p><strong>conc_init_1</strong> (<em>-</em>) – Has shape (num_nodes_network).
+conc_init_1[ii] = the initial concentration at ii.</p></li>
+<li><p><strong>volu_init_1</strong> (<em>-</em>) – Has shape (num_nodes_network).
+volu_init_1[ii] = the initial volume at ii.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- cond_init_2</strong> (<em>numpy.ndarray</em>) – Has shape (num_nodes_network+1,num_nodes_network+1).
+cond_init_2[ii,jj] = the initial conductance between ii and jj.</p></li>
+<li><p><strong>- adhe_init_2</strong> (<em>numpy.ndarray</em>) – Has shape (num_nodes_network+1,num_nodes_network+1).
+cond_init_2[ii,jj] = the initial adherence between ii and jj.</p></li>
+<li><p><strong>- conc_init_1</strong> (<em>numpy.ndarray</em>) – Has shape (num_nodes_network+1).
+conc_init_1[ii] = the initial concentration at ii.</p></li>
+<li><p><strong>- volu_init_1</strong> (<em>numpy.ndarray</em>) – Has shape (num_nodes_network+1).
+volu_init_1[ii] = the initial volume at ii.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_new_interpolated_point">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_new_interpolated_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_x_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_clog</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_new_interpolated_point" title="Link to this definition"></a></dt>
+<dd><p>Given a list of x values, and corresponding y values, and
+a new x value, approximate the corresponding function,
+and use this function to return the new y value
+corresponding to the new x value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_x</strong> (<em>-</em>) – 1-dimensional list of x values.</p></li>
+<li><p><strong>table_y</strong> (<em>-</em>) – 1-dimensional list of y values.</p></li>
+<li><p><strong>new_x_value</strong> (<em>-</em>) – New x value for which the corresponding y value is to be approximated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- new_y_value</strong> – Interpolated y value corresponding to new_x_value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_pressure_difference">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_pressure_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pres_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_pressure_difference" title="Link to this definition"></a></dt>
+<dd><p>Get the pressure difference matrix from the pressure vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pres_1</strong> (<em>-</em>) – pres_1[ii] = pressure at node nodes[ii], where ii is the grid index.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- pdif_2</strong> – pdif_2[ii,jj] = pres_1[ii]-pres_1[jj].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_pressure_problem">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_pressure_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cond_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_network_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_pressure_problem" title="Link to this definition"></a></dt>
+<dd><p>Get the left and right hand side of
+the linear problem on the entire  network that gives pressure at each time step.
+Note that we include the pressure boundary condition, that
+inlet nodes have pressure one and the single out node
+has pressure zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary_nodes_network_2</strong> (<em>-</em>) – The grid indexes of all nodes that are on the boundary of the network.
+boundary_nodes_2[“inlet”][ii] = iith inlet node in grid indexing.
+boundary_nodes_2[“outlet”][ii] = iith outlet node in grid indexing.</p></li>
+<li><p><strong>cond_2</strong> (<em>-</em>) – cond_2[ii,jj] = cond_6[i,j,r0,r1,i_c,j_c] = conductance from i to j, where
+i is in cell in row i_c and column j_c, and j is in the cell at r0,r1
+relative to the cell that i is in.
+Note that this must be an internal edge, we don’t consider external edges.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- lhs_2</strong> (<em>numpy.ndarray</em>) – Left matrix of linear pressure problem on all the nodes in the network
+with the unit pressure drop condition.</p></li>
+<li><p><strong>- rhs_1</strong> (<em>numpy.ndarray</em>) – Right vector of linear pressure problem on all the nodes in the network
+with the unit pressure drop condition.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_pressure_solution">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_pressure_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lhs_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhs_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_pressure_solution" title="Link to this definition"></a></dt>
+<dd><p>Get the solution of the pressure problem on the network, whcih is a vector
+where each element is the pressure at the correspondingly
+grid indexed node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lhs_2</strong> (<em>-</em>) – Left matrix of linear pressure problem in grid indexing.</p></li>
+<li><p><strong>rhs_1</strong> (<em>-</em>) – Right vector of linear pressure problem in grid indexing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- pres_1</strong> – pres_1[ii] = pressure at node nodes[ii], where ii is the grid index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.get_sol_without_out_node">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">get_sol_without_out_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cond_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adhe_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volu_1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.get_sol_without_out_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.make_initial_network">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">make_initial_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_refs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_nodes_cell_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conc_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.make_initial_network" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="muffin.network.network_2D.reshape_solution_grid_to_cell">
+<span class="sig-prename descclassname"><span class="pre">muffin.network.network_2D.</span></span><span class="sig-name descname"><span class="pre">reshape_solution_grid_to_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conc_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pres_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volu_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adhe_3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_refs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reshape_times_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muffin.network.network_2D.reshape_solution_grid_to_cell" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><dl class="simple">
+<dt>reshape_times_1:list</dt><dd><p>Times at which to reshape the time-dependent solution.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="muffin.network.html" class="btn btn-neutral float-left" title="muffin.network package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="muffin.plotters.html" class="btn btn-neutral float-right" title="muffin.plotters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arkady Wey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

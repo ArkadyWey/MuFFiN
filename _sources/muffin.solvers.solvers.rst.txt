@@ -1,0 +1,7 @@
+muffin.solvers.solvers module
+=============================
+
+.. automodule:: muffin.solvers.solvers
+   :members:
+   :undoc-members:
+   :show-inheritance:

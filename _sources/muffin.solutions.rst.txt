@@ -1,0 +1,18 @@
+muffin.solutions package
+========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   muffin.solutions.solutions
+
+Module contents
+---------------
+
+.. automodule:: muffin.solutions
+   :members:
+   :undoc-members:
+   :show-inheritance:
